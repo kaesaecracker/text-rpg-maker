@@ -143,7 +143,10 @@ namespace TextRpgMaker
             {
                 Text = "Output",
                 Padding = 3,
-                Content = new TextArea {Text = "Output goes here", Height = 250}
+                Content = new TextArea
+                {
+                    Height = 250
+                }
             });
             layout.Add(new GroupBox
             {

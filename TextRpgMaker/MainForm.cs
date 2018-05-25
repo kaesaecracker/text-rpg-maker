@@ -8,8 +8,9 @@ namespace TextRpgMaker
         public MainForm()
         {
             this.Title = "No project loaded [TextRpgMaker]";
+            this.DataContext = new MainViewModel();
             this.Menu = InitializeMenu();
-            this.Content = InitializeLayout();
+            this.Content = this.InitializeLayout();
         }
 
         private void ExitClick(object sender, EventArgs e) => Application.Instance.Quit();

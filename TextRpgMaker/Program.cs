@@ -1,7 +1,5 @@
-﻿using System;
-using Eto.Forms;
+﻿using Eto.Forms;
 using Serilog;
-using Serilog.Events;
 
 namespace TextRpgMaker
 {
