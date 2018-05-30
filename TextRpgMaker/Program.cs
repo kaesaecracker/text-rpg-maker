@@ -18,7 +18,7 @@ namespace TextRpgMaker
             
             Log.Logger.Debug("Startet prgram with parameters {@args}", args);
             
-            new Application(Eto.Platform.Detect).Run(new MainForm());
+            new Application(Eto.Platform.Detect).Run(new Views.MainForm());
         }
     }
 }

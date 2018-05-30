@@ -1,6 +1,6 @@
 ﻿using Eto.Forms;
 
-namespace TextRpgMaker
+namespace TextRpgMaker.Views
 {
     public partial class MainForm
     {
