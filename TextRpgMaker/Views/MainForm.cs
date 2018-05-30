@@ -2,10 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using Eto.Drawing;
 using Eto.Forms;
+using TextRpgMaker.Views.Components;
 
 namespace TextRpgMaker.Views
 {
-    public partial class MainForm : Form
+    public class MainForm : Form
     {
         public MainForm()
         {

@@ -1,7 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-using Eto.Forms;
+﻿using Eto.Forms;
 
-namespace TextRpgMaker.Views
+namespace TextRpgMaker.Views.Components
 {
     public class SceneTabPage : TabPage
     {
