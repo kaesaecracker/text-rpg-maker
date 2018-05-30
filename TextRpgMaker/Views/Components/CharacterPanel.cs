@@ -12,6 +12,7 @@ namespace TextRpgMaker.Views.Components
         private void InitializeComponents()
         {
             this.Text = "Character";
+            this.Font = UiConstants.GroupBoxTitleFont;
             this.Padding = 3;
             this.Content = new TabControl
             {

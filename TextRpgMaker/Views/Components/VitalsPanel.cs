@@ -27,7 +27,8 @@ namespace TextRpgMaker.Views.Components
             this.Content = new GroupBox()
             {
                 Content = table,
-                Text = "Vitals"
+                Text = "Vitals",
+                Font = UiConstants.GroupBoxTitleFont
             };
         }
     }

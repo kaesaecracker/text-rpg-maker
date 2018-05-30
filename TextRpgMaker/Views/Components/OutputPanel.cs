@@ -14,6 +14,7 @@ namespace TextRpgMaker.Views.Components
             this.Content = new GroupBox
             {
                 Text = "Output",
+                Font = UiConstants.GroupBoxTitleFont,
                 Padding = 3,
                 Content = new TextArea
                 {
