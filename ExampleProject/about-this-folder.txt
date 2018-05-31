@@ -1,0 +1,4 @@
+This is the root directory of the example project.
+Needed files:
+- project.yaml: Contains general information about the project, like title and description
+- start-characters.yaml: Contains a list of characters you can choose from

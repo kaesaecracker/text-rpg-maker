@@ -1,0 +1,22 @@
+- id: warrior
+  name: The Warrior
+  attack: 1.1
+  health: 1.1
+  items: 
+  - sword-wood
+
+- id: thief
+  name: The Thief
+  evade: 0.125
+  items:
+  - id: dagger
+  - id: money
+    ammount: 5.0
+
+- id: archer
+  name: The Archer
+  speed: 1.2
+  items:
+  - id: bow-basic
+  - id: arrow
+    ammount: 15

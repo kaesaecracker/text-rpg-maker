@@ -1,0 +1,7 @@
+title: Slime Infestation
+description: A small village is overrun by the army of the Slime King. Can you rescue the the damsel in distress and
+             defeat the slimes once and for all?
+             
+start-info:
+  scene: town
+  dialog: mayor/speech
