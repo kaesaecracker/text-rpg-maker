@@ -2,14 +2,16 @@
 
 namespace TextRpgMaker.Models
 {
-    public class ProjectInfo
+    public class ProjectInfo : Element
     {
+        public override string Id { get; set; } = "project-info";
+
         [YamlMember(Alias = "title")]
         public string Title { get; set; }
-        
+
         [YamlMember(Alias = "description")]
         public string Description { get; set; }
-        
+
         [YamlMember(Alias = "start-info")]
         public StartInfoContainer StartInfo { get; set; }
 
@@ -17,10 +19,9 @@ namespace TextRpgMaker.Models
         {
             [YamlMember(Alias = "scene")]
             public string SceneId { get; set; }
-            
+
             [YamlMember(Alias = "dialog")]
             public string DialogId { get; set; }
         }
     }
-    
 }

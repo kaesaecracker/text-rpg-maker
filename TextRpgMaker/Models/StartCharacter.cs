@@ -1,8 +1,9 @@
-﻿using YamlDotNet.Serialization;
+﻿using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.Models
 {
-    public class Character : Element
+    public class StartCharacter : Element
     {
         [YamlMember(Alias = "current-hp")]
         public double CurrentHp { get; set; } = 100;
@@ -10,7 +11,7 @@ namespace TextRpgMaker.Models
         [YamlMember(Alias = "name")]
         public string Name { get; set; }
 
-        [YamlMember(Alias = "attack")]
+        [YamlMember(Alias = "health")]
         public double Health { get; set; } = 1;
 
         [YamlMember(Alias = "evade")]
@@ -21,5 +22,8 @@ namespace TextRpgMaker.Models
 
         [YamlMember(Alias = "speed")]
         public double Speed { get; set; } = 1;
+
+        [YamlMember(Alias = "items")]
+        public List<ItemIdWithCount> StartItems { get; set; } = new List<ItemIdWithCount>();
     }
 }

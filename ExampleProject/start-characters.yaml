@@ -3,7 +3,7 @@
   attack: 1.1
   health: 1.1
   items: 
-  - sword-wood
+  - id: sword-wood
 
 - id: thief
   name: The Thief
@@ -11,7 +11,7 @@
   items:
   - id: dagger
   - id: money
-    ammount: 5.0
+    count: 5
 
 - id: archer
   name: The Archer
@@ -19,4 +19,4 @@
   items:
   - id: bow-basic
   - id: arrow
-    ammount: 15
+    count: 15
