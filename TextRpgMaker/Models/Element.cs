@@ -6,5 +6,8 @@ namespace TextRpgMaker.Models
     {
         [YamlMember(Alias = "id")]
         public virtual string Id { get; set; }
+        
+        [YamlMember(Alias = "based-on")]
+        public string BasedOnId { get; set; }
     }
 }

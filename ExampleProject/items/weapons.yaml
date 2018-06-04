@@ -1,28 +1,24 @@
-- type: ammo
-  id: arrow
-
-- type: weapon
-  id: sword-wood
+- id: sword-wood
   name: Wooden Sword
   attack: 1
   timeout: 1.0
 
-- type: weapon
-  id: sword-iron
+- id: sword-iron
   name: Iron Sword
   attack: 1.75
   timeout: 1.1
 
-- type: weapon
-  id: bow-basic
+- id: bow-basic
   name: Basic Bow
   attack: 1.0
   timeout: 0.75
   ammo: arrow
 
-- type: weapon
-  id: bow-good
+- id: bow-good
   based-on: bow-basic
   name: Good Bow
   attack: 1.5
   ammo: arrow
+  
+#- id: sword-wood
+#- id: sword-iron

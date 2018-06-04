@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TextRpgMaker.Models;
 using TextRpgMaker.Models.Items;
 using YamlDotNet.Serialization;
@@ -9,7 +10,7 @@ namespace TextRpgMaker
 {
     public partial class Project
     {
-        private Deserializer _deserializer = new DeserializerBuilder().Build();
+        private readonly Deserializer _deserializer = new DeserializerBuilder().Build();
 
         private string _projectDir;
 
@@ -20,11 +21,7 @@ namespace TextRpgMaker
             this.RawYamlLoad();
             this.ValidateUniqueIds();
             this.RealizeInheritance();
-        }
-
-        private void ValidateUniqueIds()
-        {
-            throw new NotImplementedException();
+            this.SetDefaultValues();
         }
 
         private void RawYamlLoad()
@@ -34,23 +31,44 @@ namespace TextRpgMaker
 
             this.ArmorTypes = this.LoadFileList<Armor>(Const.ArmorFile);
             this.WeaponTypes = this.LoadFileList<Weapon>(Const.WeaponFile);
+            this.ConsumableTypes = this.LoadFileList<Consumable>(Const.ConsumableFile);
         }
 
+        private void ValidateUniqueIds()
+        {
+            var duplicates =
+                from tle in this.TopLevelElements
+                group tle by tle.Id
+                into grouped
+                where grouped.Count() > 1
+                select grouped;
 
+            if (duplicates.Any())
+            {
+                throw LoadFailedException.DuplicateIds(duplicates);
+            }
+        }
 
         private void RealizeInheritance()
         {
             throw new NotImplementedException();
         }
+        
+        private void SetDefaultValues()
+        {
+            throw new NotImplementedException();
+        }
+        
+        private List<Element> TopLevelElements { get; set; } = new List<Element>();
 
         public ProjectInfo Info { get; private set; }
 
         public List<StartCharacter> StartCharacters { get; private set; }
 
-        public List<Element> TopLevelElements { get; private set; } = new List<Element>();
-        
         public List<Armor> ArmorTypes { get; private set; }
-        
+
         public List<Weapon> WeaponTypes { get; private set; }
+
+        public List<Consumable> ConsumableTypes { get; private set; }
     }
 }

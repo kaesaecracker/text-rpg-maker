@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TextRpgMaker.Models;
 using static Serilog.Log;
 
@@ -65,6 +66,7 @@ namespace TextRpgMaker
             private const string ItemsFolder = "items/";
             public const string ArmorFile = ItemsFolder + "armor.yaml";
             public const string WeaponFile = ItemsFolder + "weapons.yaml";
+            public const string ConsumableFile = ItemsFolder + "consumables.yaml";
 
             private const string NpcFolder = "npcs";
             private const string ResourcesFolder = "resources";
@@ -81,9 +83,14 @@ namespace TextRpgMaker
                 $" Expected it at {triedPath}",
                 null);
 
+        public static Exception DuplicateIds(IEnumerable<IGrouping<string, Element>> duplicates) =>
+            new LoadFailedException(
+                "The project contains duplicate element ids, which is not allowed. The duplicate ids are: " +
+                $"{string.Join(", ", duplicates.Select(d => d.Key))}",
+                null);
 
         public LoadFailedException(string message,
-                                   Exception innerException) : base(message, innerException)
+            Exception innerException) : base(message, innerException)
         {
         }
     }
