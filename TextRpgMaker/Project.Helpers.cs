@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Xamarin.Forms;
-using static Serilog.Log;
 using Element = TextRpgMaker.Models.Element;
 
 namespace TextRpgMaker
 {
     public partial class Project
     {
+        /// <summary>
+        /// empty constructor used for deserialization
+        /// </summary>
         public Project()
         {
-            // empty constructor for deserialisation
         }
 
         private T LoadFileElement<T>(string fileInProject) where T : Element
