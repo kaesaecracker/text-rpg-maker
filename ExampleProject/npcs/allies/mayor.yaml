@@ -1,0 +1,7 @@
+type: npc
+
+lookText: The mayor of the town. Not the richest person living here, but definitely the most influential one. He is always wearing good clothes and likes to brag about his beautiful daughter.
+
+dialogs:
+- id: speech
+  
