@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using TextRpgMaker.Models;
 using TextRpgMaker.Models.Items;
-using Xamarin.Forms.Internals;
 using YamlDotNet.Serialization;
 using static Serilog.Log;
 
@@ -68,10 +67,14 @@ namespace TextRpgMaker
         /// <exception cref="LoadFailedException">if base element is not found or types do not match</exception>
         private void RealizeInheritance()
         {
+            Logger.Warning("RealizeInheritance cannot handle based-ons for things that get loaded later");
+            
             // Set LoadStepDone=RealizeInheritance on all elements that are not based on anything
-            this.TopLevelElements
-                .Where(e => e.BasedOnId == null)
-                .ForEach(e => e.LoadStepDone = LoadStep.RealizeInheritance);
+            foreach (var elem in this.TopLevelElements
+                                     .Where(e => e.BasedOnId == null))
+            {
+                elem.LoadStepDone = LoadStep.RealizeInheritance;
+            }
 
             // for each element that is based on something
             var todo = this.TopLevelElements.Where(e => e.BasedOnId != null);
@@ -95,7 +98,6 @@ namespace TextRpgMaker
                 {
                     throw LoadFailedException.BaseElementHasDifferentType(baseElem, targetElem);
                 }
-
 
                 // properties contains all properties of baseElem type that have the YamlMember attribute
                 var properties = baseElem.GetType()
@@ -127,7 +129,8 @@ namespace TextRpgMaker
         /// </summary>
         private void SetDefaultValues()
         {
-            throw new NotImplementedException();
+            // TODO set default values
+            Logger.Warning("SetDefaultValue not implemented");
         }
 
         // cannot be a dictionary because there could be duplicate ids

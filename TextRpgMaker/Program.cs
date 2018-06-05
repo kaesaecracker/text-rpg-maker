@@ -1,13 +1,16 @@
 ﻿using Eto.Forms;
 using Serilog;
+using static Serilog.Log;
 
 namespace TextRpgMaker
 {
     class Program
     {
+        private const string PathToProject = "../ExampleProject";
+        
         static void Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
+            Logger = new LoggerConfiguration()
 #if DEBUG
                 .MinimumLevel.Verbose()
 #else
@@ -16,9 +19,12 @@ namespace TextRpgMaker
                 .WriteTo.Console()
                 .CreateLogger();
             
-            Log.Logger.Debug("Startet prgram with parameters {@args}", args);
+            Logger.Debug("Startet prgram with parameters {@args}", args);
             
             new Application(Eto.Platform.Detect).Run(new Views.MainForm());
+            
+            var project = new Project(PathToProject);
+            Logger.Debug("Project: ", project);
         }
     }
 }
