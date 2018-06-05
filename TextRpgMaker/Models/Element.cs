@@ -16,6 +16,8 @@ namespace TextRpgMaker.Models
 
     public enum LoadStep
     {
-        LoadFile, RealizeInheritance, SetDefaultValues
+        LoadFile,
+        RealizeInheritance,
+        SetDefaultValues
     }
 }

@@ -2,7 +2,7 @@
 
 namespace TextRpgMaker.Views.Components
 {
-    public class ObjectsTabPage:TabPage
+    public class ObjectsTabPage : TabPage
     {
         public ObjectsTabPage()
         {

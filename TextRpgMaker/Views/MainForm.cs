@@ -22,7 +22,7 @@ namespace TextRpgMaker.Views
             this.Title = "No project loaded [TextRpgMaker]";
             this.DataContext = new MainViewModel();
             this.Menu = InitializeMenu();
-            
+
             var layout = new DynamicLayout
             {
                 Padding = 3,
@@ -55,7 +55,7 @@ namespace TextRpgMaker.Views
             layout.EndHorizontal();
             this.Content = layout;
         }
-        
+
         private static MenuBar InitializeMenu() => new MenuBar
         {
             Items =
@@ -92,7 +92,7 @@ namespace TextRpgMaker.Views
                 }
             }
         };
-        
+
         private void ExitClick(object sender, EventArgs e) => Application.Instance.Quit();
 
         internal static void UnimplementedClick(object sender, EventArgs e)

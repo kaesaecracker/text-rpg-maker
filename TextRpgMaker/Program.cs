@@ -4,16 +4,12 @@ using static Serilog.Log;
 
 namespace TextRpgMaker
 {
-    class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             Logger = new LoggerConfiguration()
-#if DEBUG
                      .MinimumLevel.Verbose()
-#else
-                .MinimumLevel.Information()
-#endif
                      .WriteTo.Console()
                      .CreateLogger();
 

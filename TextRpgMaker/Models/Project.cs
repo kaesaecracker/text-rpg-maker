@@ -68,7 +68,7 @@ namespace TextRpgMaker.Models
         private void RealizeInheritance()
         {
             Logger.Warning("RealizeInheritance cannot handle based-ons for things that get loaded later");
-            
+
             // Set LoadStepDone=RealizeInheritance on all elements that are not based on anything
             foreach (var elem in this.TopLevelElements
                                      .Where(e => e.BasedOnId == null))

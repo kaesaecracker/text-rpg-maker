@@ -2,7 +2,7 @@
 
 namespace TextRpgMaker.Views.Components
 {
-    public class CharacterPanel:GroupBox
+    public class CharacterPanel : GroupBox
     {
         public CharacterPanel()
         {
