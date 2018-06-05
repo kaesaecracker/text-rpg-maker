@@ -1,7 +1,8 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using Eto.Drawing;
 using Eto.Forms;
+using static Serilog.Log;
+using TextRpgMaker.Models;
 using TextRpgMaker.Views.Components;
 
 namespace TextRpgMaker.Views
@@ -11,6 +12,9 @@ namespace TextRpgMaker.Views
         public MainForm()
         {
             this.InitializeComponents();
+
+            var s = new State();
+            Logger.Debug("State: {@s}", s);
         }
 
         private void InitializeComponents()

@@ -7,7 +7,7 @@ using TextRpgMaker.Models.Items;
 using YamlDotNet.Serialization;
 using static Serilog.Log;
 
-namespace TextRpgMaker
+namespace TextRpgMaker.Models
 {
     public partial class Project
     {
@@ -80,7 +80,7 @@ namespace TextRpgMaker
             var todo = this.TopLevelElements.Where(e => e.BasedOnId != null);
             foreach (var targetElem in todo)
             {
-                Logger.Debug("Realizing inheritance for id {id}, element {@elem}", targetElem.Id, targetElem);
+                Logger.Debug("Realizing inheritance for id {id}", targetElem.Id);
 
                 // find base element, throw exception when not found
                 Element baseElem;
@@ -120,8 +120,6 @@ namespace TextRpgMaker
                 // after all props are processed mark element as done
                 targetElem.LoadStepDone = LoadStep.RealizeInheritance;
             }
-
-            Logger.Debug("{@elems}", this.TopLevelElements);
         }
 
         /// <summary>

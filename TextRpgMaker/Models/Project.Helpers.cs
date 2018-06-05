@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Element = TextRpgMaker.Models.Element;
 
-namespace TextRpgMaker
+namespace TextRpgMaker.Models
 {
     public partial class Project
     {
