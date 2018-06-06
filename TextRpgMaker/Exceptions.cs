@@ -36,6 +36,32 @@ namespace TextRpgMaker
                 $"'{baseElem.Id}' is of type '{baseElem.GetType().Name}')"
             );
 
+        public static LoadFailedException MalformedId(string elementId) =>
+            new LoadFailedException(
+                $"The ID '{elementId} is not well formed.\n" +
+                "- IDs can only contain [a-z], '-' and [0-9]\n" +
+                "- IDs cannot start with a number\n" +
+                "- IDs cannot start or end with '-'"
+            );
+
+        public static Exception RequiredButNull(
+            IEnumerable<(string Id, string Type, IEnumerable<(string YamlName, string CsName)>Props)
+            > errors)
+        {
+            string message = "The following required fields are not set:\n";
+            foreach (var e in errors)
+            {
+                message += $"-\t id: '{e.Id}'\n" +
+                           $" \t type: {e.Type}\n" +
+                           $" \t unset required properties:\n";
+
+                message = e.Props.Aggregate(message, (current, prop) =>
+                    current + $" \t-\t '{prop.YamlName}' ({prop.CsName})");
+            }
+
+            return new LoadFailedException(message);
+        }
+
         private LoadFailedException(string message, Exception innerException = null)
             : base(message, innerException)
         {

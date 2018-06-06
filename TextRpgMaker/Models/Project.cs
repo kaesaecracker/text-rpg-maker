@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using Eto.Forms;
 using TextRpgMaker.Models.Items;
 using YamlDotNet.Serialization;
 using static Serilog.Log;
@@ -11,7 +15,7 @@ namespace TextRpgMaker.Models
     {
         private readonly Deserializer _deserializer = new DeserializerBuilder().Build();
 
-        private string _projectDir;
+        private readonly string _projectDir;
 
         /// <summary>
         /// Loads the project
@@ -22,6 +26,7 @@ namespace TextRpgMaker.Models
             this._projectDir = projectDir;
 
             this.RawYamlLoad();
+            this.ValidateWellformedIds();
             this.ValidateUniqueIds();
             this.RealizeInheritance();
             this.ValidateRequiredFields();
@@ -41,6 +46,19 @@ namespace TextRpgMaker.Models
             this.ConsumableTypes = this.LoadFileList<Consumable>(Const.ConsumableFile);
         }
 
+        private void ValidateWellformedIds()
+        {
+            // matches 'id', 'some-id', 'id-9-test', but not ' id ', '%KHGSI'
+            var idRegex = new Regex("[a-z][a-z]+(-([a-z]|[0-9])+)*"); // good regex tool: regexr.com
+            foreach (var element in this.TopLevelElements)
+            {
+                if (!idRegex.IsMatch(element.Id))
+                {
+                    throw LoadFailedException.MalformedId(element.Id);
+                }
+            }
+        }
+
         /// <summary>
         /// checks if project contains duplicate ids
         /// </summary>
@@ -49,7 +67,8 @@ namespace TextRpgMaker.Models
         {
             var duplicates = (
                 from tle in this.TopLevelElements
-                group tle by tle.Id into grouped
+                group tle by tle.Id
+                into grouped
                 where grouped.Count() > 1
                 select grouped
             ).ToList();
@@ -122,14 +141,31 @@ namespace TextRpgMaker.Models
 
         private void ValidateRequiredFields()
         {
-            foreach (var element in this.TopLevelElements)
+            var errors = (
+                from element in this.TopLevelElements
+                let type = element.GetType()
+                let requiredPropsWithoutVal =
+                    from property in type.GetProperties()
+                    where property.IsDefined(typeof(RequiredAttribute), inherit: true)
+                    where property.GetValue(element) == null
+                    let yamlMember = property.GetCustomAttribute(
+                        typeof(YamlMemberAttribute),
+                        inherit: true
+                    ) as YamlMemberAttribute
+                    select (YamlName: yamlMember.Alias,
+                        CsName: property.Name)
+                where requiredPropsWithoutVal.Any()
+                select (
+                    Id: element.Id,
+                    Type: type.Name,
+                    requiredPropsWithoutVal
+                )
+            ).ToList();
+
+            if (errors.Any())
             {
-                Logger.Debug("validating required fields for {elemId}", element.Id);
-
-                var elemType = element.GetType();
+                throw LoadFailedException.RequiredButNull(errors);
             }
-
-            throw new NotImplementedException();
         }
 
         /// <summary>
