@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using Element = TextRpgMaker.Models.Element;
 
 namespace TextRpgMaker.Models
 {
@@ -20,6 +17,11 @@ namespace TextRpgMaker.Models
             T elem;
             var file = this.ProjectToNormalPath(fileInProject);
 
+            if (!File.Exists(file))
+            {
+                throw LoadFailedException.FileMissing(fileInProject, file);    
+            }
+            
             using (var reader = new StreamReader(file))
             {
                 elem = this._deserializer.Deserialize<T>(reader);

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using TextRpgMaker.Models;
 using TextRpgMaker.Models.Items;
 using YamlDotNet.Serialization;
 using static Serilog.Log;
@@ -26,6 +24,7 @@ namespace TextRpgMaker.Models
             this.RawYamlLoad();
             this.ValidateUniqueIds();
             this.RealizeInheritance();
+            this.ValidateRequiredFields();
             this.SetDefaultValues();
         }
 
@@ -48,12 +47,12 @@ namespace TextRpgMaker.Models
         /// <exception cref="LoadFailedException">if duplicates are found</exception>
         private void ValidateUniqueIds()
         {
-            var duplicates =
+            var duplicates = (
                 from tle in this.TopLevelElements
-                group tle by tle.Id
-                into grouped
+                group tle by tle.Id into grouped
                 where grouped.Count() > 1
-                select grouped;
+                select grouped
+            ).ToList();
 
             if (duplicates.Any())
             {
@@ -67,7 +66,8 @@ namespace TextRpgMaker.Models
         /// <exception cref="LoadFailedException">if base element is not found or types do not match</exception>
         private void RealizeInheritance()
         {
-            Logger.Warning("RealizeInheritance cannot handle based-ons for things that get loaded later");
+            Logger.Warning(
+                "RealizeInheritance cannot handle based-ons for things that get loaded later");
 
             // Set LoadStepDone=RealizeInheritance on all elements that are not based on anything
             foreach (var elem in this.TopLevelElements
@@ -83,14 +83,11 @@ namespace TextRpgMaker.Models
                 Logger.Debug("Realizing inheritance for id {id}", targetElem.Id);
 
                 // find base element, throw exception when not found
-                Element baseElem;
-                try
+                var baseElem = this.TopLevelElements
+                                   .FirstOrDefault(e => e.Id == targetElem.BasedOnId);
+                if (baseElem == null)
                 {
-                    baseElem = this.TopLevelElements.First(e => e.Id == targetElem.BasedOnId);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    throw LoadFailedException.BaseElementNotFound(targetElem, ex);
+                    throw LoadFailedException.BaseElementNotFound(targetElem);
                 }
 
                 // throw exception if base and target do not have the same type
@@ -102,7 +99,8 @@ namespace TextRpgMaker.Models
                 // properties contains all properties of baseElem type that have the YamlMember attribute
                 var properties = baseElem.GetType()
                                          .GetProperties()
-                                         .Where(prop => prop.IsDefined(typeof(YamlMemberAttribute), true));
+                                         .Where(prop =>
+                                             prop.IsDefined(typeof(YamlMemberAttribute), true));
 
                 // for each of those properties
                 foreach (var prop in properties)
@@ -120,6 +118,18 @@ namespace TextRpgMaker.Models
                 // after all props are processed mark element as done
                 targetElem.LoadStepDone = LoadStep.RealizeInheritance;
             }
+        }
+
+        private void ValidateRequiredFields()
+        {
+            foreach (var element in this.TopLevelElements)
+            {
+                Logger.Debug("validating required fields for {elemId}", element.Id);
+
+                var elemType = element.GetType();
+            }
+
+            throw new NotImplementedException();
         }
 
         /// <summary>

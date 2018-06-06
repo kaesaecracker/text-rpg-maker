@@ -7,6 +7,7 @@ namespace TextRpgMaker.Models
         public override string Id { get; set; } = "project-info";
 
         [YamlMember(Alias = "title")]
+        
         public string Title { get; set; }
 
         [YamlMember(Alias = "description")]

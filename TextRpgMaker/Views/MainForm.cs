@@ -1,9 +1,9 @@
 ﻿using System;
+using System.IO;
 using Eto.Drawing;
 using Eto.Forms;
-using static Serilog.Log;
-using TextRpgMaker.Models;
 using TextRpgMaker.Views.Components;
+using static Serilog.Log;
 
 namespace TextRpgMaker.Views
 {
@@ -12,16 +12,12 @@ namespace TextRpgMaker.Views
         public MainForm()
         {
             this.InitializeComponents();
-
-            var s = new State();
-            Logger.Debug("State: {@s}", s);
         }
 
         private void InitializeComponents()
         {
             this.Title = "No project loaded [TextRpgMaker]";
-            this.DataContext = new MainViewModel();
-            this.Menu = InitializeMenu();
+            this.Menu = this.InitializeMenu();
 
             var layout = new DynamicLayout
             {
@@ -56,15 +52,28 @@ namespace TextRpgMaker.Views
             this.Content = layout;
         }
 
-        private static MenuBar InitializeMenu() => new MenuBar
+        private MenuBar InitializeMenu() => new MenuBar
         {
             Items =
             {
                 new ButtonMenuItem
                 {
-                    Text = "Open Game",
-                    Command = new Command(UnimplementedClick)
+                    Text = "Game",
+                    Items =
+                    {
+                        new ButtonMenuItem
+                        {
+                            Text = "Game Info",
+                            Command = new Command(GameInfoClick)
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "Open Game",
+                            Command = new Command(this.OpenProjectClick)
+                        }
+                    }
                 },
+
                 new ButtonMenuItem
                 {
                     Text = "Load / Save",
@@ -92,6 +101,57 @@ namespace TextRpgMaker.Views
                 }
             }
         };
+
+        private void OpenProjectClick(object sender, EventArgs e)
+        {
+            Logger.Debug("Open project click");
+
+            // create and show dialog
+            var dialog = new OpenFileDialog
+            {
+                Title = "Choose the 'project-info.yaml' and confirm",
+                CheckFileExists = true,
+                Filters =
+                {
+                    new FileFilter("YAML files", "yaml", "yml"),
+                    new FileFilter("All files", "*")
+                },
+                CurrentFilterIndex = 0,
+                // TODO remove hardcoded path for debugging, replace with last opened path
+                Directory = new Uri(Directory.GetCurrentDirectory() + "../ExampleProject/")
+            };
+
+
+            // if user does not click on OK when opening, do nothing
+            Logger.Debug("Opening file chooser dialog");
+            if (dialog.ShowDialog(this) == DialogResult.Ok)
+            {
+                try
+                {
+                    this.OpenProject(dialog.FileName);
+                }
+                catch (LoadFailedException ex)
+                {
+                    Logger.Warning(ex, "Load failed");
+                    MessageBoxes.LoadFailedExceptionBox(ex);
+                }
+            }
+        }
+
+        private void OpenProject(string pathToProjectInfo)
+        {
+            this.AppState = new AppState(pathToProjectInfo);
+            Logger.Debug("State after load: {@s}", this.AppState);
+
+            throw new NotImplementedException();
+        }
+
+        public AppState AppState { get; private set; }
+
+        private static void GameInfoClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
 
         private void ExitClick(object sender, EventArgs e) => Application.Instance.Quit();
 
