@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using Eto.Forms;
 using TextRpgMaker.Models.Items;
 using YamlDotNet.Serialization;
 using static Serilog.Log;
@@ -25,6 +22,7 @@ namespace TextRpgMaker.Models
         {
             this._projectDir = projectDir;
 
+            // TODO for errors: print out defined paths
             this.RawYamlLoad();
             this.ValidateWellformedIds();
             this.ValidateUniqueIds();
@@ -48,6 +46,7 @@ namespace TextRpgMaker.Models
 
         private void ValidateWellformedIds()
         {
+            // TODO search all malformed ids then throw error with list
             // matches 'id', 'some-id', 'id-9-test', but not ' id ', '%KHGSI'
             var idRegex = new Regex("[a-z][a-z]+(-([a-z]|[0-9])+)*"); // good regex tool: regexr.com
             foreach (var element in this.TopLevelElements)
@@ -102,8 +101,7 @@ namespace TextRpgMaker.Models
                 Logger.Debug("Realizing inheritance for id {id}", targetElem.Id);
 
                 // find base element, throw exception when not found
-                var baseElem = this.TopLevelElements
-                                   .FirstOrDefault(e => e.Id == targetElem.BasedOnId);
+                var baseElem = this.TopLevelElements.FirstOrDefault(e => e.Id == targetElem.BasedOnId);
                 if (baseElem == null)
                 {
                     throw LoadFailedException.BaseElementNotFound(targetElem);
@@ -124,12 +122,11 @@ namespace TextRpgMaker.Models
                 // for each of those properties
                 foreach (var prop in properties)
                 {
-                    var targetValue = prop.GetValue(targetElem);
-                    var baseValue = prop.GetValue(baseElem);
-
                     // set the target value to the base value if target value is not set
+                    var targetValue = prop.GetValue(targetElem);
                     if (targetValue == null)
                     {
+                        var baseValue = prop.GetValue(baseElem);
                         prop.SetValue(targetElem, baseValue);
                     }
                 }
