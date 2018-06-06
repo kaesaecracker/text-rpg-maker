@@ -14,6 +14,8 @@ namespace TextRpgMaker.Models
 
         [YamlIgnore]
         public LoadStep LoadStepDone { get; set; } = LoadStep.LoadFile;
+        
+        // TODO remember file in which it is defined
     }
 
     public enum LoadStep

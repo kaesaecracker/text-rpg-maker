@@ -25,6 +25,7 @@ namespace TextRpgMaker.Models
         {
             this._projectDir = projectDir;
 
+            // TODO for errors: print out defined paths
             this.RawYamlLoad();
             this.ValidateWellformedIds();
             this.ValidateUniqueIds();
