@@ -5,9 +5,11 @@ namespace TextRpgMaker.Models.Items
     public class Armor : Element
     {
         [YamlMember(Alias = "slot")]
+        [Required]
         public ArmorSlot? Slot { get; set; } = null;
 
         [YamlMember(Alias = "defense")]
+        [Required]
         public double? Defense { get; set; } = null;
 
         public enum ArmorSlot

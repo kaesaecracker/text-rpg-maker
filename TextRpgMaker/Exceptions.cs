@@ -9,30 +9,34 @@ namespace TextRpgMaker
     {
         public static LoadFailedException FileMissing(string fileInProject, string triedPath) =>
             new LoadFailedException(
-                $"The required project file {fileInProject} is missing!\n" +
-                $" Expected it at {triedPath}"
+                $"The required project file '{fileInProject}' is missing!\n" +
+                $"Expected it at '{triedPath}'"
             );
 
-        public static LoadFailedException DuplicateIds(IEnumerable<IGrouping<string, Element>> duplicates) =>
+        public static LoadFailedException DuplicateIds(
+            IEnumerable<IGrouping<string, Element>> duplicates) =>
             new LoadFailedException(
-                "The project contains duplicate element ids, which is not allowed. The duplicate ids are: " +
-                $"{string.Join(", ", duplicates.Select(d => d.Key))}"
+                "The project contains duplicate element ids, which is not allowed.\n" +
+                $"The duplicate ids are:\n " +
+                $"- {string.Join("\n- ", duplicates.Select(d => $"'{d.Key}'"))}"
             );
 
-        public static LoadFailedException BaseElementNotFound(Element element, InvalidOperationException ex) =>
+        public static LoadFailedException BaseElementNotFound(Element element) =>
             new LoadFailedException(
-                $"The item id {element.Id} is based on {element.BasedOnId} which could not be found",
-                ex
+                $"The item id '{element.Id}' " +
+                $"is based on '{element.BasedOnId}' which could not be found"
             );
 
-        public static LoadFailedException BaseElementHasDifferentType(Element baseElem, Element targetElem) =>
+        public static LoadFailedException BaseElementHasDifferentType(
+            Element baseElem, Element targetElem) =>
             new LoadFailedException(
-                $"The item id '{targetElem.Id}' is based on '{baseElem.Id}', but the types are different. (" +
+                $"The item id '{targetElem.Id}' is based on '{baseElem.Id}', " +
+                $"but the types are different. (" +
                 $"'{targetElem.Id}' has type '{targetElem.GetType().Name}', " +
                 $"'{baseElem.Id}' is of type '{baseElem.GetType().Name}')"
             );
 
-        public LoadFailedException(string message, Exception innerException = null)
+        private LoadFailedException(string message, Exception innerException = null)
             : base(message, innerException)
         {
         }

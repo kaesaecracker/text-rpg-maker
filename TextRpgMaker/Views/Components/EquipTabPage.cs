@@ -17,7 +17,7 @@ namespace TextRpgMaker.Views.Components
             {
                 Rows =
                 {
-                    new TableRow()
+                    new TableRow
                     {
                         Cells =
                         {
@@ -25,7 +25,7 @@ namespace TextRpgMaker.Views.Components
                             new Label {Text = "Some weapon"}
                         }
                     },
-                    new TableRow()
+                    new TableRow
                     {
                         Cells =
                         {
@@ -33,7 +33,7 @@ namespace TextRpgMaker.Views.Components
                             new Label {Text = ""}
                         }
                     },
-                    new TableRow()
+                    new TableRow
                     {
                         Cells =
                         {
@@ -41,7 +41,7 @@ namespace TextRpgMaker.Views.Components
                             new Label {Text = ""}
                         }
                     },
-                    new TableRow()
+                    new TableRow
                     {
                         Cells =
                         {
@@ -49,7 +49,7 @@ namespace TextRpgMaker.Views.Components
                             new Label {Text = "Simple leather gloves"}
                         }
                     },
-                    new TableRow()
+                    new TableRow
                     {
                         Cells =
                         {
@@ -57,14 +57,14 @@ namespace TextRpgMaker.Views.Components
                             new Label {Text = ""}
                         }
                     },
-                    new TableRow()
+                    new TableRow
                     {
                         Cells =
                         {
                             new Label {Text = "Shoes"},
                             new Label {Text = "Simple leather shoes of speed"}
                         }
-                    },
+                    }
                 }
             };
         }

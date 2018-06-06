@@ -1,12 +1,19 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.Models
 {
+    public class Inventory
+    {
+        [YamlMember(Alias = "items")]
+        public List<ItemIdWithCount> Items { get; private set; }
+    }
+
     public class ItemIdWithCount
     {
         public ItemIdWithCount()
         {
+            // empty contructor for serialization
         }
 
         public ItemIdWithCount(string itemId, int count)
@@ -16,9 +23,11 @@ namespace TextRpgMaker.Models
         }
 
         [YamlMember(Alias = "id")]
+        [Required]
         public string ItemId { get; set; }
 
         [YamlMember(Alias = "count")]
-        public int Count { get; set; } = 1;
+        [DefaultValue(1)]
+        public int Count { get; set; }
     }
 }
