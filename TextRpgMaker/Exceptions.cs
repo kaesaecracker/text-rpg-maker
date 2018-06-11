@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TextRpgMaker.Models;
+using YamlDotNet.Serialization;
 
 namespace TextRpgMaker
 {
@@ -21,20 +22,32 @@ namespace TextRpgMaker
                 $"- {string.Join("\n- ", duplicates.Select(d => $"'{d.Key}'"))}"
             );
 
-        public static LoadFailedException BaseElementNotFound(Element element) =>
-            new LoadFailedException(
-                $"The item id '{element.Id}' " +
-                $"is based on '{element.BasedOnId}' which could not be found"
-            );
+        public static LoadFailedException BaseElementNotFound(List<Element> errorElements)
+        {
+            var msg = "There are elements based on other elements that could not be found:\n";
+            foreach (var elem in errorElements)
+            {
+                msg += $"- '{elem.Id}' (from '{elem.OriginalFilePath})'\n" +
+                       $"  is based on '{elem.BasedOnId}'";
+            }
+
+            return new LoadFailedException(msg);
+        }
 
         public static LoadFailedException BaseElementHasDifferentType(
-            Element baseElem, Element targetElem) =>
-            new LoadFailedException(
-                $"The item id '{targetElem.Id}' is based on '{baseElem.Id}', " +
-                $"but the types are different. (" +
-                $"'{targetElem.Id}' has type '{targetElem.GetType().Name}', " +
-                $"'{baseElem.Id}' is of type '{baseElem.GetType().Name}')"
-            );
+            IEnumerable<(Element Base, Element Target)> errorTuples)
+        {
+            string msg = "The following elements are based on elements with different types:\n";
+            foreach (var (baseElem, targetElem) in errorTuples)
+            {
+                msg += $"- '{targetElem.Id}' of type '{targetElem.GetType().Name}' " +
+                       $"from '{targetElem.OriginalFilePath}'\n" +
+                       $"  based on '{baseElem.Id}' of type '{baseElem.GetType().Name}' " +
+                       $"from '{baseElem.OriginalFilePath}'";
+            }
+
+            return new LoadFailedException(msg);
+        }
 
         public static LoadFailedException MalformedId(List<Element> elems)
         {
@@ -53,19 +66,14 @@ namespace TextRpgMaker
         }
 
         public static Exception RequiredPropertyNull(
-            IEnumerable<(string Id, string Type, IEnumerable<(string YamlName, string CsName)>Props)
-            > errors)
+            IEnumerable<(Element Element, string PropYamlName, string PropCsName)> errors)
         {
-            string message = "The following required fields are not set:\n";
-            foreach (var e in errors)
-            {
-                message += $"-\t id: '{e.Id}'\n" +
-                           $" \t type: {e.Type}\n" +
-                           $" \t unset required properties:\n";
-
-                message = e.Props.Aggregate(message, (current, prop) =>
-                    current + $" \t-\t '{prop.YamlName}' ({prop.CsName})");
-            }
+            string message = errors.Aggregate("The following required fields are not set:\n",
+                (current, err) => current +
+                                  $"- '{err.Element.Id}' of type '{err.Element.GetType().Name}'\n" +
+                                  $"  requires property '{err.PropYamlName}' ({err.PropCsName})\n" +
+                                  $"  in file {err.Element.OriginalFilePath}"
+            );
 
             return new LoadFailedException(message);
         }

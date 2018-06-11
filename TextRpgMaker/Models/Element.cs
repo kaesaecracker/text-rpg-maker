@@ -12,18 +12,8 @@ namespace TextRpgMaker.Models
         public string BasedOnId { get; set; }
 
         [YamlIgnore]
-        public LoadStep LoadStepDone { get; set; } = LoadStep.LoadFile;
-
-        [YamlIgnore]
         public string OriginalFilePath { get; set; }
 
         // TODO remember file in which it is defined
-    }
-
-    public enum LoadStep
-    {
-        LoadFile,
-        RealizeInheritance,
-        SetDefaultValues
     }
 }

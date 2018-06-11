@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -29,8 +30,8 @@ namespace TextRpgMaker.Models
 
             // TODO for errors: print out defined paths
             this.RawYamlLoad();
-            this.ValidateWellformedIds();
-            this.ValidateUniqueIds();
+            this.ValidateUniqueWellformedIds();
+            this.ValidateBaseIdsExist();
             this.RealizeInheritance();
             this.ValidateRequiredFields();
             this.SetDefaultValues();
@@ -73,24 +74,11 @@ namespace TextRpgMaker.Models
             }
         }
 
-        private void ValidateWellformedIds()
-        {
-            // TODO search all malformed ids then throw error with list
-            // matches 'id', 'some-id', 'id-9-test', but not ' id ', '%KHGSI'
-            var idRegex = new Regex("[a-z][a-z]+(-([a-z]|[0-9])+)*"); // good regex tool: regexr.com
-
-            var mismatches = this.TopLevelElements.Where(tle => !idRegex.IsMatch(tle.Id)).ToList();
-            if (mismatches.Any())
-            {
-                throw LoadFailedException.MalformedId(mismatches);
-            }
-        }
-
         /// <summary>
-        /// checks if project contains duplicate ids
+        /// checks for duplicate ids and whether all ids are well-formed
         /// </summary>
-        /// <exception cref="LoadFailedException">if duplicates are found</exception>
-        private void ValidateUniqueIds()
+        /// <exception cref="LoadFailedException">if one or more elements does not fufill these rules</exception>
+        private void ValidateUniqueWellformedIds()
         {
             var duplicates = (
                 from tle in this.TopLevelElements
@@ -99,10 +87,45 @@ namespace TextRpgMaker.Models
                 where grouped.Count() > 1
                 select grouped
             ).ToList();
-
             if (duplicates.Any())
             {
                 throw LoadFailedException.DuplicateIds(duplicates);
+            }
+
+            // matches 'id', 'some-id', 'id-9-test', but not ' id ', '%KHGSI'
+            var idRegex = new Regex("[a-z][a-z]+(-([a-z]|[0-9])+)*"); // good regex tool: regexr.com
+            var mismatches = this.TopLevelElements.Where(tle => !idRegex.IsMatch(tle.Id)).ToList();
+            if (mismatches.Any())
+            {
+                throw LoadFailedException.MalformedId(mismatches);
+            }
+        }
+
+        private void ValidateBaseIdsExist()
+        {
+            var errors = (
+                from element in this.TopLevelElements
+                where element.BasedOnId != null
+                      && this.TopLevelElements.All(elem => elem.Id != element.BasedOnId)
+                select element
+            ).ToList();
+
+            if (errors.Any()) throw LoadFailedException.BaseElementNotFound(errors);
+
+            var typeErrors = (
+                from element in this.TopLevelElements
+                where element.BasedOnId != null
+                let baseElem = this.TopLevelElements.First(e => e.Id == element.BasedOnId)
+                where !baseElem.GetType().IsInstanceOfType(element)
+                select (
+                    Base: baseElem,
+                    Target: element
+                )
+            ).ToList();
+
+            if (typeErrors.Any())
+            {
+                throw LoadFailedException.BaseElementHasDifferentType(typeErrors);
             }
         }
 
@@ -112,56 +135,47 @@ namespace TextRpgMaker.Models
         /// <exception cref="LoadFailedException">if base element is not found or types do not match</exception>
         private void RealizeInheritance()
         {
-            Logger.Warning(
-                "RealizeInheritance cannot handle based-ons for things that get loaded later");
-
-            // Set LoadStepDone=RealizeInheritance on all elements that are not based on anything
-            foreach (var elem in this.TopLevelElements
-                                     .Where(e => e.BasedOnId == null))
+            var realisationQueue = new Queue<Element>(this.TopLevelElements);
+            int stepsBeforeAbort = realisationQueue.Count;
+            while (realisationQueue.Count > 0 && stepsBeforeAbort > 0)
             {
-                elem.LoadStepDone = LoadStep.RealizeInheritance;
-            }
+                bool processedElement = false;
+                var targetElem = realisationQueue.Dequeue();
 
-            // for each element that is based on something
-            var todo = this.TopLevelElements.Where(e => e.BasedOnId != null);
-            foreach (var targetElem in todo)
-            {
-                Logger.Debug("Realizing inheritance for id {id}", targetElem.Id);
-
-                // find base element, throw exception when not found
-                var baseElem =
-                    this.TopLevelElements.FirstOrDefault(e => e.Id == targetElem.BasedOnId);
-                if (baseElem == null)
+                if (targetElem.BasedOnId == null) processedElement = true;
+                else
                 {
-                    throw LoadFailedException.BaseElementNotFound(targetElem);
-                }
+                    var baseElem = this.TopLevelElements.First(e => e.Id == targetElem.BasedOnId);
 
-                // throw exception if base and target do not have the same type
-                if (baseElem.GetType() != targetElem.GetType())
-                {
-                    throw LoadFailedException.BaseElementHasDifferentType(baseElem, targetElem);
-                }
-
-                // properties contains all properties of baseElem type that have the YamlMember attribute
-                var properties = baseElem.GetType()
-                                         .GetProperties()
-                                         .Where(prop =>
-                                             prop.IsDefined(typeof(YamlMemberAttribute), true));
-
-                // for each of those properties
-                foreach (var prop in properties)
-                {
-                    // set the target value to the base value if target value is not set
-                    var targetValue = prop.GetValue(targetElem);
-                    if (targetValue == null)
+                    // if base element is not done yet, postpone target element
+                    if (realisationQueue.Contains(baseElem)) realisationQueue.Enqueue(targetElem);
+                    else
                     {
-                        var baseValue = prop.GetValue(baseElem);
-                        prop.SetValue(targetElem, baseValue);
+                        // base element done, do the actual work
+                        // properties contains all properties of baseElem type that have the YamlMember attribute
+                        var properties =
+                            from prop in baseElem.GetType().GetProperties()
+                            where prop.IsDefined(typeof(YamlMemberAttribute), true)
+                            select prop;
+
+                        // for each of those properties
+                        foreach (var prop in properties)
+                        {
+                            // set the target value to the base value if target value is not set
+                            var targetValue = prop.GetValue(targetElem);
+                            if (targetValue == null)
+                            {
+                                var baseValue = prop.GetValue(baseElem);
+                                prop.SetValue(targetElem, baseValue);
+                            }
+                        }
+
+                        processedElement = true;
                     }
                 }
 
-                // after all props are processed mark element as done
-                targetElem.LoadStepDone = LoadStep.RealizeInheritance;
+                stepsBeforeAbort--;
+                if (processedElement) stepsBeforeAbort = realisationQueue.Count;
             }
         }
 
@@ -169,26 +183,16 @@ namespace TextRpgMaker.Models
         {
             var errors = (
                 from element in this.TopLevelElements
-                let type = element.GetType()
-                let requiredPropsWithoutVal =
-                    from property in type.GetProperties()
-                    where property.GetValue(element) == null
-                          && property.IsDefined(typeof(YamlPropertiesAttribute), inherit: true)
-                    let yamlPropsAttr = property.GetCustomAttribute<YamlPropertiesAttribute>()
-                    where yamlPropsAttr.Required
-                    let yamlMember = property.GetCustomAttribute(
-                        typeof(YamlMemberAttribute),
-                        inherit: true
-                    ) as YamlMemberAttribute
-                    select (
-                        YamlName: yamlMember.Alias,
-                        CsName: property.Name
-                    )
-                where requiredPropsWithoutVal.Any()
+                from property in element.GetType().GetProperties()
+                where property.GetValue(element) == null &&
+                      property.IsDefined(typeof(YamlPropertiesAttribute), true)
+                let yamlPropsAttr = property.GetCustomAttribute<YamlPropertiesAttribute>()
+                where yamlPropsAttr.Required
+                let yamlMember = property.GetCustomAttribute<YamlMemberAttribute>()
                 select (
-                    element.Id,
-                    Type: type.Name,
-                    requiredPropsWithoutVal
+                    Element: element,
+                    PropYamlName: yamlMember.Alias,
+                    PropCsName: property.Name
                 )
             ).ToList();
 
@@ -205,6 +209,22 @@ namespace TextRpgMaker.Models
         {
             // TODO set default values
             Logger.Warning("SetDefaultValue not implemented");
+
+            var props =
+                from element in this.TopLevelElements
+                from property in element.GetType().GetProperties()
+                where property.GetValue(element) == null
+                      && property.IsDefined(typeof(YamlPropertiesAttribute))
+                let yamlPropAtt = property.GetCustomAttribute<YamlPropertiesAttribute>()
+                where yamlPropAtt.DefaultValue != null
+                select (element, property, yamlPropAtt.DefaultValue);
+
+            foreach (var tuple in props)
+            {
+                Logger.Debug("Default value for {elem}.{p} = {val}", tuple.element.Id,
+                    tuple.property.Name, tuple.DefaultValue.ToString());
+                tuple.property.SetValue(tuple.element, tuple.DefaultValue);
+            }
         }
 
         public void Load(Type t, string absPath, bool isList, bool required)

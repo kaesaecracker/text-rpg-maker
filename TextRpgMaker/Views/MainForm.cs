@@ -183,7 +183,7 @@ namespace TextRpgMaker.Views
         {
             throw new NotImplementedException();
         }
-        
+
         internal static void UnimplementedClick(object sender, EventArgs e)
             => MessageBox.Show("Not implemented yet");
     }

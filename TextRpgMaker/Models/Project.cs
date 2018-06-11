@@ -11,7 +11,7 @@ namespace TextRpgMaker.Models
         private readonly Deserializer _deserializer = new DeserializerBuilder().Build();
 
         public string ProjectDir { get; }
-        
+
         // cannot be a dictionary because there could be duplicate ids
         public List<Element> TopLevelElements { get; } = new List<Element>();
 
