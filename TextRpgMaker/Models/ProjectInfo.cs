@@ -2,6 +2,7 @@
 
 namespace TextRpgMaker.Models
 {
+    [LoadFromProjectFile("project-info.yaml")]
     public class ProjectInfo : Element
     {
         public override string Id { get; set; } = "project-info";

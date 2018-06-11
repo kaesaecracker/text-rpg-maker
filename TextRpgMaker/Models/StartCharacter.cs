@@ -3,6 +3,7 @@ using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.Models
 {
+    [LoadFromProjectFile("start-characters.yaml", isList: true, required: true)]
     public class StartCharacter : Element
     {
         [YamlMember(Alias = "current-hp")]

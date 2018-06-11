@@ -36,15 +36,23 @@ namespace TextRpgMaker
                 $"'{baseElem.Id}' is of type '{baseElem.GetType().Name}')"
             );
 
-        public static LoadFailedException MalformedId(string elementId) =>
-            new LoadFailedException(
-                $"The ID '{elementId} is not well formed.\n" +
-                "- IDs can only contain [a-z], '-' and [0-9]\n" +
-                "- IDs cannot start with a number\n" +
-                "- IDs cannot start or end with '-'"
-            );
+        public static LoadFailedException MalformedId(List<Element> elems)
+        {
+            string msg = "The project contains malformed IDs:\n";
+            foreach (var element in elems)
+            {
+                msg += $"- {element.Id}";
+            }
 
-        public static Exception RequiredButNull(
+            msg += "IDs have to match the following criteria: " +
+                   "- IDs can only contain [a-z], '-' and [0-9]\n" +
+                   "- IDs cannot start with a number\n" +
+                   "- IDs cannot start or end with '-'";
+
+            return new LoadFailedException(msg);
+        }
+
+        public static Exception RequiredPropertyNull(
             IEnumerable<(string Id, string Type, IEnumerable<(string YamlName, string CsName)>Props)
             > errors)
         {
@@ -66,5 +74,10 @@ namespace TextRpgMaker
             : base(message, innerException)
         {
         }
+
+        public static LoadFailedException RequiredFileEmpty(string absPath) =>
+            new LoadFailedException(
+                $"A required file is empty: {absPath}"
+            );
     }
 }

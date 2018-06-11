@@ -3,16 +3,10 @@ using TextRpgMaker.Models;
 
 namespace TextRpgMaker
 {
-    public class AppState
+    public static class AppState
     {
-        public string PathToProject { get; private set; }
+        public static Project LoadedProject { get; set; }
 
-        public Project LoadedProject { get; private set; }
-
-        public AppState(string pathToProject)
-        {
-            this.PathToProject = Path.GetDirectoryName(pathToProject);
-            this.LoadedProject = new Project(this.PathToProject);
-        }
+        public static bool IsProjectLoaded => LoadedProject != null;
     }
 }

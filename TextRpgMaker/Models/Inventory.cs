@@ -23,11 +23,11 @@ namespace TextRpgMaker.Models
         }
 
         [YamlMember(Alias = "id")]
-        [Required]
+        [YamlProperties(required: true)]
         public string ItemId { get; set; }
 
         [YamlMember(Alias = "count")]
-        [DefaultValue(1)]
+        [YamlProperties(required: false, defaultValue: (int) 1)]
         public int Count { get; set; }
     }
 }
