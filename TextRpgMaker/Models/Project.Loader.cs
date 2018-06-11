@@ -214,16 +214,24 @@ namespace TextRpgMaker.Models
         {
             Logger.Debug("Load path: {absPath} list: {list}", absPath, isList);
 
+            void AddToList(Element e)
+            {
+                e.OriginalFilePath = absPath;
+                this.TopLevelElements.Add(e);
+            }
+
             using (var reader = new StreamReader(absPath))
             {
                 if (isList)
                 {
                     var listType = typeof(List<>).MakeGenericType(t);
                     var deserialize = this._deserializer.Deserialize(reader, listType);
-                    if (deserialize is IEnumerable elems)
+                    if (deserialize is IEnumerable elemsEnumerable)
                     {
-                        this.TopLevelElements.AddRange(elems.Cast<Element>());
-                        return;
+                        foreach (var e in elemsEnumerable.Cast<Element>())
+                        {
+                            AddToList((Element) e);
+                        }
                     }
 
                     Logger.Debug("Not a list: {@d}", deserialize);
@@ -234,12 +242,13 @@ namespace TextRpgMaker.Models
                     if (elem != null)
                     {
                         this.TopLevelElements.Add(elem);
-                        return;
+                    }
+                    else
+                    {
+                        Logger.Warning("file empty: {p}", absPath);
+                        if (required) throw LoadFailedException.RequiredFileEmpty(absPath);
                     }
                 }
-
-                Logger.Warning("file empty: {p}", absPath);
-                if (required) throw LoadFailedException.RequiredFileEmpty(absPath);
             }
         }
 
