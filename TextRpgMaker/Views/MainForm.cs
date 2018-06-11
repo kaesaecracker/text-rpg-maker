@@ -170,7 +170,7 @@ namespace TextRpgMaker.Views
             try
             {
                 AppState.LoadedProject = new Project(pathToProjectInfo);
-                MessageBox.Show("Project loaded");
+                MessageBox.Show(this, "Project loaded", caption: "Done");
             }
             catch (LoadFailedException ex)
             {

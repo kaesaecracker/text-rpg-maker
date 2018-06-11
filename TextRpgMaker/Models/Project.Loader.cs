@@ -207,9 +207,6 @@ namespace TextRpgMaker.Models
         /// </summary>
         private void SetDefaultValues()
         {
-            // TODO set default values
-            Logger.Warning("SetDefaultValue not implemented");
-
             var props =
                 from element in this.TopLevelElements
                 from property in element.GetType().GetProperties()
@@ -250,15 +247,14 @@ namespace TextRpgMaker.Models
                             AddToList(e);
                         }
                     }
-
-                    Logger.Debug("Not a list: {@d}", deserialize);
+                    else Logger.Warning("Not a list: {@d}", deserialize);
                 }
                 else
                 {
                     var elem = (Element) this._deserializer.Deserialize(reader, t);
                     if (elem != null)
                     {
-                        this.TopLevelElements.Add(elem);
+                        AddToList(elem);
                     }
                     else
                     {
