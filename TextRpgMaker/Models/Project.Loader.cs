@@ -25,7 +25,7 @@ namespace TextRpgMaker.Models
         /// <param name="pathToProjectInfo">the directory containing the project</param>
         public Project(string pathToProjectInfo)
         {
-            this._projectDir = Path.GetDirectoryName(pathToProjectInfo);
+            this.ProjectDir = Path.GetDirectoryName(pathToProjectInfo);
 
             // TODO for errors: print out defined paths
             this.RawYamlLoad();
@@ -34,9 +34,6 @@ namespace TextRpgMaker.Models
             this.RealizeInheritance();
             this.ValidateRequiredFields();
             this.SetDefaultValues();
-
-            Logger.Debug("Loaded {path}, TopLevelElements: {@tles}", pathToProjectInfo,
-                this.TopLevelElements);
         }
 
         /// <summary>
@@ -45,7 +42,7 @@ namespace TextRpgMaker.Models
         private void RawYamlLoad()
         {
             var typesToLoad = (
-                from assembly in System.AppDomain.CurrentDomain.GetAssemblies()
+                from assembly in AppDomain.CurrentDomain.GetAssemblies()
                 from type in assembly.GetTypes()
                 where type.IsDefined(typeof(LoadFromProjectFileAttribute), inherit: false)
                 let fileAnnotation = type.GetCustomAttribute<LoadFromProjectFileAttribute>()
@@ -230,7 +227,7 @@ namespace TextRpgMaker.Models
                     {
                         foreach (var e in elemsEnumerable.Cast<Element>())
                         {
-                            AddToList((Element) e);
+                            AddToList(e);
                         }
                     }
 
@@ -253,6 +250,6 @@ namespace TextRpgMaker.Models
         }
 
         private string ProjectToNormalPath(string pathInProj) =>
-            this._projectDir + "/" + pathInProj;
+            this.ProjectDir + "/" + pathInProj;
     }
 }

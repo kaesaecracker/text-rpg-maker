@@ -1,5 +1,4 @@
 ﻿using System;
-using YamlDotNet.Serialization;
 
 namespace TextRpgMaker
 {
@@ -13,15 +12,15 @@ namespace TextRpgMaker
         }
 
         public object DefaultValue { get; }
-        
+
         public bool Required { get; }
     }
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class LoadFromProjectFileAttribute : Attribute
     {
-        public LoadFromProjectFileAttribute(string projectRelativePath, bool isList = false,
-                                            bool required = true)
+        public LoadFromProjectFileAttribute(string projectRelativePath, bool required,
+                                            bool isList = false)
         {
             this.ProjectRelativePath = projectRelativePath;
             this.Required = required;

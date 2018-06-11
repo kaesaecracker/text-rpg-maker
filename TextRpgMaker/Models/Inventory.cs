@@ -6,7 +6,7 @@ namespace TextRpgMaker.Models
     public class Inventory
     {
         [YamlMember(Alias = "items")]
-        public List<ItemIdWithCount> Items { get; private set; }
+        public List<ItemIdWithCount> Items { get; }
     }
 
     public class ItemIdWithCount
@@ -27,7 +27,7 @@ namespace TextRpgMaker.Models
         public string ItemId { get; set; }
 
         [YamlMember(Alias = "count")]
-        [YamlProperties(required: false, defaultValue: (int) 1)]
+        [YamlProperties(required: false, defaultValue: 1)]
         public int Count { get; set; }
     }
 }

@@ -2,13 +2,13 @@
 
 namespace TextRpgMaker.Models
 {
-    [LoadFromProjectFile("project-info.yaml")]
+    [LoadFromProjectFile("project-info.yaml", required: true)]
     public class ProjectInfo : Element
     {
         public override string Id { get; set; } = "project-info";
 
         [YamlMember(Alias = "title")]
-        
+
         public string Title { get; set; }
 
         [YamlMember(Alias = "description")]

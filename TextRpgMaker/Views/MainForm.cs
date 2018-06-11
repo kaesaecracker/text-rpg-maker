@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Eto.Drawing;
 using Eto.Forms;
 using TextRpgMaker.Models;
@@ -66,7 +67,23 @@ namespace TextRpgMaker.Views
                         new ButtonMenuItem
                         {
                             Text = "LoadExampleProject",
-                            Command = new Command(this.DebugLoadExampleProject)
+                            Command = new Command((s, e) => this.OpenProject(
+                                Directory.GetCurrentDirectory() +
+                                "/../ExampleProject/project-info.yaml"
+                            ))
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "ShowProjectInfo",
+                            Command = new Command((s, e) => MessageBoxes.InfoAboutLoadedProject())
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "LogIDs",
+                            Command = new Command((s, e) => Logger.Debug(
+                                "IDs: {@ids}", AppState.LoadedProject.TopLevelElements
+                                                       .Select(tle => tle.Id)
+                            ))
                         }
                     }
                 },
@@ -148,33 +165,25 @@ namespace TextRpgMaker.Views
 
         private void OpenProject(string pathToProjectInfo)
         {
+            pathToProjectInfo = Path.GetFullPath(pathToProjectInfo);
+
             try
             {
                 AppState.LoadedProject = new Project(pathToProjectInfo);
-                Logger.Debug("State after load: {@s}", AppState.LoadedProject);
+                MessageBox.Show("Project loaded");
             }
             catch (LoadFailedException ex)
             {
                 Logger.Warning(ex, "Load failed");
                 MessageBoxes.LoadFailedExceptionBox(ex);
             }
-
-            throw new NotImplementedException();
-        }
-
-        private void DebugLoadExampleProject(object sender, EventArgs e)
-        {
-            this.OpenProject(Directory.GetCurrentDirectory() +
-                             "/../ExampleProject/project-info.yaml");
         }
 
         private static void GameInfoClick(object sender, EventArgs e)
         {
             throw new NotImplementedException();
         }
-
-        private void ExitClick(object sender, EventArgs e) => Application.Instance.Quit();
-
+        
         internal static void UnimplementedClick(object sender, EventArgs e)
             => MessageBox.Show("Not implemented yet");
     }
