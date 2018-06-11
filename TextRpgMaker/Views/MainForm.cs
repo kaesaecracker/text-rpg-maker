@@ -2,6 +2,7 @@
 using System.IO;
 using Eto.Drawing;
 using Eto.Forms;
+using TextRpgMaker.Models;
 using TextRpgMaker.Views.Components;
 using static Serilog.Log;
 
@@ -56,6 +57,21 @@ namespace TextRpgMaker.Views
         {
             Items =
             {
+#if DEBUG
+                new ButtonMenuItem
+                {
+                    Text = "DEBUG",
+                    Items =
+                    {
+                        new ButtonMenuItem
+                        {
+                            Text = "LoadExampleProject",
+                            Command = new Command(this.DebugLoadExampleProject)
+                        }
+                    }
+                },
+#endif
+
                 new ButtonMenuItem
                 {
                     Text = "Game",
@@ -126,27 +142,31 @@ namespace TextRpgMaker.Views
             Logger.Debug("Opening file chooser dialog");
             if (dialog.ShowDialog(this) == DialogResult.Ok)
             {
-                try
-                {
-                    this.OpenProject(dialog.FileName);
-                }
-                catch (LoadFailedException ex)
-                {
-                    Logger.Warning(ex, "Load failed");
-                    MessageBoxes.LoadFailedExceptionBox(ex);
-                }
+                this.OpenProject(dialog.FileName);
             }
         }
 
         private void OpenProject(string pathToProjectInfo)
         {
-            this.AppState = new AppState(pathToProjectInfo);
-            Logger.Debug("State after load: {@s}", this.AppState);
+            try
+            {
+                AppState.LoadedProject = new Project(pathToProjectInfo);
+                Logger.Debug("State after load: {@s}", AppState.LoadedProject);
+            }
+            catch (LoadFailedException ex)
+            {
+                Logger.Warning(ex, "Load failed");
+                MessageBoxes.LoadFailedExceptionBox(ex);
+            }
 
             throw new NotImplementedException();
         }
 
-        public AppState AppState { get; private set; }
+        private void DebugLoadExampleProject(object sender, EventArgs e)
+        {
+            this.OpenProject(Directory.GetCurrentDirectory() +
+                             "/../ExampleProject/project-info.yaml");
+        }
 
         private static void GameInfoClick(object sender, EventArgs e)
         {
