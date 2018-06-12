@@ -13,7 +13,5 @@ namespace TextRpgMaker.Models
 
         [YamlIgnore]
         public string OriginalFilePath { get; set; }
-
-        // TODO remember file in which it is defined
     }
 }

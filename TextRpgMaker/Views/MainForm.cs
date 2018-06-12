@@ -32,7 +32,7 @@ namespace TextRpgMaker.Views
                 },
                 CurrentFilterIndex = 0,
                 // TODO remove hardcoded path for debugging, replace with last opened path
-                Directory = new Uri(Directory.GetCurrentDirectory() + "../ExampleProject/")
+                Directory = new Uri(Directory.GetCurrentDirectory() + "/../ExampleProject/")
             };
 
 

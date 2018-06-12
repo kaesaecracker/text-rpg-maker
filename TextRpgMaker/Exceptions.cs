@@ -15,16 +15,25 @@ namespace TextRpgMaker
             );
 
         public static LoadFailedException DuplicateIds(
-            IEnumerable<IGrouping<string, Element>> duplicates) =>
-            new LoadFailedException(
-                "The project contains duplicate element ids, which is not allowed.\n" +
-                $"The duplicate ids are:\n " +
-                $"- {string.Join("\n- ", duplicates.Select(d => $"'{d.Key}'"))}"
-            );
-
-        public static LoadFailedException BaseElementNotFound(List<Element> errorElements)
+            IEnumerable<(string, IEnumerable<Element>)> duplicates)
         {
-            var msg = "There are elements based on other elements that could not be found:\n";
+            string msg = "The project contains duplicate element ids, which is not allowed.\n";
+            foreach ((string id, var elements) in duplicates)
+            {
+                msg += $"- id '{id}', defined in:\n";
+
+                foreach (var elem in elements)
+                {
+                    msg += $"  - '{elem.OriginalFilePath}'\n";
+                }
+            }
+
+            return new LoadFailedException(msg);
+        }
+
+        public static LoadFailedException BaseElementNotFound(IEnumerable<Element> errorElements)
+        {
+            string msg = "There are elements based on other elements that could not be found:\n";
             foreach (var elem in errorElements)
             {
                 msg += $"- '{elem.Id}' (from '{elem.OriginalFilePath})'\n" +
@@ -65,7 +74,7 @@ namespace TextRpgMaker
             return new LoadFailedException(msg);
         }
 
-        public static Exception RequiredPropertyNull(
+        public static LoadFailedException RequiredPropertyNull(
             IEnumerable<(Element Element, string PropYamlName, string PropCsName)> errors)
         {
             string message = errors.Aggregate("The following required fields are not set:\n",
@@ -78,14 +87,27 @@ namespace TextRpgMaker
             return new LoadFailedException(message);
         }
 
+        public static LoadFailedException RequiredFileEmpty(string absPath)
+            => new LoadFailedException($"A required file is empty: {absPath}");
+
+        public static LoadFailedException InheritanceLoopAborted(Queue<Element> realisationQueue)
+        {
+            string msg = "There was an error realizing the inheritance of elements. This might " +
+                         "be a circular reference. Below you can see a list of all elements that" +
+                         " were in the queue when the process was aborsysted:\n";
+            while (realisationQueue.TryDequeue(out var element))
+            {
+                msg += $"- id '{element.Id}'" +
+                       $"  based on id '{element.BasedOnId}'" +
+                       $"  defined in '{element.OriginalFilePath}'";
+            }
+
+            return new LoadFailedException(msg);
+        }
+
         private LoadFailedException(string message, Exception innerException = null)
             : base(message, innerException)
         {
         }
-
-        public static LoadFailedException RequiredFileEmpty(string absPath) =>
-            new LoadFailedException(
-                $"A required file is empty: {absPath}"
-            );
     }
 }
