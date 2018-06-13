@@ -1,11 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Eto.Forms;
 
 namespace TextRpgMaker.Views
 {
     public static class MessageBoxes
     {
-        public static void LoadFailedExceptionBox(LoadFailedException ex) => MessageBox.Show(
+        public static void LoadFailedExceptionBox(Exception ex) => MessageBox.Show(
             parent: AppState.Ui,
             text: "The project could not be loaded.\n\n" +
                   $"Description:\n{ex.Message}\n\n" +
