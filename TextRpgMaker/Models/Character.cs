@@ -12,7 +12,7 @@ namespace TextRpgMaker.Models
 
         [YamlMember(Alias = "name")]
         [YamlProperties(required: true)]
-        public string Name { get; set; }
+        public override string Name { get; set; }
 
         [YamlMember(Alias = "health")]
         [YamlProperties(required: false, defaultValue: 1.0)]

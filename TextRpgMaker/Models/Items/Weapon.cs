@@ -7,7 +7,7 @@ namespace TextRpgMaker.Models.Items
     {
         [YamlMember(Alias = "name")]
         [YamlProperties(required: true)]
-        public string Name { get; set; }
+        public override string Name { get; set; }
 
         [YamlMember(Alias = "attack")]
         [YamlProperties(required: false, defaultValue: 1.0)]

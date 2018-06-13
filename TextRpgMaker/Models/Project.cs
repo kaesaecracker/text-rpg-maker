@@ -1,19 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using TextRpgMaker.Models.Items;
-using YamlDotNet.Serialization;
-using static Serilog.Log;
 
 namespace TextRpgMaker.Models
 {
-    public partial class Project
+    public class Project
     {
-        private readonly Deserializer _deserializer = new DeserializerBuilder().Build();
-
+        public Project(string dir, List<Element> tles)
+        {
+            this.ProjectDir = dir;
+            this.TopLevelElements = tles;
+        }
+        
         public string ProjectDir { get; }
 
         // cannot be a dictionary because there could be duplicate ids
-        public List<Element> TopLevelElements { get; } = new List<Element>();
+        public List<Element> TopLevelElements { get; }
 
         public ProjectInfo Info
             => this.TopLevelElements.OfType<ProjectInfo>().First();

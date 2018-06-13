@@ -1,10 +1,7 @@
 ﻿using System.IO;
-using System.Linq;
-using Gtk;
-using Pango;
-using static Serilog.Log;
+using Serilog;
 
-namespace TextRpgMaker
+namespace TextRpgMaker.Workers
 {
     public class YamlPreprocessor
     {
@@ -17,20 +14,21 @@ namespace TextRpgMaker
 
         public void ProcessAll()
         {
-            Logger.Information("Starting preprocessing of .typ files in folder {f}", this._folder);
+            Log.Logger.Information("Starting preprocessing of .typ files in folder {f}",
+                this._folder);
 
             var filesToCheck = Helper.TypesToLoad();
-            foreach (var tuple in filesToCheck) this.ProcessFile(tuple.pathInProj, tuple.required);
+            foreach (var tuple in filesToCheck) this.ProcessFile(tuple.pathInProj);
         }
 
-        private void ProcessFile(string pathInProj, bool required)
+        private void ProcessFile(string pathInProj)
         {
             string absPathToYaml = pathInProj.ProjectToNormalPath(this._folder);
             string absPathToTyp = Path.ChangeExtension(absPathToYaml, "typ");
 
             if (!File.Exists(absPathToTyp) && !File.Exists(absPathToYaml))
             {
-                Logger.Warning("Neither yaml nor typ found: {yamlPath}", absPathToYaml);
+                Log.Logger.Warning("Neither yaml nor typ found: {yamlPath}", absPathToYaml);
                 return;
             }
 
@@ -38,7 +36,7 @@ namespace TextRpgMaker
 
             if (File.Exists(absPathToYaml))
             {
-                Logger.Warning("Deleting YAML file {yaml}", absPathToYaml);
+                Log.Logger.Warning("Deleting YAML file {yaml}", absPathToYaml);
                 File.Delete(absPathToYaml);
             }
 
@@ -53,7 +51,7 @@ namespace TextRpgMaker
         /// <param name="toYaml">path to resulting yaml</param>
         private void ProcessTyp(string fromTyp, string toYaml)
         {
-            Logger.Debug("Processing .typ {typ}", fromTyp);
+            Log.Logger.Debug("Processing .typ {typ}", fromTyp);
 
             using (var typReader = new StreamReader(fromTyp))
             using (var yamlWriter = new StreamWriter(toYaml))
