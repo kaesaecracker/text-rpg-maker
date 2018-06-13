@@ -18,8 +18,8 @@ namespace TextRpgMaker.Models
         public ProjectInfo Info
             => this.TopLevelElements.OfType<ProjectInfo>().First();
 
-        public List<StartCharacter> StartCharacters
-            => this.TopLevelElements.OfType<StartCharacter>().ToList();
+        public List<Character> Characters
+            => this.TopLevelElements.OfType<Character>().ToList();
 
         public List<Armor> ArmorTypes
             => this.TopLevelElements.OfType<Armor>().ToList();

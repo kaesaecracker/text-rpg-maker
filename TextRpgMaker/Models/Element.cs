@@ -11,6 +11,12 @@ namespace TextRpgMaker.Models
         [YamlMember(Alias = "based-on")]
         public string BasedOnId { get; set; }
 
+        [YamlMember(Alias = "name")]
+        public string Name { get; set; }
+
+        [YamlMember(Alias = "look-text")]
+        public string LookText { get; set; }
+        
         [YamlIgnore]
         public string OriginalFilePath { get; set; }
     }

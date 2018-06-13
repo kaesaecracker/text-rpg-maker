@@ -1,4 +1,5 @@
-﻿using Eto.Forms;
+﻿using System.Linq;
+using Eto.Forms;
 
 namespace TextRpgMaker.Views
 {
@@ -23,7 +24,11 @@ namespace TextRpgMaker.Views
                   $"- Ammo: {AppState.LoadedProject.AmmoTypes.Count}\n" +
                   $"- Armor: {AppState.LoadedProject.ArmorTypes.Count}\n" +
                   $"- Consumables: {AppState.LoadedProject.ConsumableTypes.Count}\n" +
-                  $"- Start Characters: {AppState.LoadedProject.StartCharacters.Count}",
+                  $"- Characters: {AppState.LoadedProject.Characters.Count}\n" +
+                  $"- Start Info:\n" +
+                  $"  - Scene: {AppState.LoadedProject.Info.StartInfo.SceneId}" +
+                  $"  - Dialog: {AppState.LoadedProject.Info.StartInfo.DialogId}" +
+                  $"  - Characters: {AppState.LoadedProject.Info.StartInfo.CharacterIds.Aggregate((c, s) => $"{c}, {s}")}\n",
             caption: "Loaded Project",
             type: MessageBoxType.Information,
             buttons: MessageBoxButtons.OK

@@ -78,10 +78,11 @@ namespace TextRpgMaker
             IEnumerable<(Element Element, string PropYamlName, string PropCsName)> errors)
         {
             string message = errors.Aggregate("The following required fields are not set:\n",
-                (current, err) => current +
-                                  $"- '{err.Element.Id}' of type '{err.Element.GetType().Name}'\n" +
-                                  $"  requires property '{err.PropYamlName}' ({err.PropCsName})\n" +
-                                  $"  in file {err.Element.OriginalFilePath}"
+                (current, err) =>
+                    current +
+                    $"- '{err.Element.Id}' of type '{err.Element.GetType().Name}'\n" +
+                    $"  requires property '{err.PropYamlName}' ({err.PropCsName})\n" +
+                    $"  in file {err.Element.OriginalFilePath}"
             );
 
             return new LoadFailedException(message);
