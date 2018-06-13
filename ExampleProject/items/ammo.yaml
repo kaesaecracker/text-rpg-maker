@@ -1,2 +1,4 @@
-- type: ammo
-  id: arrow
+- id: arrow
+  name: Arrow
+- id: golden-key
+  name: Golden Key

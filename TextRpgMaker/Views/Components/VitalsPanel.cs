@@ -24,7 +24,7 @@ namespace TextRpgMaker.Views.Components
                 Value = 90
             }, x: 1, y: 0);
 
-            this.Content = new GroupBox()
+            this.Content = new GroupBox
             {
                 Content = table,
                 Text = "Vitals",

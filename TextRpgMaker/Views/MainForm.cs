@@ -1,99 +1,65 @@
 ﻿using System;
-using Eto.Drawing;
+using System.IO;
 using Eto.Forms;
+using TextRpgMaker.Workers;
 using static Serilog.Log;
-using TextRpgMaker.Models;
-using TextRpgMaker.Views.Components;
 
 namespace TextRpgMaker.Views
 {
-    public class MainForm : Form
+    public partial class MainForm : Form
     {
         public MainForm()
         {
             this.InitializeComponents();
-
-            var s = new State();
-            Logger.Debug("State: {@s}", s);
         }
 
-        private void InitializeComponents()
+        private void OpenProjectClick(object sender, EventArgs e)
         {
-            this.Title = "No project loaded [TextRpgMaker]";
-            this.DataContext = new MainViewModel();
-            this.Menu = InitializeMenu();
+            Logger.Debug("Open project click");
 
-            var layout = new DynamicLayout
+            // create and show dialog
+            var dialog = new SelectFolderDialog
             {
-                Padding = 3,
-                DefaultSpacing = new Size(3, 3)
+                Title = "Choose the 'project-info.yaml' and confirm",
+                // TODO remove hardcoded path for debugging, replace with last opened path
+                Directory = Directory.GetCurrentDirectory() + "/../ExampleProject/"
             };
 
-            layout.BeginHorizontal();
+
+            // if user does not click on OK when opening, do nothing
+            Logger.Debug("Opening file chooser dialog");
+            if (dialog.ShowDialog(this) == DialogResult.Ok)
             {
-                layout.BeginVertical();
-                {
-                    layout.Add(new OutputPanel());
-                    layout.Add(new InputPanel());
-                }
-
-                layout.EndBeginVertical();
-                {
-                    layout.Add(new InventoryPanel());
-                    layout.Add(new InfoTabsPanel());
-                }
-
-                layout.EndBeginVertical();
-                {
-                    layout.Add(new VitalsPanel());
-                    layout.Add(new CharacterPanel());
-                }
-
-                layout.EndVertical();
+                this.OpenProject(dialog.Directory);
             }
-
-            layout.EndHorizontal();
-            this.Content = layout;
         }
 
-        private static MenuBar InitializeMenu() => new MenuBar
+        private void OpenProject(string pathToProjectInfo)
         {
-            Items =
-            {
-                new ButtonMenuItem
-                {
-                    Text = "Open Game",
-                    Command = new Command(UnimplementedClick)
-                },
-                new ButtonMenuItem
-                {
-                    Text = "Load / Save",
-                    Command = new Command(UnimplementedClick)
-                }
-            },
+            pathToProjectInfo = Path.GetFullPath(pathToProjectInfo);
+            string pathToProjectFolder = Path.GetDirectoryName(pathToProjectInfo);
 
-            AboutItem = new ButtonMenuItem
-            {
-                Text = "About",
-                Command = new Command(UnimplementedClick)
-            },
+            new YamlPreprocessor(pathToProjectFolder).ProcessAll();
 
-            HelpItems =
+            try
             {
-                new ButtonMenuItem
+                AppState.LoadedProject = new ProjectLoader(pathToProjectInfo).ParseProject();
+                MessageBox.Show(this, "Project loaded", caption: "Done");
+            }
+            catch (Exception ex)
+            {
+                switch (ex)
                 {
-                    Text = "Game Help",
-                    Command = new Command(UnimplementedClick)
-                },
-                new ButtonMenuItem
-                {
-                    Text = "Engine Help",
-                    Command = new Command(UnimplementedClick)
+                    case LoadException _:
+                    case PreprocessorException _:
+                        Logger.Warning(ex, "Load failed");
+                        MessageBoxes.LoadFailedExceptionBox(ex);
+                        break;
+
+                    default: throw;
                 }
             }
-        };
-
-        private void ExitClick(object sender, EventArgs e) => Application.Instance.Quit();
+        }
 
         internal static void UnimplementedClick(object sender, EventArgs e)
             => MessageBox.Show("Not implemented yet");

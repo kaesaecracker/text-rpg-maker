@@ -2,12 +2,15 @@
 
 namespace TextRpgMaker.Models.Items
 {
+    [LoadFromProjectFile("items/armor.yaml", required: false, isList: true)]
     public class Armor : Element
     {
         [YamlMember(Alias = "slot")]
+        [YamlProperties(required: true)]
         public ArmorSlot? Slot { get; set; } = null;
 
         [YamlMember(Alias = "defense")]
+        [YamlProperties(required: true)]
         public double? Defense { get; set; } = null;
 
         public enum ArmorSlot

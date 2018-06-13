@@ -1,5 +1,7 @@
-﻿using Eto.Forms;
+﻿using Eto;
+using Eto.Forms;
 using Serilog;
+using TextRpgMaker.Views;
 using static Serilog.Log;
 
 namespace TextRpgMaker
@@ -15,8 +17,9 @@ namespace TextRpgMaker
 
             Logger.Debug("Startet prgram with parameters {@args}", args);
 
-            new Application(Eto.Platform.Detect)
-                .Run(new Views.MainForm());
+            AppState.EtoApp = new Application(Platform.Detect);
+            AppState.Ui = new MainForm();
+            AppState.EtoApp.Run(AppState.Ui);
         }
     }
 }

@@ -1,0 +1,52 @@
+# TYP = TextRpgCreator YAML Preprocessor
+- id: mayor
+  name: Town Mayor
+  look-text: The mayor of the town. Not the richest person living here, but definitely the most influential one. He is always wearing good clothes and likes to brag about his beautiful daughter.
+
+  
+- id: slime-green
+  name: Green Slime
+  look-text: A slime! Fight it!
+  drops:
+  - id: money
+  - id: money
+    chance: 0.2
+
+- id: slime-gold
+  based-on: slime-green
+  name: Gold Slime
+  look-text: This slime is shiny! I wonder why...
+  drops:
+  - id: money
+    count: 5
+  
+- id: slime-king
+  based-on: slime-green
+  name: Slime King
+  look-text: The king of slimes. He has the key around his neck. Maybe he will give it to you if you ask kindly enough...
+  drops:
+  - id: money
+    count: 15
+  - id: golden-key
+- id: warrior
+  name: The Warrior
+  attack: 1.1
+  health: 1.1
+  items: 
+  - id: sword-wood
+
+- id: thief
+  name: The Thief
+  evade: 0.125
+  items:
+  - id: dagger
+  - id: money
+    count: 5
+
+- id: archer
+  name: The Archer
+  speed: 1.2
+  items:
+  - id: bow-basic
+  - id: arrow
+    count: 15

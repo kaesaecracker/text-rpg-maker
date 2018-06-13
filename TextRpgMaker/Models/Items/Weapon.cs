@@ -2,18 +2,23 @@
 
 namespace TextRpgMaker.Models.Items
 {
+    [LoadFromProjectFile("items/weapons.yaml", required: false, isList: true)]
     public class Weapon : Element
     {
-        [YamlMember(Alias = "attack")]
-        public double? Attack { get; set; } = null;
-
         [YamlMember(Alias = "name")]
-        public string Name { get; set; } = null;
+        [YamlProperties(required: true)]
+        public override string Name { get; set; }
+
+        [YamlMember(Alias = "attack")]
+        [YamlProperties(required: false, defaultValue: 1.0)]
+        public double? Attack { get; set; }
 
         [YamlMember(Alias = "timeout")]
-        public double? Timeout { get; set; } = null;
+        [YamlProperties(required: false, defaultValue: 1.0)]
+        public double? Timeout { get; set; }
 
         [YamlMember(Alias = "ammo")]
-        public string AmmoId { get; set; } = null;
+        [YamlProperties(required: false)]
+        public string AmmoId { get; set; }
     }
 }
