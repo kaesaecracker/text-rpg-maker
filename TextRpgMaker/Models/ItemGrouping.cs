@@ -1,22 +1,15 @@
-﻿using System.Collections.Generic;
-using YamlDotNet.Serialization;
+﻿using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.Models
 {
-    public class Inventory
+    public class ItemGrouping
     {
-        [YamlMember(Alias = "items")]
-        public List<ItemIdWithCount> Items { get; }
-    }
-
-    public class ItemIdWithCount
-    {
-        public ItemIdWithCount()
+        public ItemGrouping()
         {
             // empty contructor for serialization
         }
 
-        public ItemIdWithCount(string itemId, int count)
+        public ItemGrouping(string itemId, int count)
         {
             this.ItemId = itemId;
             this.Count = count;

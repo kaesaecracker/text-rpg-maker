@@ -3,6 +3,7 @@ using Serilog;
 
 namespace TextRpgMaker.Workers
 {
+    // TYP = TextRpgCreator YAML Preprocessor
     public class YamlPreprocessor
     {
         private readonly string _folder;

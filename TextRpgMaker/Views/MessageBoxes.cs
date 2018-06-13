@@ -6,15 +6,25 @@ namespace TextRpgMaker.Views
 {
     public static class MessageBoxes
     {
-        public static void LoadFailedExceptionBox(Exception ex) => MessageBox.Show(
-            parent: AppState.Ui,
-            text: "The project could not be loaded.\n\n" +
-                  $"Description:\n{ex.Message}\n\n" +
-                  $"StackTrace:\n{ex.StackTrace}",
-            caption: "Load failed",
-            type: MessageBoxType.Error,
-            buttons: MessageBoxButtons.OK
-        );
+        public static void LoadFailedExceptionBox(Exception ex)
+        {
+            string msg = "The project could not be loaded.\n\n" +
+                         $"Description: {ex.Message}\n\n" +
+                         $"At: {ex.TargetSite.Name}\n\n";
+
+            if (ex.InnerException != null)
+            {
+                msg += $"By : {ex.InnerException.GetType().Name} - {ex.InnerException.Message}";
+            }
+
+            MessageBox.Show(
+                parent: AppState.Ui,
+                text: msg,
+                caption: "Load failed",
+                type: MessageBoxType.Error,
+                buttons: MessageBoxButtons.OK
+            );
+        }
 
         public static void InfoAboutLoadedProject() => MessageBox.Show(
             parent: AppState.Ui,
