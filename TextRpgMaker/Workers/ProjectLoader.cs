@@ -5,28 +5,31 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using TextRpgMaker.Models;
 using YamlDotNet.Serialization;
 using static Serilog.Log;
 
-namespace TextRpgMaker.Models
+namespace TextRpgMaker.Workers
 {
-    public partial class Project
+    public class ProjectLoader
     {
-        /// <summary>
-        /// empty constructor used for deserialization
-        /// </summary>
-        public Project()
+        private string _folder;
+        private List<Element> _tles;
+        private readonly Deserializer _deserializer = new DeserializerBuilder().Build();
+
+        public ProjectLoader(string pathToFolder)
         {
+            if (!Directory.Exists(pathToFolder))
+            {
+                throw LoadException.ProjectFolderMissing(pathToFolder);
+            }
+
+            this._folder = pathToFolder;
+            this._tles = new List<Element>();
         }
 
-        /// <summary>
-        /// Loads the project
-        /// </summary>
-        /// <param name="pathToProjectInfo">the directory containing the project</param>
-        public Project(string pathToProjectInfo)
+        public Project ParseProject()
         {
-            this.ProjectDir = Path.GetDirectoryName(pathToProjectInfo);
-
             // TODO for errors: print out path where id is defined
             // "Hard" errors - file not found, inheritance errors, etc
             this.RawYamlLoad();
@@ -38,6 +41,8 @@ namespace TextRpgMaker.Models
 
             // "soft" errors - for example there is an item in a scene that does not exist
             // TODO check if weapon ammo exists
+
+            return new Project(this._tles);
         }
 
         /// <summary>
@@ -47,7 +52,7 @@ namespace TextRpgMaker.Models
         {
             foreach (var tuple in Helper.TypesToLoad())
             {
-                var absPath = tuple.pathInProj.ProjectToNormalPath(this.ProjectDir);
+                var absPath = tuple.pathInProj.ProjectToNormalPath(this._folder);
                 if (!File.Exists(absPath))
                 {
                     if (tuple.required)
@@ -70,7 +75,7 @@ namespace TextRpgMaker.Models
         private void ValidateUniqueWellformedIds()
         {
             var duplicates = (
-                from tle in this.TopLevelElements
+                from tle in this._tles
                 group tle by tle.Id
                 into grouped
                 where grouped.Count() > 1
@@ -84,7 +89,7 @@ namespace TextRpgMaker.Models
 
             // matches 'id', 'some-id', 'id-9-test', but not ' id ', '%KHGSI'
             var idRegex = new Regex("[a-z][a-z]+(-([a-z]|[0-9])+)*"); // good regex tool: regexr.com
-            var mismatches = this.TopLevelElements.Where(tle => !idRegex.IsMatch(tle.Id)).ToList();
+            var mismatches = this._tles.Where(tle => !idRegex.IsMatch(tle.Id)).ToList();
             if (mismatches.Any()) throw LoadException.MalformedId(mismatches);
         }
 
@@ -98,18 +103,18 @@ namespace TextRpgMaker.Models
         private void ValidateBaseIdsExist()
         {
             var errors = (
-                from element in this.TopLevelElements
+                from element in this._tles
                 where element.BasedOnId != null
-                      && this.TopLevelElements.All(elem => elem.Id != element.BasedOnId)
+                      && this._tles.All(elem => elem.Id != element.BasedOnId)
                 select element
             ).ToList();
 
             if (errors.Any()) throw LoadException.BaseElementNotFound(errors);
 
             var typeErrors = (
-                from element in this.TopLevelElements
+                from element in this._tles
                 where element.BasedOnId != null
-                let baseElem = this.TopLevelElements.First(e => e.Id == element.BasedOnId)
+                let baseElem = this._tles.First(e => e.Id == element.BasedOnId)
                 where !baseElem.GetType().IsInstanceOfType(element)
                 select (
                     Base: baseElem,
@@ -129,7 +134,7 @@ namespace TextRpgMaker.Models
         /// <exception cref="LoadException"></exception>
         private void RealizeInheritance()
         {
-            var realisationQueue = new Queue<Element>(this.TopLevelElements);
+            var realisationQueue = new Queue<Element>(this._tles);
             int stepsBeforeAbort = realisationQueue.Count;
             while (realisationQueue.Count > 0 && stepsBeforeAbort > 0)
             {
@@ -140,7 +145,7 @@ namespace TextRpgMaker.Models
                 if (targetElem.BasedOnId == null) processedElement = true;
                 else
                 {
-                    var baseElem = this.TopLevelElements.First(e => e.Id == targetElem.BasedOnId);
+                    var baseElem = this._tles.First(e => e.Id == targetElem.BasedOnId);
 
                     // if base element is not done yet, postpone target element
                     if (realisationQueue.Contains(baseElem)) realisationQueue.Enqueue(targetElem);
@@ -186,7 +191,7 @@ namespace TextRpgMaker.Models
         private void ValidateRequiredFields()
         {
             var errors = (
-                from element in this.TopLevelElements
+                from element in this._tles
                 from property in element.GetType().GetProperties()
                 where property.GetValue(element) == null &&
                       property.IsDefined(typeof(YamlPropertiesAttribute), true)
@@ -212,7 +217,7 @@ namespace TextRpgMaker.Models
         private void SetDefaultValues()
         {
             var props =
-                from element in this.TopLevelElements
+                from element in this._tles
                 from property in element.GetType().GetProperties()
                 where property.GetValue(element) == null
                       && property.IsDefined(typeof(YamlPropertiesAttribute))
@@ -231,7 +236,7 @@ namespace TextRpgMaker.Models
         /// <summary>
         /// This is the method that loads a file into a type via the type variable.
         /// If the file contains a list it will try to deserialize a List and add all elements
-        /// to TopLevelElements, otherwise it will deserialize the type t directly.
+        /// to _tles, otherwise it will deserialize the type t directly.
         /// </summary>
         /// <param name="t">The type that gets deserialized out of the file</param>
         /// <param name="absPath">The absolute path to the file</param>
@@ -246,7 +251,7 @@ namespace TextRpgMaker.Models
             void AddToList(Element e)
             {
                 e.OriginalFilePath = absPath;
-                this.TopLevelElements.Add(e);
+                this._tles.Add(e);
             }
 
             using (var reader = new StreamReader(absPath))

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using Eto.Drawing;
 using Eto.Forms;
-using TextRpgMaker.Models;
-using TextRpgMaker.Views.Components;
+using TextRpgMaker.Workers;
 using static Serilog.Log;
 
 namespace TextRpgMaker.Views
@@ -21,18 +18,11 @@ namespace TextRpgMaker.Views
             Logger.Debug("Open project click");
 
             // create and show dialog
-            var dialog = new OpenFileDialog
+            var dialog = new SelectFolderDialog
             {
                 Title = "Choose the 'project-info.yaml' and confirm",
-                CheckFileExists = true,
-                Filters =
-                {
-                    new FileFilter("YAML files", "yaml", "yml"),
-                    new FileFilter("All files", "*")
-                },
-                CurrentFilterIndex = 0,
                 // TODO remove hardcoded path for debugging, replace with last opened path
-                Directory = new Uri(Directory.GetCurrentDirectory() + "/../ExampleProject/")
+                Directory = Directory.GetCurrentDirectory() + "/../ExampleProject/"
             };
 
 
@@ -40,7 +30,7 @@ namespace TextRpgMaker.Views
             Logger.Debug("Opening file chooser dialog");
             if (dialog.ShowDialog(this) == DialogResult.Ok)
             {
-                this.OpenProject(dialog.FileName);
+                this.OpenProject(dialog.Directory);
             }
         }
 
@@ -53,7 +43,7 @@ namespace TextRpgMaker.Views
 
             try
             {
-                AppState.LoadedProject = new Project(pathToProjectInfo);
+                AppState.LoadedProject = new ProjectLoader(pathToProjectInfo).ParseProject();
                 MessageBox.Show(this, "Project loaded", caption: "Done");
             }
             catch (Exception ex)

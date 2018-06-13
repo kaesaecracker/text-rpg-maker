@@ -8,12 +8,15 @@ namespace TextRpgMaker.Models
 {
     public partial class Project
     {
-        private readonly Deserializer _deserializer = new DeserializerBuilder().Build();
-
         public string ProjectDir { get; }
 
+        public Project(List<Element> tles)
+        {
+            this.TopLevelElements = tles;
+        }
+
         // cannot be a dictionary because there could be duplicate ids
-        public List<Element> TopLevelElements { get; } = new List<Element>();
+        public List<Element> TopLevelElements { get; }
 
         public ProjectInfo Info
             => this.TopLevelElements.OfType<ProjectInfo>().First();
