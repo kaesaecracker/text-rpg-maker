@@ -6,15 +6,15 @@ using YamlDotNet.Serialization;
 
 namespace TextRpgMaker
 {
-    public class LoadFailedException : Exception
+    public class LoadException : Exception
     {
-        public static LoadFailedException FileMissing(string fileInProject, string triedPath) =>
-            new LoadFailedException(
+        public static LoadException FileMissing(string fileInProject, string triedPath) =>
+            new LoadException(
                 $"The required project file '{fileInProject}' is missing!\n" +
                 $"Expected it at '{triedPath}'"
             );
 
-        public static LoadFailedException DuplicateIds(
+        public static LoadException DuplicateIds(
             IEnumerable<(string, IEnumerable<Element>)> duplicates)
         {
             string msg = "The project contains duplicate element ids, which is not allowed.\n";
@@ -28,10 +28,10 @@ namespace TextRpgMaker
                 }
             }
 
-            return new LoadFailedException(msg);
+            return new LoadException(msg);
         }
 
-        public static LoadFailedException BaseElementNotFound(IEnumerable<Element> errorElements)
+        public static LoadException BaseElementNotFound(IEnumerable<Element> errorElements)
         {
             string msg = "There are elements based on other elements that could not be found:\n";
             foreach (var elem in errorElements)
@@ -40,10 +40,10 @@ namespace TextRpgMaker
                        $"  is based on '{elem.BasedOnId}'";
             }
 
-            return new LoadFailedException(msg);
+            return new LoadException(msg);
         }
 
-        public static LoadFailedException BaseElementHasDifferentType(
+        public static LoadException BaseElementHasDifferentType(
             IEnumerable<(Element Base, Element Target)> errorTuples)
         {
             string msg = "The following elements are based on elements with different types:\n";
@@ -55,10 +55,10 @@ namespace TextRpgMaker
                        $"from '{baseElem.OriginalFilePath}'";
             }
 
-            return new LoadFailedException(msg);
+            return new LoadException(msg);
         }
 
-        public static LoadFailedException MalformedId(List<Element> elems)
+        public static LoadException MalformedId(List<Element> elems)
         {
             string msg = "The project contains malformed IDs:\n";
             foreach (var element in elems)
@@ -71,26 +71,27 @@ namespace TextRpgMaker
                    "- IDs cannot start with a number\n" +
                    "- IDs cannot start or end with '-'";
 
-            return new LoadFailedException(msg);
+            return new LoadException(msg);
         }
 
-        public static LoadFailedException RequiredPropertyNull(
+        public static LoadException RequiredPropertyNull(
             IEnumerable<(Element Element, string PropYamlName, string PropCsName)> errors)
         {
             string message = errors.Aggregate("The following required fields are not set:\n",
-                (current, err) => current +
-                                  $"- '{err.Element.Id}' of type '{err.Element.GetType().Name}'\n" +
-                                  $"  requires property '{err.PropYamlName}' ({err.PropCsName})\n" +
-                                  $"  in file {err.Element.OriginalFilePath}"
+                (current, err) =>
+                    current +
+                    $"- '{err.Element.Id}' of type '{err.Element.GetType().Name}'\n" +
+                    $"  requires property '{err.PropYamlName}' ({err.PropCsName})\n" +
+                    $"  in file {err.Element.OriginalFilePath}"
             );
 
-            return new LoadFailedException(message);
+            return new LoadException(message);
         }
 
-        public static LoadFailedException RequiredFileEmpty(string absPath)
-            => new LoadFailedException($"A required file is empty: {absPath}");
+        public static LoadException RequiredFileEmpty(string absPath)
+            => new LoadException($"A required file is empty: {absPath}");
 
-        public static LoadFailedException InheritanceLoopAborted(Queue<Element> realisationQueue)
+        public static LoadException InheritanceLoopAborted(Queue<Element> realisationQueue)
         {
             string msg = "There was an error realizing the inheritance of elements. This might " +
                          "be a circular reference. Below you can see a list of all elements that" +
@@ -102,12 +103,33 @@ namespace TextRpgMaker
                        $"  defined in '{element.OriginalFilePath}'";
             }
 
-            return new LoadFailedException(msg);
+            return new LoadException(msg);
         }
 
-        private LoadFailedException(string message, Exception innerException = null)
+        private LoadException(string message, Exception innerException = null)
             : base(message, innerException)
         {
         }
+    }
+
+    public class PreprocessorException : Exception
+    {
+        private PreprocessorException(string msg, Exception inner = null) : base(msg, inner)
+        {
+        }
+
+        public static PreprocessorException IncludedFileNotFound(string pathToInclude) =>
+            new PreprocessorException($"The included file '{pathToInclude}' was not found");
+
+        public static PreprocessorException TypCommandUnknown(
+            string command, string line, string file) =>
+            new PreprocessorException(
+                $"Unknown TYP command: '{command}' in line '{line}' in file {file}"
+            );
+
+        public static PreprocessorException ArgumentMissing(string file, string line) =>
+            new PreprocessorException(
+                $"Preprocessor argument missing in file '{file}' in line '{line}'"
+            );
     }
 }

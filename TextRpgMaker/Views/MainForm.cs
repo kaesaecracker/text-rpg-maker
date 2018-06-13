@@ -15,7 +15,7 @@ namespace TextRpgMaker.Views
         {
             this.InitializeComponents();
         }
-        
+
         private void OpenProjectClick(object sender, EventArgs e)
         {
             Logger.Debug("Open project click");
@@ -47,16 +47,27 @@ namespace TextRpgMaker.Views
         private void OpenProject(string pathToProjectInfo)
         {
             pathToProjectInfo = Path.GetFullPath(pathToProjectInfo);
+            string pathToProjectFolder = Path.GetDirectoryName(pathToProjectInfo);
+
+            new YamlPreprocessor(pathToProjectFolder).ProcessAll();
 
             try
             {
                 AppState.LoadedProject = new Project(pathToProjectInfo);
                 MessageBox.Show(this, "Project loaded", caption: "Done");
             }
-            catch (LoadFailedException ex)
+            catch (Exception ex)
             {
-                Logger.Warning(ex, "Load failed");
-                MessageBoxes.LoadFailedExceptionBox(ex);
+                switch (ex)
+                {
+                    case LoadException lfe:
+                    case PreprocessorException ppe:
+                        Logger.Warning(ex, "Load failed");
+                        MessageBoxes.LoadFailedExceptionBox(ex);
+                        break;
+
+                    default: throw;
+                }
             }
         }
 

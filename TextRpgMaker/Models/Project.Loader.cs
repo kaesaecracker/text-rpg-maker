@@ -45,42 +45,28 @@ namespace TextRpgMaker.Models
         /// </summary>
         private void RawYamlLoad()
         {
-            var typesToLoad = (
-                from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                from type in assembly.GetTypes()
-                where type.IsDefined(typeof(LoadFromProjectFileAttribute), inherit: false)
-                let fileAnnotation = type.GetCustomAttribute<LoadFromProjectFileAttribute>()
-                select (
-                    Type: type,
-                    fileAnnotation.ProjectRelativePath,
-                    fileAnnotation.Required,
-                    fileAnnotation.IsList
-                )
-            ).ToList();
-
-            Logger.Debug("Types to load: {@ttl}", typesToLoad);
-            foreach (var tuple in typesToLoad)
+            foreach (var tuple in Helper.TypesToLoad())
             {
-                var absPath = this.ProjectToNormalPath(tuple.ProjectRelativePath);
+                var absPath = tuple.pathInProj.ProjectToNormalPath(this.ProjectDir);
                 if (!File.Exists(absPath))
                 {
-                    if (tuple.Required)
+                    if (tuple.required)
                     {
-                        throw LoadFailedException.FileMissing(absPath, tuple.ProjectRelativePath);
+                        throw LoadException.FileMissing(absPath, tuple.pathInProj);
                     }
 
-                    Logger.Warning("Skipping non-existing file {f}", tuple.ProjectRelativePath);
+                    Logger.Warning("Skipping non-existing file {f}", tuple.pathInProj);
                     continue;
                 }
 
-                this.Load(tuple.Type, absPath, tuple.IsList, tuple.Required);
+                this.Load(tuple.type, absPath, tuple.isList, tuple.required);
             }
         }
 
         /// <summary>
         /// checks for duplicate ids and whether all ids are well-formed
         /// </summary>
-        /// <exception cref="LoadFailedException">if one or more elements does not fufill these rules</exception>
+        /// <exception cref="LoadException">if one or more elements does not fufill these rules</exception>
         private void ValidateUniqueWellformedIds()
         {
             var duplicates = (
@@ -94,19 +80,19 @@ namespace TextRpgMaker.Models
                 )
             ).ToList();
 
-            if (duplicates.Any()) throw LoadFailedException.DuplicateIds(duplicates.AsEnumerable());
+            if (duplicates.Any()) throw LoadException.DuplicateIds(duplicates.AsEnumerable());
 
             // matches 'id', 'some-id', 'id-9-test', but not ' id ', '%KHGSI'
             var idRegex = new Regex("[a-z][a-z]+(-([a-z]|[0-9])+)*"); // good regex tool: regexr.com
             var mismatches = this.TopLevelElements.Where(tle => !idRegex.IsMatch(tle.Id)).ToList();
-            if (mismatches.Any()) throw LoadFailedException.MalformedId(mismatches);
+            if (mismatches.Any()) throw LoadException.MalformedId(mismatches);
         }
 
         /// <summary>
         /// Checks for all elements with a based-on field that the referenced ids exist and have the
         /// same type
         /// </summary>
-        /// <exception cref="LoadFailedException">
+        /// <exception cref="LoadException">
         /// if base id does not exist or base element does not have the same type
         /// </exception>
         private void ValidateBaseIdsExist()
@@ -118,7 +104,7 @@ namespace TextRpgMaker.Models
                 select element
             ).ToList();
 
-            if (errors.Any()) throw LoadFailedException.BaseElementNotFound(errors);
+            if (errors.Any()) throw LoadException.BaseElementNotFound(errors);
 
             var typeErrors = (
                 from element in this.TopLevelElements
@@ -133,14 +119,14 @@ namespace TextRpgMaker.Models
 
             if (typeErrors.Any())
             {
-                throw LoadFailedException.BaseElementHasDifferentType(typeErrors);
+                throw LoadException.BaseElementHasDifferentType(typeErrors);
             }
         }
 
         /// <summary>
         /// process 'based-on' fields
         /// </summary>
-        /// <exception cref="LoadFailedException"></exception>
+        /// <exception cref="LoadException"></exception>
         private void RealizeInheritance()
         {
             var realisationQueue = new Queue<Element>(this.TopLevelElements);
@@ -185,10 +171,10 @@ namespace TextRpgMaker.Models
 
                 if (processedElement) stepsBeforeAbort = realisationQueue.Count;
             }
-            
+
             if (realisationQueue.Count > 0)
             {
-                throw LoadFailedException.InheritanceLoopAborted(realisationQueue);
+                throw LoadException.InheritanceLoopAborted(realisationQueue);
             }
         }
 
@@ -196,7 +182,7 @@ namespace TextRpgMaker.Models
         /// Checks if all properties with the [YamlProperties] attribute and Required set to true
         /// have a value for all of the loaded elements
         /// </summary>
-        /// <exception cref="LoadFailedException">if a required property is null</exception>
+        /// <exception cref="LoadException">if a required property is null</exception>
         private void ValidateRequiredFields()
         {
             var errors = (
@@ -216,7 +202,7 @@ namespace TextRpgMaker.Models
 
             if (errors.Any())
             {
-                throw LoadFailedException.RequiredPropertyNull(errors);
+                throw LoadException.RequiredPropertyNull(errors);
             }
         }
 
@@ -251,11 +237,11 @@ namespace TextRpgMaker.Models
         /// <param name="absPath">The absolute path to the file</param>
         /// <param name="isList">Whether to load a List or not</param>
         /// <param name="throwIfEmpty">Whether to throw an error if file is empty</param>
-        /// <exception cref="LoadFailedException">If a required file cannot be loaded</exception>
+        /// <exception cref="LoadException">If a required file cannot be loaded</exception>
         private void Load(Type t, string absPath, bool isList, bool throwIfEmpty)
         {
             // TODO catch exception if the file is not in valid yaml format or does not fit type
-            Logger.Debug("Load path: {absPath} list: {list}", absPath, isList);
+            Logger.Debug("Load file: {absPath} list: {list}", absPath, isList);
 
             void AddToList(Element e)
             {
@@ -288,13 +274,10 @@ namespace TextRpgMaker.Models
                     else
                     {
                         Logger.Warning("file empty: {p}", absPath);
-                        if (throwIfEmpty) throw LoadFailedException.RequiredFileEmpty(absPath);
+                        if (throwIfEmpty) throw LoadException.RequiredFileEmpty(absPath);
                     }
                 }
             }
         }
-
-        private string ProjectToNormalPath(string pathInProj) =>
-            this.ProjectDir + "/" + pathInProj;
     }
 }

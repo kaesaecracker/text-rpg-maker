@@ -20,7 +20,5 @@
   attack: 1.5
   ammo: arrow
   
-#- id: sword-wood
-#- id: sword-iron
-- id: something
-  based-on: something-that-does-not-exist
+#- id: weapon-wo-name
+#  based-on: something-that-does-not-exist

@@ -1,10 +1,12 @@
-﻿using Eto.Forms;
+﻿using System;
+using System.Linq;
+using Eto.Forms;
 
 namespace TextRpgMaker.Views
 {
     public static class MessageBoxes
     {
-        public static void LoadFailedExceptionBox(LoadFailedException ex) => MessageBox.Show(
+        public static void LoadFailedExceptionBox(Exception ex) => MessageBox.Show(
             parent: AppState.Ui,
             text: "The project could not be loaded.\n\n" +
                   $"Description:\n{ex.Message}\n\n" +
@@ -23,7 +25,11 @@ namespace TextRpgMaker.Views
                   $"- Ammo: {AppState.LoadedProject.AmmoTypes.Count}\n" +
                   $"- Armor: {AppState.LoadedProject.ArmorTypes.Count}\n" +
                   $"- Consumables: {AppState.LoadedProject.ConsumableTypes.Count}\n" +
-                  $"- Start Characters: {AppState.LoadedProject.StartCharacters.Count}",
+                  $"- Characters: {AppState.LoadedProject.Characters.Count}\n" +
+                  $"- Start Info:\n" +
+                  $"  - Scene: {AppState.LoadedProject.Info.StartInfo.SceneId}" +
+                  $"  - Dialog: {AppState.LoadedProject.Info.StartInfo.DialogId}" +
+                  $"  - Characters: {AppState.LoadedProject.Info.StartInfo.CharacterIds.Aggregate((c, s) => $"{c}, {s}")}\n",
             caption: "Loaded Project",
             type: MessageBoxType.Information,
             buttons: MessageBoxButtons.OK
