@@ -21,6 +21,4 @@
   ammo: arrow
   
 #- id: weapon-wo-name
-- id: sword-iron
-- id: something
 #  based-on: something-that-does-not-exist
