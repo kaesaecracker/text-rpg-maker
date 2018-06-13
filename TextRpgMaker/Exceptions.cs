@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Eto.Forms.ThemedControls;
-using Portable.Xaml;
 using TextRpgMaker.Models;
-using YamlDotNet.Serialization;
 
 namespace TextRpgMaker
 {

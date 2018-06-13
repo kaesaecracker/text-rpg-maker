@@ -50,8 +50,8 @@ namespace TextRpgMaker.Views
             {
                 switch (ex)
                 {
-                    case LoadException lfe:
-                    case PreprocessorException ppe:
+                    case LoadException _:
+                    case PreprocessorException _:
                         Logger.Warning(ex, "Load failed");
                         MessageBoxes.LoadFailedExceptionBox(ex);
                         break;

@@ -13,8 +13,8 @@ namespace TextRpgMaker.Workers
 {
     public class ProjectLoader
     {
-        private string _folder;
-        private List<Element> _tles;
+        private readonly string _folder;
+        private readonly List<Element> _tles;
         private readonly Deserializer _deserializer = new DeserializerBuilder().Build();
 
         public ProjectLoader(string pathToFolder)
@@ -42,7 +42,7 @@ namespace TextRpgMaker.Workers
             // "soft" errors - for example there is an item in a scene that does not exist
             // TODO check if weapon ammo exists
 
-            return new Project(this._tles);
+            return new Project(this._folder, this._tles);
         }
 
         /// <summary>

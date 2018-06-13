@@ -14,13 +14,14 @@ namespace TextRpgMaker.Workers
 
         public void ProcessAll()
         {
-            Log.Logger.Information("Starting preprocessing of .typ files in folder {f}", this._folder);
+            Log.Logger.Information("Starting preprocessing of .typ files in folder {f}",
+                this._folder);
 
             var filesToCheck = Helper.TypesToLoad();
-            foreach (var tuple in filesToCheck) this.ProcessFile(tuple.pathInProj, tuple.required);
+            foreach (var tuple in filesToCheck) this.ProcessFile(tuple.pathInProj);
         }
 
-        private void ProcessFile(string pathInProj, bool required)
+        private void ProcessFile(string pathInProj)
         {
             string absPathToYaml = pathInProj.ProjectToNormalPath(this._folder);
             string absPathToTyp = Path.ChangeExtension(absPathToYaml, "typ");

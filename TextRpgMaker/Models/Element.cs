@@ -12,7 +12,7 @@ namespace TextRpgMaker.Models
         public string BasedOnId { get; set; }
 
         [YamlMember(Alias = "name")]
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         [YamlMember(Alias = "look-text")]
         public string LookText { get; set; }
