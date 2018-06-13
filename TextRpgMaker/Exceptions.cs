@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TextRpgMaker.Models;
+using YamlDotNet.Core;
 
 namespace TextRpgMaker
 {
@@ -112,6 +113,12 @@ namespace TextRpgMaker
 
         public static LoadException ProjectFolderMissing(string folder) =>
             new LoadException($"The specified project folder {folder} does not exist");
+
+        public static LoadException DeserializationError(string pathInProj, YamlException ex) =>
+            new LoadException(
+                $"Could not parse a file in the project: {pathInProj}",
+                ex
+            );
     }
 
     public class PreprocessorException : Exception

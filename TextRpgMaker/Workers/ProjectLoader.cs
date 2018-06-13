@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using TextRpgMaker.Models;
+using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using static Serilog.Log;
 
@@ -64,7 +65,16 @@ namespace TextRpgMaker.Workers
                     continue;
                 }
 
-                this.Load(tuple.type, absPath, tuple.isList, tuple.required);
+                Logger.Debug("Load file: {absPath} list: {list}", absPath, tuple.isList);
+                try
+                {
+                    if (tuple.isList) this.LoadList(tuple.type, absPath, tuple.required);
+                    else this.LoadElement(tuple.type, absPath, tuple.required);
+                }
+                catch (YamlException ex)
+                {
+                    throw LoadException.DeserializationError(tuple.pathInProj, ex);
+                }
             }
         }
 
@@ -233,54 +243,51 @@ namespace TextRpgMaker.Workers
             }
         }
 
-        /// <summary>
-        /// This is the method that loads a file into a type via the type variable.
-        /// If the file contains a list it will try to deserialize a List and add all elements
-        /// to _tles, otherwise it will deserialize the type t directly.
-        /// </summary>
         /// <param name="t">The type that gets deserialized out of the file</param>
         /// <param name="absPath">The absolute path to the file</param>
-        /// <param name="isList">Whether to load a List or not</param>
         /// <param name="throwIfEmpty">Whether to throw an error if file is empty</param>
         /// <exception cref="LoadException">If a required file cannot be loaded</exception>
-        private void Load(Type t, string absPath, bool isList, bool throwIfEmpty)
+        private void LoadElement(Type t, string absPath, bool throwIfEmpty)
         {
-            // TODO catch exception if the file is not in valid yaml format or does not fit type
-            Logger.Debug("Load file: {absPath} list: {list}", absPath, isList);
-
-            void AddToList(Element e)
-            {
-                e.OriginalFilePath = absPath;
-                this._tles.Add(e);
-            }
-
             using (var reader = new StreamReader(absPath))
             {
-                if (isList)
+                var elem = (Element) this._deserializer.Deserialize(reader, t);
+                if (elem != null)
                 {
-                    var listType = typeof(List<>).MakeGenericType(t);
-                    var deserialize = this._deserializer.Deserialize(reader, listType);
-                    if (deserialize is IEnumerable elemsEnumerable)
-                    {
-                        foreach (var e in elemsEnumerable.Cast<Element>())
-                        {
-                            AddToList(e);
-                        }
-                    }
-                    else Logger.Warning("Not a list: {@d}", deserialize);
+                    elem.OriginalFilePath = absPath;
+                    this._tles.Add(elem);
                 }
                 else
                 {
-                    var elem = (Element) this._deserializer.Deserialize(reader, t);
-                    if (elem != null)
+                    Logger.Warning("file empty: {p}", absPath);
+                    if (throwIfEmpty) throw LoadException.RequiredFileEmpty(absPath);
+                }
+            }
+        }
+
+        /// <param name="t">The type that gets deserialized out of the file</param>
+        /// <param name="absPath">The absolute path to the file</param>
+        /// <param name="throwIfEmpty">Whether to throw an error if file is empty</param>
+        /// <exception cref="LoadException">If a required file cannot be loaded</exception>
+        private void LoadList(Type t, string absPath, bool throwIfEmpty)
+        {
+            var listType = typeof(List<>).MakeGenericType(t);
+
+            using (var reader = new StreamReader(absPath))
+            {
+                var deserialize = this._deserializer.Deserialize(reader, listType);
+                if (deserialize is IEnumerable elemsEnumerable)
+                {
+                    foreach (var e in elemsEnumerable.Cast<Element>())
                     {
-                        AddToList(elem);
+                        e.OriginalFilePath = absPath;
+                        this._tles.Add(e);
                     }
-                    else
-                    {
-                        Logger.Warning("file empty: {p}", absPath);
-                        if (throwIfEmpty) throw LoadException.RequiredFileEmpty(absPath);
-                    }
+                }
+                else
+                {
+                    Logger.Warning("Not a list: {@d}", deserialize);
+                    if (throwIfEmpty) throw LoadException.RequiredFileEmpty(absPath);
                 }
             }
         }
