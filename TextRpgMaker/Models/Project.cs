@@ -5,6 +5,10 @@ using TextRpgMaker.Models.Items;
 
 namespace TextRpgMaker.Models
 {
+    /// <summary>
+    /// Everything that gets loaded when you open a project.
+    /// Does <b>NOT</b> contain anything related to the current save etc
+    /// </summary>
     public class Project
     {
         public Project(string dir, List<Element> tles)

@@ -5,6 +5,10 @@ using TextRpgMaker.Views;
 
 namespace TextRpgMaker
 {
+    /// <summary>
+    /// basically global vars.
+    /// This class is supposed to hold the information that represents the current application state.
+    /// </summary>
     public static class AppState
     {
         public static event EventHandler<ProjectChangedEventArgs> ProjectChangeEvent;
