@@ -16,7 +16,7 @@ namespace TextRpgMaker.Models
 
         [YamlMember(Alias = "look-text")]
         public string LookText { get; set; }
-        
+
         [YamlIgnore]
         public string OriginalFilePath { get; set; }
     }

@@ -5,3 +5,5 @@
 .vs
 *.DotSettings
 .vscode
+
+ExampleProject/characters\.yaml

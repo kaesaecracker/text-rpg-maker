@@ -61,7 +61,7 @@ namespace TextRpgMaker.Views
                         {
                             Text = "LoadExampleProject",
                             Command = new Command((s, e) => this.OpenProject(
-                                Directory.GetCurrentDirectory() + "/../ExampleProject"
+                                Directory.GetCurrentDirectory() + "/../ExampleProject/"
                             ))
                         },
                         new ButtonMenuItem

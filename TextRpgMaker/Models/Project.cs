@@ -11,7 +11,7 @@ namespace TextRpgMaker.Models
             this.ProjectDir = dir;
             this.TopLevelElements = tles;
         }
-        
+
         public string ProjectDir { get; }
 
         // cannot be a dictionary because there could be duplicate ids

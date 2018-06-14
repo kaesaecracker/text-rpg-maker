@@ -31,10 +31,13 @@ namespace TextRpgMaker.Models
         public double Speed { get; set; }
 
         [YamlMember(Alias = "items")]
-        public List<ItemIdWithCount> StartItems { get; set; } = new List<ItemIdWithCount>();
+        public List<ItemGrouping> StartItems { get; set; } = new List<ItemGrouping>();
 
         [YamlMember(Alias = "drops")]
         public List<Drop> Drops { get; set; }
+        
+        [YamlMember(Alias = "talk-dialog")]
+        public string TalkDialog { get; set; }
     }
 
     public class Drop
