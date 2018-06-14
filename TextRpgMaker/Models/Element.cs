@@ -19,5 +19,10 @@ namespace TextRpgMaker.Models
 
         [YamlIgnore]
         public string OriginalFilePath { get; set; }
+
+        public override string ToString()
+        {
+            return $"[Element Id={this.Id}]";
+        }
     }
 }

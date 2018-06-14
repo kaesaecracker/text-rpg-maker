@@ -11,7 +11,7 @@ namespace TextRpgMaker.Views
     {
         private void InitializeComponents()
         {
-            this.Title = "No project loaded [TextRpgMaker]";
+            this.Title = "TextRpgCreator";
             this.Menu = this.InitializeMenu();
 
             var layout = new DynamicLayout
@@ -71,6 +71,14 @@ namespace TextRpgMaker.Views
                                 "IDs: {@ids}", AppState.LoadedProject.TopLevelElements
                                                        .Select(tle => tle.Id)
                             ))
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "Break",
+                            Command= new Command((s, e) =>
+                            {
+                                Logger.Debug("BREAK");
+                            })
                         }
                     }
                 },

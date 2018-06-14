@@ -1,4 +1,9 @@
-characters: 
-- mayor
-- crowd
-- guard
+- id: town
+  characters: 
+  - mayor
+  - crowd
+  - guard
+  
+  items:
+  - id: money
+    count: 5

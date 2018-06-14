@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using Eto.Forms;
 using TextRpgMaker.Workers;
 using static Serilog.Log;
@@ -11,6 +12,7 @@ namespace TextRpgMaker.Views
         public MainForm()
         {
             this.InitializeComponents();
+            this.InitializeEventHandlers();
         }
 
         private void OpenProjectClick(object sender, EventArgs e)
@@ -34,17 +36,11 @@ namespace TextRpgMaker.Views
             }
         }
 
-        private void OpenProject(string pathToProjectInfo)
+        private void OpenProject(string pathToProject)
         {
-            pathToProjectInfo = Path.GetFullPath(pathToProjectInfo);
-            string pathToProjectFolder = Path.GetDirectoryName(pathToProjectInfo);
-            new YamlPreprocessor(pathToProjectFolder).ProcessAll();
-            
             try
             {
-                AppState.LoadedProject = new ProjectLoader(pathToProjectInfo).ParseProject();
-                new Validator(AppState.LoadedProject).ValidateAll();
-
+                ProjectLoader.LoadProject(pathToProject);
                 MessageBox.Show(this, "Project loaded", caption: "Done");
             }
             catch (Exception ex)
@@ -56,7 +52,11 @@ namespace TextRpgMaker.Views
                         Logger.Warning(ex, "Load failed");
                         MessageBoxes.LoadFailedExceptionBox(ex);
                         break;
-
+                    case TargetInvocationException tie when tie.InnerException is ValidationFailedException vfe:
+                        Logger.Warning(ex, "Validation failed");
+                        MessageBoxes.LoadFailedExceptionBox(vfe);
+                        break;
+                    
                     default: throw;
                 }
             }

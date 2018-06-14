@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using TextRpgMaker.Models.Items;
 
 namespace TextRpgMaker.Models
 {
+    /// <summary>
+    /// Everything that gets loaded when you open a project.
+    /// Does <b>NOT</b> contain anything related to the current save etc
+    /// </summary>
     public class Project
     {
         public Project(string dir, List<Element> tles)
@@ -20,6 +25,10 @@ namespace TextRpgMaker.Models
         public ProjectInfo Info
             => this.TopLevelElements.OfType<ProjectInfo>().First();
 
+        // shortcut, cant change structure of ProjectInfo because it has to be the same structure as the yaml file
+        public ProjectInfo.StartInfoContainer StartInfo
+            => this.Info.StartInfo;
+
         public List<Character> Characters
             => this.TopLevelElements.OfType<Character>().ToList();
 
@@ -34,5 +43,11 @@ namespace TextRpgMaker.Models
 
         public List<Ammo> AmmoTypes
             => this.TopLevelElements.OfType<Ammo>().ToList();
+
+        public List<Scene> Scenes
+            => this.TopLevelElements.OfType<Scene>().ToList();
+
+        public List<Dialog> Dialogs
+            => this.TopLevelElements.OfType<Dialog>().ToList();
     }
 }

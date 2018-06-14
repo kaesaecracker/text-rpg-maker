@@ -4,7 +4,7 @@ description: A small village is overrun by the army of the Slime King. Can you r
              
 start-info:
   scene: town
-  dialog: mayor/speech
+  dialog: mayor-speech
   characters:
   - warrior
   - thief

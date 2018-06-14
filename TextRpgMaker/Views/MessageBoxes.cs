@@ -28,7 +28,8 @@ namespace TextRpgMaker.Views
 
         public static void InfoAboutLoadedProject() => MessageBox.Show(
             parent: AppState.Ui,
-            text: $"- Path: \"{AppState.LoadedProject.ProjectDir}\"\n" +
+            text: AppState.IsProjectLoaded
+                ? $"- Path: \"{AppState.LoadedProject.ProjectDir}\"\n" +
                   $"- ProjectInfo.Title: {AppState.LoadedProject.Info.Title}\n" +
                   $"- Elements: {AppState.LoadedProject.TopLevelElements.Count}\n" +
                   $"- Weapons: {AppState.LoadedProject.WeaponTypes.Count}\n" +
@@ -37,9 +38,10 @@ namespace TextRpgMaker.Views
                   $"- Consumables: {AppState.LoadedProject.ConsumableTypes.Count}\n" +
                   $"- Characters: {AppState.LoadedProject.Characters.Count}\n" +
                   $"- Start Info:\n" +
-                  $"  - Scene: {AppState.LoadedProject.Info.StartInfo.SceneId}\n" +
-                  $"  - Dialog: {AppState.LoadedProject.Info.StartInfo.DialogId}\n" +
-                  $"  - Characters: {AppState.LoadedProject.Info.StartInfo.CharacterIds.Aggregate((c, s) => $"{c}, {s}")}\n",
+                  $"  - Scene: {AppState.LoadedProject.StartInfo.SceneId}\n" +
+                  $"  - Dialog: {AppState.LoadedProject.StartInfo.DialogId}\n" +
+                  $"  - Characters: {AppState.LoadedProject.StartInfo.CharacterIds.Aggregate((c, s) => $"{c}, {s}")}\n"
+                : "No project loaded",
             caption: "Loaded Project",
             type: MessageBoxType.Information,
             buttons: MessageBoxButtons.OK
