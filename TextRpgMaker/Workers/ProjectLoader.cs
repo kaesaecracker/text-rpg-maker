@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using Serilog.Sinks.SystemConsole.Themes;
 using TextRpgMaker.Models;
 using YamlDotNet.Serialization;
 using static Serilog.Log;
@@ -52,19 +55,40 @@ namespace TextRpgMaker.Workers
         {
             foreach (var tuple in Helper.TypesToLoad())
             {
-                var absPath = tuple.pathInProj.ProjectToNormalPath(this._folder);
+                string absPath = Helper.ProjectToNormalPath(tuple.pathInProj, this._folder);
                 if (!File.Exists(absPath))
                 {
                     if (tuple.required)
                     {
-                        throw LoadException.FileMissing(absPath, tuple.pathInProj);
+                        throw LoadException.FileMissing(tuple.pathInProj, absPath);
                     }
 
-                    Logger.Warning("Skipping non-existing file {f}", tuple.pathInProj);
+                    Logger.Warning(
+                        "File {f} does not exist, but is not required",
+                        tuple.pathInProj);
                     continue;
                 }
 
-                this.Load(tuple.type, absPath, tuple.isList, tuple.required);
+                var elementOrList =
+                    this._deserializer.DeserializeSafely(tuple.type, absPath, tuple.isList);
+                switch (elementOrList)
+                {
+                    case null when tuple.required:
+                        throw LoadException.RequiredFileEmpty(absPath);
+                    case null:
+                        continue;
+
+                    case Element elem:
+                        this.AddToList(elem, absPath);
+                        continue;
+                    case IList list:
+                        foreach (var elem in list)
+                        {
+                            this.AddToList((Element) elem, absPath);
+                        }
+
+                        continue;
+                }
             }
         }
 
@@ -233,56 +257,10 @@ namespace TextRpgMaker.Workers
             }
         }
 
-        /// <summary>
-        /// This is the method that loads a file into a type via the type variable.
-        /// If the file contains a list it will try to deserialize a List and add all elements
-        /// to _tles, otherwise it will deserialize the type t directly.
-        /// </summary>
-        /// <param name="t">The type that gets deserialized out of the file</param>
-        /// <param name="absPath">The absolute path to the file</param>
-        /// <param name="isList">Whether to load a List or not</param>
-        /// <param name="throwIfEmpty">Whether to throw an error if file is empty</param>
-        /// <exception cref="LoadException">If a required file cannot be loaded</exception>
-        private void Load(Type t, string absPath, bool isList, bool throwIfEmpty)
+        private void AddToList(Element e, string absPath)
         {
-            // TODO catch exception if the file is not in valid yaml format or does not fit type
-            Logger.Debug("Load file: {absPath} list: {list}", absPath, isList);
-
-            void AddToList(Element e)
-            {
-                e.OriginalFilePath = absPath;
-                this._tles.Add(e);
-            }
-
-            using (var reader = new StreamReader(absPath))
-            {
-                if (isList)
-                {
-                    var listType = typeof(List<>).MakeGenericType(t);
-                    var deserialize = this._deserializer.Deserialize(reader, listType);
-                    if (deserialize is IEnumerable elemsEnumerable)
-                    {
-                        foreach (var e in elemsEnumerable.Cast<Element>())
-                        {
-                            AddToList(e);
-                        }
-                    }
-                    else Logger.Warning("Not a list: {@d}", deserialize);
-                }
-                else
-                {
-                    var elem = (Element) this._deserializer.Deserialize(reader, t);
-                    if (elem != null)
-                    {
-                        AddToList(elem);
-                    }
-                    else
-                    {
-                        Logger.Warning("file empty: {p}", absPath);
-                        if (throwIfEmpty) throw LoadException.RequiredFileEmpty(absPath);
-                    }
-                }
-            }
+            e.OriginalFilePath = absPath;
+            this._tles.Add(e);
         }
     }
 }

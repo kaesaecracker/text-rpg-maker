@@ -15,7 +15,8 @@ namespace TextRpgMaker.Workers
 
         public void ProcessAll()
         {
-            Log.Logger.Information("Starting preprocessing of .typ files in folder {f}",
+            Log.Logger.Information(
+                "PREPROCESSOR: Starting preprocessing of .typ files in folder {f}",
                 this._folder);
 
             var filesToCheck = Helper.TypesToLoad();
@@ -24,12 +25,14 @@ namespace TextRpgMaker.Workers
 
         private void ProcessFile(string pathInProj)
         {
-            string absPathToYaml = pathInProj.ProjectToNormalPath(this._folder);
+            string absPathToYaml = Helper.ProjectToNormalPath(pathInProj, this._folder);
             string absPathToTyp = Path.ChangeExtension(absPathToYaml, "typ");
 
             if (!File.Exists(absPathToTyp) && !File.Exists(absPathToYaml))
             {
-                Log.Logger.Warning("Neither yaml nor typ found: {yamlPath}", absPathToYaml);
+                Log.Logger.Warning(
+                    "PREPROCESSOR: Neither yaml nor typ found: {yamlPath} / {typPath}",
+                    absPathToYaml, absPathToTyp);
                 return;
             }
 
@@ -37,7 +40,7 @@ namespace TextRpgMaker.Workers
 
             if (File.Exists(absPathToYaml))
             {
-                Log.Logger.Warning("Deleting YAML file {yaml}", absPathToYaml);
+                Log.Logger.Warning("PREPROCESSOR: Deleting YAML file {yaml}", absPathToYaml);
                 File.Delete(absPathToYaml);
             }
 
@@ -52,7 +55,7 @@ namespace TextRpgMaker.Workers
         /// <param name="toYaml">path to resulting yaml</param>
         private void ProcessTyp(string fromTyp, string toYaml)
         {
-            Log.Logger.Debug("Processing .typ {typ}", fromTyp);
+            Log.Logger.Debug("PREPROCESSOR: Processing .typ {typ}", fromTyp);
 
             using (var typReader = new StreamReader(fromTyp))
             using (var yamlWriter = new StreamWriter(toYaml))
@@ -93,18 +96,21 @@ namespace TextRpgMaker.Workers
         }
 
         // Todo include other TYP files
-        private void Include(string argument, TextWriter yamlWriter)
+        private void Include(string pathInProj, TextWriter yamlWriter)
         {
-            string path = argument.Trim();
-            if (path.StartsWith('"')) path = path.Remove(0, 1);
-            if (path.EndsWith('"')) path = path.Substring(0, path.Length - 1);
-            path = path.ProjectToNormalPath(this._folder);
+            pathInProj = pathInProj.Trim();
+            if (pathInProj.StartsWith('"'))
+                pathInProj = pathInProj.Remove(0, 1);
+            if (pathInProj.EndsWith('"'))
+                pathInProj = pathInProj.Substring(0, pathInProj.Length - 1);
+            string path = Helper.ProjectToNormalPath(pathInProj, this._folder);
 
             if (!File.Exists(path))
             {
                 throw PreprocessorException.IncludedFileNotFound(path);
             }
 
+            yamlWriter.WriteLine($"# --- START INCLUDE {path} --- #");
             using (var reader = new StreamReader(path))
             {
                 string line;
@@ -113,6 +119,8 @@ namespace TextRpgMaker.Workers
                     yamlWriter.WriteLine(line);
                 }
             }
+
+            yamlWriter.WriteLine($"# --- END INCLUDE {path} --- #");
         }
     }
 }

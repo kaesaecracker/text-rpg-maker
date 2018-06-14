@@ -21,10 +21,9 @@ namespace TextRpgMaker
             )
         ).ToList();
 
-        public static string ProjectToNormalPath(this string pathInProj, string pathToProj = null)
-        {
-            return (pathToProj ?? AppState.LoadedProject.ProjectDir)
-                   + "/" + pathInProj;
-        }
+
+        // todo to helper method with parameter
+        public static string ProjectToNormalPath(string pathInProj, string pathToProj) =>
+            pathToProj + "/" + pathInProj;
     }
 }
