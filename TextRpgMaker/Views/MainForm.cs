@@ -12,6 +12,7 @@ namespace TextRpgMaker.Views
         public MainForm()
         {
             this.InitializeComponents();
+            this.InitializeEventHandlers();
         }
 
         private void OpenProjectClick(object sender, EventArgs e)
@@ -35,17 +36,11 @@ namespace TextRpgMaker.Views
             }
         }
 
-        private void OpenProject(string pathToProjectInfo)
+        private void OpenProject(string pathToProject)
         {
-            pathToProjectInfo = Path.GetFullPath(pathToProjectInfo);
-            string pathToProjectFolder = Path.GetDirectoryName(pathToProjectInfo);
-            new YamlPreprocessor(pathToProjectFolder).ProcessAll();
-
             try
             {
-                AppState.LoadedProject = new ProjectLoader(pathToProjectInfo).ParseProject();
-                new Validator(AppState.LoadedProject).ValidateAll();
-
+                ProjectLoader.LoadProject(pathToProject);
                 MessageBox.Show(this, "Project loaded", caption: "Done");
             }
             catch (Exception ex)

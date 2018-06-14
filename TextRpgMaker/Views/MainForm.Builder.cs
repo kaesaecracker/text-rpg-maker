@@ -11,7 +11,7 @@ namespace TextRpgMaker.Views
     {
         private void InitializeComponents()
         {
-            this.Title = "No project loaded [TextRpgMaker]";
+            this.Title = "TextRpgCreator";
             this.Menu = this.InitializeMenu();
 
             var layout = new DynamicLayout
