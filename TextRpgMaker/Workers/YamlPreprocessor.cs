@@ -26,7 +26,7 @@ namespace TextRpgMaker.Workers
         private void ProcessFile(string pathInProj)
         {
             string absPathToYaml = Helper.ProjectToNormalPath(pathInProj, this._folder);
-            string absPathToTyp = Path.ChangeExtension(absPathToYaml, "typ");
+            string absPathToTyp = absPathToYaml + ".typ";
 
             if (!File.Exists(absPathToTyp) && !File.Exists(absPathToYaml))
             {
@@ -40,7 +40,9 @@ namespace TextRpgMaker.Workers
 
             if (File.Exists(absPathToYaml))
             {
-                Log.Logger.Warning("PREPROCESSOR: Deleting YAML file {yaml}", absPathToYaml);
+                Log.Logger.Warning(
+                    "PREPROCESSOR: Deleting .yaml file {yaml} because .typ was found",
+                    absPathToYaml);
                 File.Delete(absPathToYaml);
             }
 

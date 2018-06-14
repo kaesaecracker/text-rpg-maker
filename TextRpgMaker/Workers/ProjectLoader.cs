@@ -33,6 +33,10 @@ namespace TextRpgMaker.Workers
 
         public Project ParseProject()
         {
+            Logger.Information(
+                "PARSER: Starting parsing of project in folder {fldr}",
+                this._folder);
+
             // TODO for errors: print out path where id is defined
             // "Hard" errors - file not found, inheritance errors, etc
             this.RawYamlLoad();
@@ -56,6 +60,8 @@ namespace TextRpgMaker.Workers
             foreach (var tuple in Helper.TypesToLoad())
             {
                 string absPath = Helper.ProjectToNormalPath(tuple.pathInProj, this._folder);
+                Logger.Debug("PARSER: Parsing file {f}", absPath);
+
                 if (!File.Exists(absPath))
                 {
                     if (tuple.required)
