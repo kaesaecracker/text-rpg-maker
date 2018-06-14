@@ -28,8 +28,7 @@ namespace TextRpgMaker.Workers
             var methods = (
                 from assembly in AppDomain.CurrentDomain.GetAssemblies()
                 from type in assembly.GetTypes()
-                from method in type.GetMethods(
-                    BindingFlags.NonPublic | BindingFlags.Instance)
+                from method in type.GetMethods()
                 where method.GetParameters().Length == 1
                       && method.GetParameters()[0].ParameterType == typeof(Project)
                 select method
@@ -40,7 +39,7 @@ namespace TextRpgMaker.Workers
             {
                 Logger.Debug("VALIDATOR: Running validation {class}.{method}",
                     methodInfo.DeclaringType.Name, methodInfo.Name);
-                methodInfo.Invoke(this, new object[] { });
+                methodInfo.Invoke(this, new object[] {this._project});
             }
         }
     }

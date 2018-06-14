@@ -4,11 +4,10 @@ using TextRpgMaker.Workers;
 
 namespace TextRpgMaker.Validations
 {
-    public class StartInfoValidations
+    public static class StartInfoValidations
     {
-        private void StartInfoIdsExist(Project p)
+        public static void StartCharactersExist(Project p)
         {
-            // start characters
             var missingChars = (
                 from charId in p.StartInfo.CharacterIds
                 let character = p.Characters.FirstOrDefault(c => c.Id == charId)
@@ -21,12 +20,16 @@ namespace TextRpgMaker.Validations
                     "Start characters do not exist: " +
                     missingChars.Aggregate((curr, id) => $"{curr}, {id}")
                 );
+        }
 
-            // start scene
+        public static void StartSceneExists(Project p)
+        {
             if (p.Scenes.All(s => s.Id != p.StartInfo.SceneId))
                 throw new ValidationFailedException($"Start scene does not exist");
+        }
 
-            // start dialog
+        public static void StartDialogExists(Project p)
+        {
             if (p.Dialogs.All(d => d.Id != p.StartInfo.DialogId))
                 throw new ValidationFailedException("Start dialog does not exist");
         }

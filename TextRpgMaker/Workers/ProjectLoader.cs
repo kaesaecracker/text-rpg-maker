@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using Serilog.Sinks.SystemConsole.Themes;
 using TextRpgMaker.Models;
 using YamlDotNet.Serialization;
 using static Serilog.Log;
