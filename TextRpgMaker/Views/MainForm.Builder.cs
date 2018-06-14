@@ -71,6 +71,14 @@ namespace TextRpgMaker.Views
                                 "IDs: {@ids}", AppState.LoadedProject.TopLevelElements
                                                        .Select(tle => tle.Id)
                             ))
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "Break",
+                            Command= new Command((s, e) =>
+                            {
+                                Logger.Debug("BREAK");
+                            })
                         }
                     }
                 },

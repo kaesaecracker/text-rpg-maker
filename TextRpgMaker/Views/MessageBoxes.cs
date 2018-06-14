@@ -37,9 +37,9 @@ namespace TextRpgMaker.Views
                   $"- Consumables: {AppState.LoadedProject.ConsumableTypes.Count}\n" +
                   $"- Characters: {AppState.LoadedProject.Characters.Count}\n" +
                   $"- Start Info:\n" +
-                  $"  - Scene: {AppState.LoadedProject.Info.StartInfo.SceneId}\n" +
-                  $"  - Dialog: {AppState.LoadedProject.Info.StartInfo.DialogId}\n" +
-                  $"  - Characters: {AppState.LoadedProject.Info.StartInfo.CharacterIds.Aggregate((c, s) => $"{c}, {s}")}\n",
+                  $"  - Scene: {AppState.LoadedProject.StartInfo.SceneId}\n" +
+                  $"  - Dialog: {AppState.LoadedProject.StartInfo.DialogId}\n" +
+                  $"  - Characters: {AppState.LoadedProject.StartInfo.CharacterIds.Aggregate((c, s) => $"{c}, {s}")}\n",
             caption: "Loaded Project",
             type: MessageBoxType.Information,
             buttons: MessageBoxButtons.OK
