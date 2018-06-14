@@ -2,6 +2,7 @@
 
 namespace TextRpgMaker.Models
 {
+    [DocumentedType]
     public class Element
     {
         [YamlMember(Alias = "id")]

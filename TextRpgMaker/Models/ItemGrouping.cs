@@ -2,6 +2,7 @@
 
 namespace TextRpgMaker.Models
 {
+    [DocumentedType]
     public class ItemGrouping
     {
         public ItemGrouping()
