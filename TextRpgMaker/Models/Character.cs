@@ -35,6 +35,9 @@ namespace TextRpgMaker.Models
 
         [YamlMember(Alias = "drops")]
         public List<Drop> Drops { get; set; }
+        
+        [YamlMember(Alias = "talk-dialog")]
+        public string TalkDialog { get; set; }
     }
 
     public class Drop

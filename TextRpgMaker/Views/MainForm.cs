@@ -38,12 +38,13 @@ namespace TextRpgMaker.Views
         {
             pathToProjectInfo = Path.GetFullPath(pathToProjectInfo);
             string pathToProjectFolder = Path.GetDirectoryName(pathToProjectInfo);
-
             new YamlPreprocessor(pathToProjectFolder).ProcessAll();
-
+            
             try
             {
                 AppState.LoadedProject = new ProjectLoader(pathToProjectInfo).ParseProject();
+                new Validator(AppState.LoadedProject).ValidateAll();
+
                 MessageBox.Show(this, "Project loaded", caption: "Done");
             }
             catch (Exception ex)
