@@ -1,6 +1,9 @@
-﻿using Eto;
+﻿using System.IO;
+using Eto;
 using Eto.Forms;
+using Microsoft.Extensions.Configuration;
 using Serilog;
+using Serilog.Events;
 using TextRpgMaker.Views;
 using static Serilog.Log;
 
@@ -10,12 +13,22 @@ namespace TextRpgMaker
     {
         public static void Main(string[] args)
         {
+            AppState.Config = new ConfigurationBuilder()
+                              .SetBasePath(Directory.GetCurrentDirectory())
+                              .AddYamlFile("settings.yaml")
+                              .Build()
+                              .Get<AppConfig>();
+
             Logger = new LoggerConfiguration()
-                     .MinimumLevel.Verbose()
+                     .MinimumLevel.Is(
+                         AppState.Config.Debug
+                             ? LogEventLevel.Debug
+                             : LogEventLevel.Information
+                     )
                      .WriteTo.Console()
                      .CreateLogger();
 
-            Logger.Debug("Startet prgram with parameters {@args}", args);
+            Logger.Debug("PROGRAM: Startet prgram with parameters {@args}", args);
 
             AppState.EtoApp = new Application(Platform.Detect);
             AppState.Ui = new MainForm();

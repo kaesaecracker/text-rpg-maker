@@ -20,7 +20,7 @@ namespace TextRpgMaker.Views
 
         private void OnGenerateTypeDocClick(object sender, EventArgs e)
         {
-            var fc = new Eto.Forms.SaveFileDialog
+            var fc = new SaveFileDialog
             {
                 CheckFileExists = true,
                 Title = "Choose a location for the generated file"

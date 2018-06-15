@@ -1,5 +1,4 @@
-﻿using GLib;
-using static Serilog.Log;
+﻿using static Serilog.Log;
 
 namespace TextRpgMaker.Workers
 {

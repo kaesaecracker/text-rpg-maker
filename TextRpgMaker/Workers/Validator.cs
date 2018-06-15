@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using TextRpgMaker.Models;
 using static Serilog.Log;
-using Attribute = System.Attribute;
 
 namespace TextRpgMaker.Workers
 {
     public class Validator
     {
-        private Project _project;
+        private readonly Project _project;
 
         public Validator(Project project)
         {

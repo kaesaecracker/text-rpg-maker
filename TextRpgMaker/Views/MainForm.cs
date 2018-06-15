@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using System.Linq;
 using Eto.Forms;
 using TextRpgMaker.Workers;
 using static Serilog.Log;
@@ -18,6 +17,8 @@ namespace TextRpgMaker.Views
 
         private void OpenProjectClick(object sender, EventArgs e)
         {
+            // todo if project is already loaded, confirm action (current save state is lost)
+            
             Logger.Debug("Open project click");
 
             // create and show dialog
