@@ -11,11 +11,11 @@ namespace TextRpgMaker.Models.Items
 
         [YamlMember(Alias = "attack")]
         [YamlProperties(required: false, defaultValue: 1.0)]
-        public double? Attack { get; set; }
+        public double Attack { get; set; }
 
         [YamlMember(Alias = "timeout")]
         [YamlProperties(required: false, defaultValue: 1.0)]
-        public double? Timeout { get; set; }
+        public double Timeout { get; set; }
 
         [YamlMember(Alias = "ammo")]
         [YamlProperties(required: false)]

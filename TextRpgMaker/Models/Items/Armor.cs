@@ -7,11 +7,11 @@ namespace TextRpgMaker.Models.Items
     {
         [YamlMember(Alias = "slot")]
         [YamlProperties(required: true)]
-        public ArmorSlot? Slot { get; set; } = null;
+        public ArmorSlot Slot { get; set; }
 
         [YamlMember(Alias = "defense")]
         [YamlProperties(required: true)]
-        public double? Defense { get; set; } = null;
+        public double Defense { get; set; }
 
         public enum ArmorSlot
         {

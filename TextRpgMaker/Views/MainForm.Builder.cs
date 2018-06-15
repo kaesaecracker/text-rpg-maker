@@ -3,6 +3,7 @@ using System.Linq;
 using Eto.Drawing;
 using Eto.Forms;
 using TextRpgMaker.Views.Components;
+using TextRpgMaker.Workers;
 using static Serilog.Log;
 
 namespace TextRpgMaker.Views
@@ -75,10 +76,13 @@ namespace TextRpgMaker.Views
                         new ButtonMenuItem
                         {
                             Text = "Break",
-                            Command= new Command((s, e) =>
-                            {
-                                Logger.Debug("BREAK");
-                            })
+                            Command = new Command((s, e) => { Logger.Debug("BREAK"); })
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "SelfDocument",
+                            Command = new Command((s, e) =>
+                                SelfDocumenter.Document("documentation.yaml"))
                         }
                     }
                 },
@@ -126,6 +130,11 @@ namespace TextRpgMaker.Views
                 {
                     Text = "Engine Help",
                     Command = new Command(UnimplementedClick)
+                },
+                new ButtonMenuItem
+                {
+                    Text = "Export yaml type documentation",
+                    Command = new Command(this.OnGenerateTypeDocClick)
                 }
             }
         };

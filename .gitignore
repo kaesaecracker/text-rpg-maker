@@ -7,3 +7,7 @@
 .vscode
 
 ExampleProject/characters\.yaml
+
+ExampleProject/scenes\.yaml
+
+*.orig

@@ -33,4 +33,8 @@ namespace TextRpgMaker
 
         public bool Required { get; }
     }
+
+    public sealed class DocumentedTypeAttribute : Attribute
+    {
+    }
 }

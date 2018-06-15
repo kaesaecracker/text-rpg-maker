@@ -20,6 +20,7 @@ namespace TextRpgMaker.Models
         [YamlProperties(required: true)]
         public StartInfoContainer StartInfo { get; set; }
 
+        [DocumentedType]
         public class StartInfoContainer
         {
             [YamlMember(Alias = "scene")]
