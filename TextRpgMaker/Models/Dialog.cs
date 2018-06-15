@@ -19,6 +19,7 @@ namespace TextRpgMaker.Models
         public List<Choice> Choices { get; set; }
     }
 
+    [DocumentedType]
     public class Choice
     {
         [YamlMember(Alias = "text")]

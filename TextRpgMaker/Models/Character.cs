@@ -40,6 +40,7 @@ namespace TextRpgMaker.Models
         public string TalkDialog { get; set; }
     }
 
+    [DocumentedType]
     public class Drop
     {
         [YamlMember(Alias = "id")]
