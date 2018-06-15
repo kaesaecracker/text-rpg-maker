@@ -1,4 +1,8 @@
-﻿namespace TextRpgMaker.Views
+﻿using System;
+using Eto.Forms;
+using TextRpgMaker.Workers;
+
+namespace TextRpgMaker.Views
 {
     public partial class MainForm
     {
@@ -12,6 +16,25 @@
             this.Title = e.NewProject != null
                 ? $"{e.NewProject.Info.Title} - TextRpgCreator"
                 : "TextRpgCreator";
+        }
+
+        private void OnGenerateTypeDocClick(object sender, EventArgs e)
+        {
+            var fc = new Eto.Forms.SaveFileDialog
+            {
+                CheckFileExists = true,
+                Title = "Choose a location for the generated file"
+            };
+
+            if (fc.ShowDialog(this) == DialogResult.Ok)
+            {
+                SelfDocumenter.Document(fc.FileName);
+                MessageBox.Show(this, "Done writing type documentation", "Done");
+            }
+            else
+            {
+                MessageBox.Show(this, "Aborted", "Aborted");
+            }
         }
     }
 }

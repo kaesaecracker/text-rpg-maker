@@ -81,7 +81,8 @@ namespace TextRpgMaker.Views
                         new ButtonMenuItem
                         {
                             Text = "SelfDocument",
-                            Command = new Command((s, e) => SelfDocumenter.Document())
+                            Command = new Command((s, e) =>
+                                SelfDocumenter.Document("documentation.yaml"))
                         }
                     }
                 },
@@ -129,6 +130,11 @@ namespace TextRpgMaker.Views
                 {
                     Text = "Engine Help",
                     Command = new Command(UnimplementedClick)
+                },
+                new ButtonMenuItem
+                {
+                    Text = "Export yaml type documentation",
+                    Command = new Command(this.OnGenerateTypeDocClick)
                 }
             }
         };

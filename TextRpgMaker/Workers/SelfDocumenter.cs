@@ -3,52 +3,37 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using Eto.Forms;
 using YamlDotNet.Serialization;
+using static Serilog.Log;
 
 namespace TextRpgMaker.Workers
 {
     public static class SelfDocumenter
     {
-        private const string outFile = "documentation.yaml";
-
-        public static void Document()
+        public static void Document(string absPath)
         {
-            string absPath = Path.GetFullPath(outFile);
+            Logger.Information("DOCUMENTER: Starting, writing to {f}", absPath);
 
-            if (File.Exists(outFile))
+            if (File.Exists(absPath))
             {
+                Logger.Warning("DOCUMENTER: File already exists -> replacing");
                 File.Delete(absPath);
-                return;
             }
 
-
-            using (var writer = new StreamWriter(outFile))
+            using (var writer = new StreamWriter(absPath))
             {
-                DocumentTypesToLoad(writer);
-                DocumentAnnotatedTypes(writer);
+                var types =
+                    from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                    from type in assembly.GetTypes()
+                    where type.IsDefined(typeof(DocumentedTypeAttribute), inherit: false)
+                          || type.IsDefined(typeof(LoadFromProjectFileAttribute), inherit: false)
+                    orderby type.Name
+                    select type;
+
+                DocumentTypes(types, writer);
             }
-
-            MessageBox.Show(absPath);
-        }
-
-        private static void DocumentAnnotatedTypes(StreamWriter writer)
-        {
-            // todo types with [DocumentedType]
-            var types = from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                        from type in assembly.GetTypes()
-                        where type.IsDefined(typeof(DocumentedTypeAttribute), inherit: false)
-                        select type;
-
-            DocumentTypes(types, writer);
-        }
-
-        private static void DocumentTypesToLoad(StreamWriter writer)
-        {
-            var types = Helper.TypesToLoad().Select(tuple => tuple.type);
-            DocumentTypes(types, writer);
         }
 
         private static void DocumentTypes(IEnumerable<Type> types, StreamWriter writer)
