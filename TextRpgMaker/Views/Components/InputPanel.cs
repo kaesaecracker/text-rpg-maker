@@ -36,16 +36,14 @@ namespace TextRpgMaker.Views.Components
 
         public void GetChoiceAsync(List<Choice> dlgChoices, Action<Choice> action)
         {
-            var combo = new ComboBox();
-            combo.DataStore = dlgChoices;
-
+            var combo = new ComboBox {DataStore = dlgChoices};
             var btn = new Button((s, a) =>
             {
-                Logger.Debug("click {index}", combo.SelectedIndex);
-                if (combo.SelectedIndex == -1) return;
-
-                this.Content = null;
-                action.Invoke(dlgChoices[combo.SelectedIndex]);
+                if (combo.SelectedIndex != -1)
+                {
+                    this.Content = null;
+                    action.Invoke(dlgChoices[combo.SelectedIndex]);
+                }
             })
             {
                 Text = "Enter"
@@ -56,8 +54,25 @@ namespace TextRpgMaker.Views.Components
             layout.Add(combo);
             layout.Add(btn);
             this.Content = layout;
+        }
 
-            Logger.Warning("sdntehrws");
+        public void GetTextInput(Action<string> action)
+        {
+            var field = new TextBox {Width = 350};
+            var btn = new Button((s, a) =>
+            {
+                this.Content = null;
+                action.Invoke(field.Text);
+            })
+            {
+                Text = "Enter"
+            };
+
+            var layout = new DynamicLayout();
+            layout.BeginHorizontal();
+            layout.Add(field);
+            layout.Add(btn);
+            this.Content = layout;
         }
     }
 }

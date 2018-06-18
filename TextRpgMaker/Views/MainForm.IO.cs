@@ -9,8 +9,12 @@ namespace TextRpgMaker.Views
     {
         public void GetChoiceAsync(List<Choice> dlgChoices, Action<Choice> callback)
         {
-            this.Write(dlgChoices);
             this._inputPanel.GetChoiceAsync(dlgChoices, callback);
+        }
+
+        public void GetTextInput(Action<string> callback)
+        {
+            this._inputPanel.GetTextInput(callback);
         }
 
         public void Write(string text)

@@ -10,8 +10,8 @@ namespace TextRpgMaker.Workers
 {
     public class InputLooper
     {
-        private IOutput Output { get; } = AppState.Ui.And(new LogOutput());
-        private IInput Input { get; } = AppState.Ui;
+        private IOutput Output { get; } = Ui.And(new LogOutput());
+        private IInput Input { get; } = Ui;
 
         public InputLooper()
         {
@@ -51,9 +51,21 @@ namespace TextRpgMaker.Workers
         {
             // todo remove required items
             // todo give reward items
-            if (choice.GotoId == null) return;
+            if (choice.GotoId != null)
+                this.HandleDialog(choice.GotoId);
+            else
+            {
+                this.Input.GetTextInput(this.HandleText);
+            }
+        }
 
-            this.HandleDialog(choice.GotoId);
+        private void HandleText(string line)
+        {
+            Logger.Debug("input {line}", line);
+            // todo parse command
+            
+            // bla bla, input not valid -> try again
+            this.Input.GetTextInput(this.HandleText);
         }
 
         public Scene CurrentScene { get; set; }
