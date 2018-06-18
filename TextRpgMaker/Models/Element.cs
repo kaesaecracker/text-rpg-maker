@@ -1,9 +1,12 @@
-﻿using YamlDotNet.Serialization;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using TextRpgMaker.Annotations;
+using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.Models
 {
     [DocumentedType]
-    public class Element
+    public class Element : INotifyPropertyChanged
     {
         [YamlMember(Alias = "id")]
         [YamlProperties(required: true)]
@@ -25,5 +28,10 @@ namespace TextRpgMaker.Models
         {
             return $"[Element Id={this.Id}]";
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        [NotifyPropertyChangedInvocator]
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+            => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

@@ -14,7 +14,7 @@ namespace TextRpgMaker
         public static event EventHandler<ProjectChangedEventArgs> ProjectChangeEvent;
 
         private static Project _loadedProject;
-
+        public static bool IsProjectLoaded => LoadedProject != null;
         public static Project LoadedProject
         {
             get => _loadedProject;
@@ -25,11 +25,13 @@ namespace TextRpgMaker
             }
         }
 
-        public static bool IsProjectLoaded => LoadedProject != null;
-
+        public static GameState GameState { get; set; }
+        
         public static MainForm Ui { get; set; }
 
         public static Application EtoApp { get; set; }
+        
+        public static AppConfig Config { get; set; }
 
         public class ProjectChangedEventArgs : EventArgs
         {
