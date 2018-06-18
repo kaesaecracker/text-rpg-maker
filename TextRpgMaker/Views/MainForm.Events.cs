@@ -1,6 +1,7 @@
 ﻿using System;
 using Eto.Forms;
 using TextRpgMaker.Workers;
+using static Serilog.Log;
 
 namespace TextRpgMaker.Views
 {
@@ -35,6 +36,12 @@ namespace TextRpgMaker.Views
             {
                 MessageBox.Show(this, "Aborted", "Aborted");
             }
+        }
+
+        private void OnStartNewGameClick(object sender, EventArgs e)
+        {
+            Logger.Debug("Start new game");
+            var looper = new InputLooper();
         }
     }
 }

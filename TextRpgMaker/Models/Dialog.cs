@@ -30,9 +30,9 @@ namespace TextRpgMaker.Models
         public string GotoId { get; set; }
 
         [YamlMember(Alias = "reward-items")]
-        public List<ItemGrouping> RewardItemIds { get; set; } = new List<ItemGrouping>();
+        public List<ItemGrouping> RewardItems { get; set; } = new List<ItemGrouping>();
 
         [YamlMember(Alias = "required-items")]
-        public List<ItemGrouping> RequiredItemIds { get; set; } = new List<ItemGrouping>();
+        public List<ItemGrouping> RequiredItems { get; set; } = new List<ItemGrouping>();
     }
 }

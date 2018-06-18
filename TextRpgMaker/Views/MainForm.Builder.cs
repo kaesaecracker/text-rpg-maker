@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Eto.Drawing;
 using Eto.Forms;
 using TextRpgMaker.Views.Components;
@@ -10,6 +11,9 @@ namespace TextRpgMaker.Views
 {
     public partial class MainForm
     {
+        private OutputPanel _outputPanel;
+        private InputPanel _inputPanel;
+
         private void InitializeComponents()
         {
             this.Title = "TextRpgCreator";
@@ -21,12 +25,14 @@ namespace TextRpgMaker.Views
                 DefaultSpacing = new Size(3, 3)
             };
 
+            this._outputPanel = new OutputPanel();
+            this._inputPanel = new InputPanel();
             layout.BeginHorizontal();
             {
                 layout.BeginVertical();
                 {
-                    layout.Add(new OutputPanel());
-                    layout.Add(new InputPanel());
+                    layout.Add(this._outputPanel);
+                    layout.Add(this._inputPanel);
                 }
 
                 layout.EndBeginVertical();
@@ -69,7 +75,7 @@ namespace TextRpgMaker.Views
                         {
                             Text = "LogIDs",
                             Command = new Command((s, e) => Logger.Debug(
-                                "IDs: {@ids}", AppState.LoadedProject.TopLevelElements
+                                "IDs: {@ids}", AppState.LoadedProject?.TopLevelElements
                                                        .Select(tle => tle.Id)
                             ))
                         },
@@ -90,18 +96,32 @@ namespace TextRpgMaker.Views
 
                 new ButtonMenuItem
                 {
+                    Text = "Project",
+                    Items =
+                    {
+                        new ButtonMenuItem
+                        {
+                            Text = "Load",
+                            Command = new Command(this.OpenProjectClick)
+                        },
+                        new SeparatorMenuItem(),
+                        new ButtonMenuItem
+                        {
+                            Text = "Project Statistics",
+                            Command = new Command((s, e) => MessageBoxes.InfoAboutLoadedProject())
+                        }
+                    }
+                },
+
+                new ButtonMenuItem
+                {
                     Text = "Game",
                     Items =
                     {
                         new ButtonMenuItem
                         {
-                            Text = "Game Info",
-                            Command = new Command((s, e) => MessageBoxes.InfoAboutLoadedProject())
-                        },
-                        new ButtonMenuItem
-                        {
-                            Text = "Open Game",
-                            Command = new Command(this.OpenProjectClick)
+                            Text = "Start new",
+                            Command = new Command(OnStartNewGameClick)
                         }
                     }
                 },

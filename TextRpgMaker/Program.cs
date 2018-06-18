@@ -4,6 +4,7 @@ using Eto.Forms;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Events;
+using TextRpgMaker.Models;
 using TextRpgMaker.Views;
 using static Serilog.Log;
 

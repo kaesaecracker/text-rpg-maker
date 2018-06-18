@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using TextRpgMaker.IO;
 using TextRpgMaker.Models;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
@@ -41,6 +42,11 @@ namespace TextRpgMaker
         public static T GetId<T>(this IEnumerable<T> list, string id) where T : Element
         {
             return list.FirstOrDefault(e => e.Id == id);
+        }
+
+        public static MultiOutput And(this IOutput a, IOutput b)
+        {
+            return new MultiOutput(a, b);
         }
     }
 }

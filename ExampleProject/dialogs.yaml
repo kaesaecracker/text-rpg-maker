@@ -1,7 +1,6 @@
 - id: mayor-speech
   text: My daughter was kidnapped, bla bla bla. Get her back!
-  choices:
-  - goto: mayor-rescuechoice
+  goto: mayor-rescuechoice
 
 - id: mayor-rescuechoice
   text: Do you want to rescue her?
