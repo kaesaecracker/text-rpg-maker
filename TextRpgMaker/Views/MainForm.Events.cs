@@ -37,11 +37,30 @@ namespace TextRpgMaker.Views
                 MessageBox.Show(this, "Aborted", "Aborted");
             }
         }
+        
+        private void OpenProjectClick(object sender, EventArgs e)
+        {
+            // todo if project is already loaded, confirm action (current save state is lost)
+            Logger.Debug("Open project click");
+
+            // create and show dialog
+            var dialog = new SelectFolderDialog
+            {
+                Title = "Choose the project folder and confirm"
+            };
+
+            // if user does not click on OK when opening, do nothing
+            Logger.Debug("Opening file chooser dialog");
+            if (dialog.ShowDialog(this) == DialogResult.Ok)
+            {
+                this.OpenProject(dialog.Directory);
+            }
+        }
 
         private void OnStartNewGameClick(object sender, EventArgs e)
         {
             Logger.Debug("Start new game");
-            var looper = new InputLooper();
+            GameInitializer.StartNewGame();
         }
     }
 }

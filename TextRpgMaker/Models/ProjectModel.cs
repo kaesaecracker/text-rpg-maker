@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using TextRpgMaker.Models.Items;
 
 namespace TextRpgMaker.Models
@@ -48,5 +49,14 @@ namespace TextRpgMaker.Models
 
         public List<Dialog> Dialogs
             => this.TopLevelElements.OfType<Dialog>().ToList();
+
+        public T ById<T>(string id) where T : Element
+            => this.TopLevelElements.OfType<T>().First(e => e.Id == id);
+
+        public List<T> ById<T>(List<string> ids) where T : Element
+            => this.TopLevelElements
+                   .OfType<T>()
+                   .Where(e => ids.Contains(e.Id))
+                   .ToList();
     }
 }

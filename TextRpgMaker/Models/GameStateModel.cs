@@ -12,5 +12,8 @@ namespace TextRpgMaker
     {
         [YamlMember(Alias = "player-char")]
         public Character PlayerChar { get; set; }
+        
+        [YamlMember(Alias = "current-scene")]
+        public Scene CurrentScene { get; set; }
     }
 }

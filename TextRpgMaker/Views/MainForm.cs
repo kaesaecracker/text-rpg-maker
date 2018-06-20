@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
 using Eto.Forms;
 using TextRpgMaker.Workers;
@@ -13,29 +12,6 @@ namespace TextRpgMaker.Views
         {
             this.InitializeComponents();
             this.InitializeEventHandlers();
-        }
-
-        private void OpenProjectClick(object sender, EventArgs e)
-        {
-            // todo if project is already loaded, confirm action (current save state is lost)
-            
-            Logger.Debug("Open project click");
-
-            // create and show dialog
-            var dialog = new SelectFolderDialog
-            {
-                Title = "Choose the 'project-info.yaml' and confirm",
-                // TODO remove hardcoded path for debugging, replace with last opened path
-                Directory = Directory.GetCurrentDirectory() + "/../ExampleProject/"
-            };
-
-
-            // if user does not click on OK when opening, do nothing
-            Logger.Debug("Opening file chooser dialog");
-            if (dialog.ShowDialog(this) == DialogResult.Ok)
-            {
-                this.OpenProject(dialog.Directory);
-            }
         }
 
         private void OpenProject(string pathToProject)

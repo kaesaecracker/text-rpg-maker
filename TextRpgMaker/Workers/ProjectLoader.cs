@@ -14,7 +14,7 @@ namespace TextRpgMaker.Workers
             
             // if something went wrong, exceptions would have been raised -> p is valid here
             Logger.Information("LOADER: load finished without exceptions");
-            AppState.LoadedProject = p;
+            AppState.Project = p;
         }
     }
 }

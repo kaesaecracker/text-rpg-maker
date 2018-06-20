@@ -5,7 +5,7 @@ namespace TextRpgMaker.IO
 {
     public class MultiOutput : IOutput
     {
-        private IOutput _a, _b;
+        private readonly IOutput _a, _b;
 
         public MultiOutput(IOutput a, IOutput b)
         {

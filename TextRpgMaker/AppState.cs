@@ -11,30 +11,30 @@ namespace TextRpgMaker
     /// </summary>
     public static class AppState
     {
-        private static Project _loadedProject;
-        public static bool IsProjectLoaded => LoadedProject != null;
+        private static Project _project;
+        public static bool IsProjectLoaded => Project != null;
         public static event EventHandler<ProjectChangedEventArgs> ProjectChangeEvent;
 
-        public static Project LoadedProject
+        public static Project Project
         {
-            get => _loadedProject;
+            get => _project;
             set
             {
-                _loadedProject = value;
+                _project = value;
                 ProjectChangeEvent?.Invoke(null, new ProjectChangedEventArgs(value));
             }
         }
 
-        private static GameState _gameState;
-        public static bool IsGameRunning => GameState != null;
+        private static GameState _game;
+        public static bool IsGameRunning => Game != null;
         public static event EventHandler<GameChangedEventArgs> GameChangedEvent;
 
-        public static GameState GameState
+        public static GameState Game
         {
-            get => _gameState;
+            get => _game;
             set
             {
-                _gameState = value;
+                _game = value;
                 GameChangedEvent?.Invoke(null, new GameChangedEventArgs(value));
             }
         }
@@ -44,7 +44,7 @@ namespace TextRpgMaker
         public static Application EtoApp { get; set; }
 
         public static AppConfig Config { get; set; }
-
+        
         public class ProjectChangedEventArgs : EventArgs
         {
             public ProjectChangedEventArgs(Project newProject)

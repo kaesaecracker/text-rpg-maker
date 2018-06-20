@@ -34,7 +34,34 @@ namespace TextRpgMaker
         public bool Required { get; }
     }
 
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public sealed class DocumentedTypeAttribute : Attribute
     {
+    }
+
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    public sealed class InputCommandAttribute : Attribute
+    {
+        /// <inheritdoc />
+        /// <summary>
+        /// Add this attribute to all command methods in InputLooper.
+        /// Such a method should have the following properties:
+        /// <list type="bullet">
+        ///   <item><description>private</description></item>
+        ///   <item><description>instance</description></item>
+        ///   <item><description>only one parameter of type string (the line entered, trimmed, excluding the command name)</description></item>
+        /// </list>
+        /// </summary>
+        /// <param name="command">The text you have to write in the text box</param>
+        /// <param name="paramDescription">A short text describing the usage for the user</param>
+        public InputCommandAttribute(string command, string paramDescription = "")
+        {
+            this.Command = command ?? throw new ArgumentNullException(nameof(command));
+            this.ParamDescription = paramDescription;
+        }
+
+        public string ParamDescription { get; }
+
+        public string Command { get; }
     }
 }

@@ -1,0 +1,18 @@
+- id: mayor-speech
+  text: My daughter was kidnapped, bla bla bla. Get her back!
+  goto: mayor-rescuechoice
+
+- id: mayor-rescuechoice
+  text: Do you want to rescue her?
+  choices:
+  - text: Sure
+    goto: mayor-accepted
+  - text: No way! I am going back to sleep.
+  
+- id: mayor-accepted
+  text: Take this sword, there are slimes out there.  
+  choices:
+  - text: Take sword
+    reward-items:
+    - id: sword-wood
+    

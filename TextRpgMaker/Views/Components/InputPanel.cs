@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Eto.Forms;
-using GLib;
-using Gtk;
-using static Serilog.Log;
 using TextRpgMaker.Models;
 using Button = Eto.Forms.Button;
 using ComboBox = Eto.Forms.ComboBox;
@@ -16,63 +12,51 @@ namespace TextRpgMaker.Views.Components
     {
         public InputPanel()
         {
-            this.InitializeComponents();
-        }
+            this.Content = new Label {Text = "When the game is running, you can enter text here."};
 
-        private void InitializeComponents()
-        {
-            this.Content = new GroupBox
-            {
-                Text = "Input",
-                Font = UiConstants.GroupBoxTitleFont,
-                Padding = 3,
-                Content = new Label
-                {
-                    Text = "1. Load a game with [Project]->[Load]\n" +
-                           "2. Start a new game with [Game]->[Start]"
-                }
-            };
+            AppState.ProjectChangeEvent += (sender, args) => this.Content = null;
+            AppState.GameChangedEvent += (sender, args) => this.Content = null;
         }
 
         public void GetChoiceAsync(List<Choice> dlgChoices, Action<Choice> action)
         {
             var combo = new ComboBox {DataStore = dlgChoices};
-            var btn = new Button((s, a) =>
+            if (dlgChoices.Count == 1) combo.SelectedIndex = 0; // preselect if only one option
+
+            var btn = new Button {Text = "Confirm"};
+            btn.Click += (s, a) =>
             {
-                if (combo.SelectedIndex != -1)
+                if (combo.SelectedIndex == -1) // nothing selected
+                {
+                    AppState.Ui.Write(">> Choose an option from the dropdown below");
+                }
+                else
                 {
                     this.Content = null;
                     action.Invoke(dlgChoices[combo.SelectedIndex]);
                 }
-            })
-            {
-                Text = "Enter"
             };
 
-            var layout = new DynamicLayout();
-            layout.BeginHorizontal();
-            layout.Add(combo);
-            layout.Add(btn);
-            this.Content = layout;
+            this.Content = TableLayout.Horizontal(
+                new TableCell {Control = combo, ScaleWidth = true},
+                btn
+            );
         }
 
         public void GetTextInput(Action<string> action)
         {
-            var field = new TextBox {Width = 350};
-            var btn = new Button((s, a) =>
+            var field = new TextBox();
+            var btn = new Button {Text = "Enter"};
+            btn.Click += (s, a) =>
             {
                 this.Content = null;
                 action.Invoke(field.Text);
-            })
-            {
-                Text = "Enter"
             };
 
-            var layout = new DynamicLayout();
-            layout.BeginHorizontal();
-            layout.Add(field);
-            layout.Add(btn);
-            this.Content = layout;
+            this.Content = TableLayout.Horizontal(
+                new TableCell {Control = field, ScaleWidth = true},
+                btn
+            );
         }
     }
 }
