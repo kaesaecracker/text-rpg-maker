@@ -40,10 +40,10 @@ namespace TextRpgMaker.Views
                 }
 
                 layout.EndBeginVertical();
-            {
+                {
                     layout.Add(new VitalsPanel());
                     layout.Add(new CharacterPanel());
-            }
+                }
 
                 layout.EndVertical();
             }
@@ -53,114 +53,113 @@ namespace TextRpgMaker.Views
         }
 
         private MenuBar InitializeMenu() => new MenuBar
+        {
+            Items =
             {
-                Items =
-                {
 #if DEBUG
-                    new ButtonMenuItem
+                new ButtonMenuItem
+                {
+                    Text = "DEBUG",
+                    Items =
                     {
-                        Text = "DEBUG",
-                        Items =
+                        new ButtonMenuItem
                         {
-                            new ButtonMenuItem
+                            Text = "LoadExampleProject",
+                            Command = new Command((s, e) => this.OpenProject(
+                                Directory.GetCurrentDirectory() + "/../ExampleProject/"
+                            ))
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "StartExampleProject",
+                            Command = new Command((sender, args) =>
                             {
-                                Text = "LoadExampleProject",
-                                Command = new Command((s, e) => this.OpenProject(
-                                    Directory.GetCurrentDirectory() + "/../ExampleProject/"
-                                ))
-                            },
-                            new ButtonMenuItem
-                            {
-                                Text = "StartExampleProject",
-                                Command = new Command((sender, args) =>
-                                {
-                                    this.OpenProject(Directory.GetCurrentDirectory() +
-                                                     "/../ExampleProject/");
-                                    this.OnStartNewGameClick(sender, args);
-                                })
-                            },
-                            new ButtonMenuItem
-                            {
-                                Text = "LogIDs",
-                                Command = new Command((s, e) => Logger.Debug(
-                                    "IDs: {@ids}", AppState.Project?.TopLevelElements
-                                                           .Select(tle => tle.Id)
-                                ))
-                            },
-                            new ButtonMenuItem
-                            {
-                                Text = "Break",
-                                Command = new Command((s, e) => { Logger.Debug("BREAK"); })
-                            }
+                                this.OpenProject(Directory.GetCurrentDirectory() +
+                                                 "/../ExampleProject/");
+                                this.OnStartNewGameClick(sender, args);
+                            })
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "LogIDs",
+                            Command = new Command((s, e) => Logger.Debug(
+                                "IDs: {@ids}", AppState.Project?.TopLevelElements
+                                                       .Select(tle => tle.Id)
+                            ))
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "Break",
+                            Command = new Command((s, e) => { Logger.Debug("BREAK"); })
                         }
-                    },
+                    }
+                },
 #endif
 
-                    new ButtonMenuItem
+                new ButtonMenuItem
+                {
+                    Text = "Project",
+                    Items =
                     {
-                        Text = "Project",
-                        Items =
+                        new ButtonMenuItem
                         {
-                            new ButtonMenuItem
-                            {
-                                Text = "Load",
-                                Command = new Command(this.OpenProjectClick)
-                            },
-                            new SeparatorMenuItem(),
-                            new ButtonMenuItem
-                            {
-                                Text = "Project Statistics",
-                                Command = new Command((s, e) =>MessageBoxes.InfoAboutLoadedProject())
-                            }
-                        }
-                    },
-
-                    new ButtonMenuItem
-                    {
-                        Text = "Game",
-                        Items =
+                            Text = "Load",
+                            Command = new Command(this.OpenProjectClick)
+                        },
+                        new SeparatorMenuItem(),
+                        new ButtonMenuItem
                         {
-                            new ButtonMenuItem
-                            {
-                                Text = "Start new",
-                                Enabled = false,
-                                Command = new Command(this.OnStartNewGameClick)
-                            }
+                            Text = "Project Statistics",
+                            Command = new Command((s, e) => MessageBoxes.InfoAboutLoadedProject())
                         }
-                    },
-
-                    new ButtonMenuItem
-                    {
-                        Text = "Load / Save",
-                        Command = new Command(UnimplementedClick)
                     }
                 },
 
-                AboutItem = new ButtonMenuItem
+                new ButtonMenuItem
                 {
-                    Text = "About",
+                    Text = "Game",
+                    Items =
+                    {
+                        new ButtonMenuItem
+                        {
+                            Text = "Start new",
+                            Enabled = false,
+                            Command = new Command(this.OnStartNewGameClick)
+                        }
+                    }
+                },
+
+                new ButtonMenuItem
+                {
+                    Text = "Load / Save",
+                    Command = new Command(UnimplementedClick)
+                }
+            },
+
+            AboutItem = new ButtonMenuItem
+            {
+                Text = "About",
+                Command = new Command(UnimplementedClick)
+            },
+
+            HelpItems =
+            {
+                new ButtonMenuItem
+                {
+                    Text = "Game Help",
                     Command = new Command(UnimplementedClick)
                 },
-
-                HelpItems =
+                new ButtonMenuItem
                 {
-                    new ButtonMenuItem
-                    {
-                        Text = "Game Help",
-                        Command = new Command(UnimplementedClick)
-                    },
-                    new ButtonMenuItem
-                    {
-                        Text = "Engine Help",
-                        Command = new Command(UnimplementedClick)
-                    },
-                    new ButtonMenuItem
-                    {
-                        Text = "Export yaml type documentation",
-                        Command = new Command(this.OnGenerateTypeDocClick)
-                    }
+                    Text = "Engine Help",
+                    Command = new Command(UnimplementedClick)
+                },
+                new ButtonMenuItem
+                {
+                    Text = "Export yaml type documentation",
+                    Command = new Command(this.OnGenerateTypeDocClick)
                 }
-            };
-        }
+            }
+        };
     }
 }

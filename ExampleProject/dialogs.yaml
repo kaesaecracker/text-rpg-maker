@@ -1,6 +1,7 @@
 #! include dialogs/mayor.yaml
 
-  
+- id: guard-talk
+  text: 
 
   
     
