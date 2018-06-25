@@ -7,9 +7,9 @@ namespace TextRpgMaker.Workers
 {
     public class Validator
     {
-        private readonly Project _project;
+        private readonly ProjectModel _project;
 
-        public Validator(Project project)
+        public Validator(ProjectModel project)
         {
             this._project = project;
         }
@@ -28,7 +28,7 @@ namespace TextRpgMaker.Workers
                 from type in assembly.GetTypes()
                 from method in type.GetMethods()
                 where method.GetParameters().Length == 1
-                      && method.GetParameters()[0].ParameterType == typeof(Project)
+                      && method.GetParameters()[0].ParameterType == typeof(ProjectModel)
                 select method
             ).ToList();
 

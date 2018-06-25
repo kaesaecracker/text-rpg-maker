@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Runtime.CompilerServices;
 using TextRpgMaker.IO;
 using TextRpgMaker.Models;
 using static TextRpgMaker.AppState;
@@ -12,14 +11,14 @@ namespace TextRpgMaker
         {
             output.Write(">> look around");
 
-            var characters = AppState.Project
-                                     .ById<Character>(Game.CurrentScene.Characters)
-                                     .Select(c => c.Name)
-                                     .ToList();
+            var characters = Project.Characters
+                                    .GetIds(Game.CurrentScene.Characters)
+                                    .Select(c => c.Name)
+                                    .ToList();
             if (characters.Any())
                 output.Write("Characters: " +
                              characters.Aggregate((str, cName) => $"{str}, {cName}"));
-            // todo look around
+            // todo look around items etc
         }
 
         public static void PrintCharacter(Character c, IOutput output) => output.Write(

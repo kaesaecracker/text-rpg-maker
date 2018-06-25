@@ -27,7 +27,7 @@ namespace TextRpgMaker.Workers
             this._tles = new List<Element>();
         }
 
-        public Project ParseAll()
+        public ProjectModel ParseAll()
         {
             Logger.Information(
                 "PARSER: Starting parsing of project in folder {fldr}",
@@ -45,7 +45,7 @@ namespace TextRpgMaker.Workers
             // "soft" errors - for example there is an item in a scene that does not exist
             // TODO check if weapon ammo exists
 
-            return new Project(this._folder, this._tles);
+            return new ProjectModel(this._folder, this._tles);
         }
 
         /// <summary>
@@ -253,8 +253,6 @@ namespace TextRpgMaker.Workers
 
             foreach (var tuple in props)
             {
-                Logger.Debug("Default value for {elem}.{p} = {val}", tuple.element.Id,
-                    tuple.property.Name, tuple.DefaultValue.ToString());
                 tuple.property.SetValue(tuple.element, tuple.DefaultValue);
             }
         }

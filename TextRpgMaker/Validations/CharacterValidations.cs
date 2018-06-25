@@ -7,12 +7,10 @@ namespace TextRpgMaker.Validations
     [ValidatorClass]
     public static class CharacterValidations
     {
-        public static void CharacterDropsExist(Project p)
-        {
-            // todo character drops exist
-        }
+        // todo character drops exist
+        // todo inventory items exist
 
-        public static void CharacterTalkDialogExists(Project p)
+        public static void CharacterTalkDialogExists(ProjectModel p)
         {
             var errors = (
                 from character in p.Characters
@@ -27,7 +25,7 @@ namespace TextRpgMaker.Validations
             {
                 msg += $"\n- {character.Id} ({character.TalkDialog})";
             }
-            
+
             throw new ValidationFailedException(msg);
         }
     }

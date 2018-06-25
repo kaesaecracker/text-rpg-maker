@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using TextRpgMaker.Models;
-
-namespace TextRpgMaker.IO
+﻿namespace TextRpgMaker.IO
 {
     public class MultiOutput : IOutput
     {
@@ -17,12 +14,6 @@ namespace TextRpgMaker.IO
         {
             this._a.Write(text);
             this._b.Write(text);
-        }
-
-        public void Write(List<Choice> choices)
-        {
-            this._a.Write(choices);
-            this._b.Write(choices);
         }
     }
 }

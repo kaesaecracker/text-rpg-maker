@@ -118,6 +118,7 @@ namespace TextRpgMaker.Workers
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
+                    if (string.IsNullOrWhiteSpace(line)) continue; // skip empty lines
                     yamlWriter.WriteLine(line);
                 }
             }

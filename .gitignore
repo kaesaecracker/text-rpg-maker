@@ -13,3 +13,5 @@ ExampleProject/scenes\.yaml
 *.orig
 
 ExampleProject/dialogs\.yaml
+
+TextRpgMaker/documentation\.yaml

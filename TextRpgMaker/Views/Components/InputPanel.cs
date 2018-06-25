@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Eto.Forms;
 using TextRpgMaker.IO;
-using TextRpgMaker.Models;
 using Button = Eto.Forms.Button;
 using ComboBox = Eto.Forms.ComboBox;
-using Label = Eto.Forms.Label;
 
 namespace TextRpgMaker.Views.Components
 {
@@ -37,7 +35,7 @@ namespace TextRpgMaker.Views.Components
                 else
                 {
                     this.Content = null;
-                    callback.Invoke(possibleChoices[combo.SelectedIndex]);
+                    callback(possibleChoices[combo.SelectedIndex]);
                 }
             };
 

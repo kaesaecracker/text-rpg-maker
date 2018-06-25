@@ -1,7 +1,7 @@
-﻿namespace TextRpgMaker.Models.Items
+﻿namespace TextRpgMaker.Models
 {
     [LoadFromProjectFile("items/ammo.yaml", required: false, isList: true)]
-    public class Ammo : Element
+    public class Item : Element
     {
     }
 }

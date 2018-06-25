@@ -7,8 +7,8 @@ namespace TextRpgMaker.Models
     public class Character : Element
     {
         [YamlMember(Alias = "current-hp")]
-        [YamlProperties(required: false, defaultValue: 100)]
-        public double CurrentHp { get; set; }
+        [YamlProperties(required: false)]
+        public double CurrentHp { get; set; } = 100;
 
         [YamlMember(Alias = "name")]
         [YamlProperties(required: true)]
@@ -16,26 +16,26 @@ namespace TextRpgMaker.Models
 
         [YamlMember(Alias = "health")]
         [YamlProperties(required: false, defaultValue: 1.0)]
-        public double Health { get; set; }
+        public double? Health { get; set; }
 
         [YamlMember(Alias = "evade")]
         [YamlProperties(required: false, defaultValue: 1.0)]
-        public double Evade { get; set; }
+        public double? Evade { get; set; }
 
         [YamlMember(Alias = "attack")]
         [YamlProperties(required: false, defaultValue: 1.0)]
-        public double Attack { get; set; }
+        public double? Attack { get; set; }
 
         [YamlMember(Alias = "speed")]
         [YamlProperties(required: false, defaultValue: 1.0)]
-        public double Speed { get; set; }
+        public double? Speed { get; set; }
 
         [YamlMember(Alias = "items")]
-        public List<ItemGrouping> StartItems { get; set; } = new List<ItemGrouping>();
+        public Inventory Items { get; set; }
 
         [YamlMember(Alias = "drops")]
         public List<Drop> Drops { get; set; }
-        
+
         [YamlMember(Alias = "talk-dialog")]
         public string TalkDialog { get; set; }
     }
@@ -48,11 +48,11 @@ namespace TextRpgMaker.Models
         public string ItemId { get; set; }
 
         [YamlMember(Alias = "count")]
-        [YamlProperties(required: false, defaultValue: 1)]
-        public int Count { get; set; }
+        [YamlProperties(required: false)]
+        public int Count { get; set; } = 1;
 
         [YamlMember(Alias = "chance")]
-        [YamlProperties(required: false, defaultValue: 1.0)]
-        public double Chance { get; set; }
+        [YamlProperties(required: false)]
+        public double Chance { get; set; } = 1.0;
     }
 }

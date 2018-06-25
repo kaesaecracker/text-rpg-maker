@@ -44,6 +44,13 @@ namespace TextRpgMaker
             return list.FirstOrDefault(e => e.Id == id);
         }
 
+        public static List<T> GetIds<T>(this IEnumerable<T> list, List<string> ids)
+            where T : Element
+        {
+            return list.Where(elem => ids.Contains(elem.Id))
+                       .ToList();
+        }
+
         public static MultiOutput And(this IOutput a, IOutput b)
         {
             return new MultiOutput(a, b);

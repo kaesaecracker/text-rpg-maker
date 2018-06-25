@@ -3,6 +3,9 @@ description: A small village is overrun by the army of the Slime King. Can you r
              defeat the slimes once and for all?
              
 start-info:
+  intro-text: You just woke up in your hometown, a small village. 
+              You notice a huge crowd outside, the mayor is holding a speech. You go outside to listen.
+  
   scene: town
   dialog: mayor-speech
   characters:

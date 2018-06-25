@@ -6,7 +6,7 @@ namespace TextRpgMaker.Validations
 {
     public static class StartInfoValidations
     {
-        public static void StartCharactersExist(Project p)
+        public static void StartCharactersExist(ProjectModel p)
         {
             var missingChars = (
                 from charId in p.StartInfo.CharacterIds
@@ -22,13 +22,13 @@ namespace TextRpgMaker.Validations
                 );
         }
 
-        public static void StartSceneExists(Project p)
+        public static void StartSceneExists(ProjectModel p)
         {
             if (p.Scenes.All(s => s.Id != p.StartInfo.SceneId))
                 throw new ValidationFailedException($"Start scene does not exist");
         }
 
-        public static void StartDialogExists(Project p)
+        public static void StartDialogExists(ProjectModel p)
         {
             if (p.Dialogs.All(d => d.Id != p.StartInfo.DialogId))
                 throw new ValidationFailedException("Start dialog does not exist");

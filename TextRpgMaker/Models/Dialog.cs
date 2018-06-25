@@ -26,8 +26,11 @@ namespace TextRpgMaker.Models
         [YamlProperties(required: true)]
         public string Text { get; set; }
 
-        [YamlMember(Alias = "goto")]
-        public string GotoId { get; set; }
+        [YamlMember(Alias = "goto-dialog")]
+        public string GotoDialogId { get; set; }
+
+        [YamlMember(Alias = "goto-scene")]
+        public string GotoSceneId { get; set; }
 
         [YamlMember(Alias = "reward-items")]
         public List<ItemGrouping> RewardItems { get; set; } = new List<ItemGrouping>();

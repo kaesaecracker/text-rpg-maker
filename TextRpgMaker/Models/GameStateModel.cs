@@ -1,7 +1,6 @@
-﻿using TextRpgMaker.Models;
-using YamlDotNet.Serialization;
+﻿using YamlDotNet.Serialization;
 
-namespace TextRpgMaker
+namespace TextRpgMaker.Models
 {
     /// <summary>
     /// The class containing everything about the current game (not the project), so for example the
@@ -15,5 +14,8 @@ namespace TextRpgMaker
         
         [YamlMember(Alias = "current-scene")]
         public Scene CurrentScene { get; set; }
+
+        [YamlMember(Alias = "current-dialog")]
+        public Dialog CurrentDialog { get; set; }
     }
 }

@@ -11,11 +11,11 @@ namespace TextRpgMaker
     /// </summary>
     public static class AppState
     {
-        private static Project _project;
+        private static ProjectModel _project;
         public static bool IsProjectLoaded => Project != null;
         public static event EventHandler<ProjectChangedEventArgs> ProjectChangeEvent;
 
-        public static Project Project
+        public static ProjectModel Project
         {
             get => _project;
             set
@@ -47,12 +47,12 @@ namespace TextRpgMaker
         
         public class ProjectChangedEventArgs : EventArgs
         {
-            public ProjectChangedEventArgs(Project newProject)
+            public ProjectChangedEventArgs(ProjectModel newProject)
             {
                 this.NewProject = newProject;
             }
 
-            public Project NewProject { get; }
+            public ProjectModel NewProject { get; }
         }
 
         public class GameChangedEventArgs

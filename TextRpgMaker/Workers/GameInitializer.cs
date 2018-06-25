@@ -9,12 +9,16 @@ namespace TextRpgMaker.Workers
         public static void StartNewGame()
         {
             // todo choose character
+            
+            
             Game = new GameState()
             {
-                CurrentScene = AppState.Project.ById<Scene>(AppState.Project.StartInfo.SceneId)
+                CurrentScene = Project.ById<Scene>(Project.StartInfo.SceneId),
+                CurrentDialog = Project.Dialogs.GetId(Project.StartInfo.DialogId)
             };
 
-            new InputLooper();
+            var looper = new InputLooper();
+            looper.StartFromNewGame();
         }
 
         public static void StartSavedGame(string pathToSave)

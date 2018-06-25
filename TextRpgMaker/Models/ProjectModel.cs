@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using TextRpgMaker.Models.Items;
 
 namespace TextRpgMaker.Models
 {
@@ -9,9 +7,9 @@ namespace TextRpgMaker.Models
     /// Everything that gets loaded when you open a project.
     /// Does <b>NOT</b> contain anything related to the current save etc
     /// </summary>
-    public class Project
+    public class ProjectModel
     {
-        public Project(string dir, List<Element> tles)
+        public ProjectModel(string dir, List<Element> tles)
         {
             this.ProjectDir = dir;
             this.TopLevelElements = tles;
@@ -41,8 +39,8 @@ namespace TextRpgMaker.Models
         public List<Consumable> ConsumableTypes
             => this.TopLevelElements.OfType<Consumable>().ToList();
 
-        public List<Ammo> AmmoTypes
-            => this.TopLevelElements.OfType<Ammo>().ToList();
+        public List<Item> AmmoTypes
+            => this.TopLevelElements.OfType<Item>().ToList();
 
         public List<Scene> Scenes
             => this.TopLevelElements.OfType<Scene>().ToList();
@@ -52,11 +50,5 @@ namespace TextRpgMaker.Models
 
         public T ById<T>(string id) where T : Element
             => this.TopLevelElements.OfType<T>().First(e => e.Id == id);
-
-        public List<T> ById<T>(List<string> ids) where T : Element
-            => this.TopLevelElements
-                   .OfType<T>()
-                   .Where(e => ids.Contains(e.Id))
-                   .ToList();
     }
 }

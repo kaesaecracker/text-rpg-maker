@@ -30,13 +30,38 @@ namespace TextRpgMaker.Workers
                                    .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
                 let attribute = method.GetCustomAttribute<InputCommandAttribute>()
                 where attribute != null
+                // order by length => "lookaround" shouldnt result in a Look("around")
+                orderby attribute.Command.Length descending
                 select (
                     attribute.Command.ToLower(),
                     method
                 )
             ).ToList();
+        }
 
-            this.HandleDialog(AppState.Project.ById<Dialog>(AppState.Project.StartInfo.DialogId));
+        public void StartFromNewGame()
+        {
+            this.Output.Write("Choose one of the following characters:");
+
+            var startChars = (
+                from id in Project.StartInfo.CharacterIds
+                select Project.Characters.GetId(id)
+            ).ToList();
+
+            foreach (var c in startChars)
+            {
+                OutputHelpers.PrintCharacter(c, this.Output);
+                this.Output.Write("");
+            }
+
+            this.Input.GetChoice(startChars, c => c.Name, choosenChar =>
+            {
+                Game.PlayerChar = choosenChar;
+                this.Output.Write($">> {choosenChar.Name}\n");
+                this.Output.Write(Project.StartInfo.IntroText
+                                  ?? "The project does not have an intro text");
+                this.HandleDialog(Game.CurrentDialog);
+            });
         }
 
         private void HandleDialog(Dialog dlg)
@@ -44,15 +69,15 @@ namespace TextRpgMaker.Workers
             // was recursive, this is the iterative way (gotos)
             while (true)
             {
-                this.Output.Write(dlg.Text);
+                this.Output.Write('"' + dlg.Text + '"');
                 if (dlg.GotoId != null)
                 {
-                    dlg = AppState.Project.ById<Dialog>(dlg.GotoId);
+                    dlg = Project.ById<Dialog>(dlg.GotoId);
                     continue;
                 }
 
                 // todo only allow choices that meet the requirements
-                this.Input.GetChoiceAsync(dlg.Choices, choice =>
+                this.Input.GetChoice(dlg.Choices, c => c.Text, choice =>
                 {
                     this.Output.Write($" >> {choice.Text}");
                     this.HandleChoice(choice);
@@ -65,14 +90,21 @@ namespace TextRpgMaker.Workers
         {
             // todo remove required items
             // todo give reward items
-            if (choice.GotoId != null)
-                this.HandleDialog(AppState.Project.ById<Dialog>(choice.GotoId));
+            if (choice.GotoDialogId != null)
+                this.HandleDialog(Project.Dialogs.GetId(choice.GotoDialogId));
+            else if (choice.GotoSceneId != null)
+                this.HandleScene(Project.Scenes.GetId(choice.GotoSceneId));
             else this.Input.GetTextInput(this.HandleText);
+        }
+
+        private void HandleScene(Scene scene)
+        {
+            Game.CurrentScene = scene;
+            // todo handle scene
         }
 
         private void HandleText(string line)
         {
-            Logger.Debug("input {line}", line);
             // todo parse command
 
             string lineLower = line.Trim().ToLower();
@@ -91,14 +123,14 @@ namespace TextRpgMaker.Workers
         }
 
         [InputCommand("talk", "<character-id>")]
-        private void TalkCommand(string restOfLine)
+        private void TalkTo(string idOrName)
         {
             var matchingChars = (
-                from character in AppState.Project.Characters
+                from character in Project.Characters
                 where Game.CurrentScene.Characters.Contains(character.Id)
-                where string.Equals(character.Name, restOfLine,
+                where string.Equals(character.Name, idOrName,
                           StringComparison.InvariantCultureIgnoreCase)
-                      || string.Equals(character.Id, restOfLine,
+                      || string.Equals(character.Id, idOrName,
                           StringComparison.InvariantCultureIgnoreCase)
                 select character
             ).ToList();
@@ -106,7 +138,7 @@ namespace TextRpgMaker.Workers
             switch (matchingChars.Count)
             {
                 case 0:
-                    this.Output.Write($">> Could not find character {restOfLine} in current scene");
+                    this.Output.Write($">> Could not find character {idOrName} in current scene");
                     break;
 
                 case 1 when matchingChars.First().TalkDialog == null:
@@ -117,7 +149,7 @@ namespace TextRpgMaker.Workers
                 case 1:
                     this.Output.Write($">> Talking to {matchingChars.First().Name}");
                     this.HandleDialog(
-                        AppState.Project.ById<Dialog>(matchingChars.First().TalkDialog));
+                        Project.ById<Dialog>(matchingChars.First().TalkDialog));
                     return;
 
                 default:
@@ -131,26 +163,23 @@ namespace TextRpgMaker.Workers
             this.Input.GetTextInput(this.HandleText);
         }
 
-        [InputCommand("look")]
-        private void LookCommand(string args)
+        [InputCommand("look", paramDescription: "look at element with the specified id or name")]
+        private void LookAt(string idOrName)
         {
+            // todo only allow look at elements in scene / inventory
             var elems = (
-                from Element element in AppState.Project.TopLevelElements
-                where string.Equals(element.Id, args,
+                from Element element in Project.TopLevelElements
+                where string.Equals(element.Id, idOrName,
                           StringComparison.InvariantCultureIgnoreCase)
-                      || string.Equals(element.Name, args,
+                      || string.Equals(element.Name, idOrName,
                           StringComparison.InvariantCultureIgnoreCase)
                 select element
             ).ToList();
 
             switch (elems.Count)
             {
-                case 0 when string.IsNullOrWhiteSpace(args):
-                    OutputHelpers.LookAround(this.Output);
-                    break;
-
                 case 0:
-                    this.Output.Write($">> Could not find {args} in current scene");
+                    this.Output.Write($">> Could not find '{idOrName}' in current scene");
                     break;
 
                 case 1 when elems.First().LookText == null:
@@ -173,5 +202,21 @@ namespace TextRpgMaker.Workers
 
             this.Input.GetTextInput(this.HandleText);
         }
+
+        [InputCommand("lookaround", paramDescription: "Lists elements in scene")]
+        private void LookAround(string _)
+        {
+            OutputHelpers.LookAround(this.Output);
+            this.Input.GetTextInput(this.HandleText);
+        }
+
+        [InputCommand("inventory", paramDescription: "shows inventory")]
+        private void ShowInventory(string _)
+        {
+            OutputHelpers.PrintInventory(this.Output);
+            this.Input.GetTextInput(this.HandleText);
+        }
+
+        public void Start() => this.HandleDialog(Game.CurrentDialog);
     }
 }
