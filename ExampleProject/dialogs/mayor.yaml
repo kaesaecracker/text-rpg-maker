@@ -6,7 +6,7 @@
   text: Do you want to rescue her?
   choices:
   - text: Sure
-    goto: mayor-accepted
+    goto-dialog: mayor-accepted
   - text: No way! I am going back to sleep.
   
 - id: mayor-accepted

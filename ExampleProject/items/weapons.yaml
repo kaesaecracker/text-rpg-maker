@@ -20,5 +20,10 @@
   attack: 1.5
   ammo: arrow
   
+- id: dagger
+  name: Dagger
+  attack: 0.5
+  timeout: 0.5
+  
 #- id: weapon-wo-name
 #  based-on: something-that-does-not-exist
