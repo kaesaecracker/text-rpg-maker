@@ -33,18 +33,6 @@ namespace TextRpgMaker.Views
                     layout.Add(this._inputPanel);
                 }
 
-                layout.EndBeginVertical();
-                {
-                    layout.Add(new InventoryPanel());
-                    layout.Add(new InfoTabsPanel());
-                }
-
-                layout.EndBeginVertical();
-                {
-                    layout.Add(new VitalsPanel());
-                    layout.Add(new CharacterPanel());
-                }
-
                 layout.EndVertical();
             }
 
