@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Eto.Forms;
+using TextRpgMaker.IO;
 using TextRpgMaker.Models;
 using Button = Eto.Forms.Button;
 using ComboBox = Eto.Forms.ComboBox;
@@ -8,20 +10,22 @@ using Label = Eto.Forms.Label;
 
 namespace TextRpgMaker.Views.Components
 {
-    public class InputPanel : Panel
+    public class InputPanel : Panel, IInput
     {
         public InputPanel()
         {
-            this.Content = new Label {Text = "When the game is running, you can enter text here."};
+            this.Content = "When the game is running, you can enter text here.";
 
             AppState.ProjectChangeEvent += (sender, args) => this.Content = null;
             AppState.GameChangedEvent += (sender, args) => this.Content = null;
         }
 
-        public void GetChoiceAsync(List<Choice> dlgChoices, Action<Choice> action)
+        public void GetChoice<T>(List<T> possibleChoices,
+                                 Func<T, string> textRepresentation,
+                                 Action<T> callback)
         {
-            var combo = new ComboBox {DataStore = dlgChoices};
-            if (dlgChoices.Count == 1) combo.SelectedIndex = 0; // preselect if only one option
+            var combo = new ComboBox {DataStore = possibleChoices.Select(textRepresentation)};
+            if (possibleChoices.Count == 1) combo.SelectedIndex = 0; // preselect if only one option
 
             var btn = new Button {Text = "Confirm"};
             btn.Click += (s, a) =>
@@ -33,7 +37,7 @@ namespace TextRpgMaker.Views.Components
                 else
                 {
                     this.Content = null;
-                    action.Invoke(dlgChoices[combo.SelectedIndex]);
+                    callback.Invoke(possibleChoices[combo.SelectedIndex]);
                 }
             };
 

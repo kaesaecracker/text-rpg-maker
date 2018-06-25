@@ -4,11 +4,20 @@ namespace TextRpgMaker.Views.Components
 {
     public class OutputPanel : Panel
     {
-        private TextArea _box;
+        private readonly TextArea _box;
 
         public OutputPanel()
         {
-            this.InitializeComponents();
+            this._box = new TextArea
+            {
+                Height = 350,
+                Width = 400,
+                Enabled = false,
+                Text = "You have not loaded a project yet.\n" +
+                       "To load a project, click [Project]->[Load]"
+            };
+
+            this.Content = this._box;
 
             AppState.ProjectChangeEvent += (sender, args) =>
                 this._box.Text = "You loaded a project, but have not started a new game yet.\n" +
@@ -16,22 +25,9 @@ namespace TextRpgMaker.Views.Components
             AppState.GameChangedEvent += (sender, args) => this._box.Text = string.Empty;
         }
 
-        private void InitializeComponents()
-        {
-            this._box = new TextArea
-            {
-                Height = 350,
-                Width = 400,
-                Text = "You have not loaded a project yet.\n" +
-                       "To load a project, click [Project]->[Load]"
-            };
-
-            this.Content = this._box;
-        }
-
         public void WriteLine(string text)
         {
-            this._box.Text += text + "\n";
+            this._box.Append(text + "\n", scrollToCursor: true);
         }
     }
 }
