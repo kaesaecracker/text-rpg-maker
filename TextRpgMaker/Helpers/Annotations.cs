@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TextRpgMaker
+namespace TextRpgMaker.Helpers
 {
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class YamlPropertiesAttribute : Attribute

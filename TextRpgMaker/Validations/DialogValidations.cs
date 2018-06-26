@@ -1,5 +1,8 @@
-﻿namespace TextRpgMaker.Validations
+﻿using TextRpgMaker.Workers;
+
+namespace TextRpgMaker.Validations
 {
+    [ValidatorClass]
     public class DialogValidations
     {
         // todo required items

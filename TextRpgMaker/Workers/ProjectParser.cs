@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using TextRpgMaker.Helpers;
 using TextRpgMaker.Models;
+using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using static Serilog.Log;
 
@@ -20,7 +23,8 @@ namespace TextRpgMaker.Workers
         {
             if (!Directory.Exists(pathToFolder))
             {
-                throw LoadException.ProjectFolderMissing(pathToFolder);
+                throw new LoadException(
+                    $"The specified project folder {pathToFolder} does not exist");
             }
 
             this._folder = pathToFolder;
@@ -53,30 +57,46 @@ namespace TextRpgMaker.Workers
         /// </summary>
         private void RawYamlLoad()
         {
-            foreach (var tuple in Helper.TypesToLoad())
+            var typesToLoad = (
+                from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                from type in assembly.GetTypes()
+                let fileAnnotation = type.GetCustomAttribute<LoadFromProjectFileAttribute>()
+                where fileAnnotation != null
+                select (
+                    Type: type,
+                    PathInProj: fileAnnotation.ProjectRelativePath,
+                    fileAnnotation.Required,
+                    fileAnnotation.IsList
+                )
+            ).ToList();
+
+            foreach (var tuple in typesToLoad)
             {
-                string absPath = Helper.ProjectToNormalPath(tuple.pathInProj, this._folder);
+                string absPath = Helper.ProjectToNormalPath(tuple.PathInProj, this._folder);
                 Logger.Debug("PARSER: Parsing file {f}", absPath);
 
                 if (!File.Exists(absPath))
                 {
-                    if (tuple.required)
+                    if (tuple.Required)
                     {
-                        throw LoadException.FileMissing(tuple.pathInProj, absPath);
+                        throw new LoadException(
+                            $"The required project file '{tuple.PathInProj}' is missing!\n" +
+                            $"Expected it at '{absPath}'"
+                        );
                     }
 
                     Logger.Warning(
                         "File {f} does not exist, but is not required",
-                        tuple.pathInProj);
+                        tuple.PathInProj);
                     continue;
                 }
 
                 var elementOrList =
-                    this._deserializer.DeserializeSafely(tuple.type, absPath, tuple.isList);
+                    this._deserializer.DeserializeSafely(tuple.Type, absPath, tuple.IsList);
                 switch (elementOrList)
                 {
-                    case null when tuple.required:
-                        throw LoadException.RequiredFileEmpty(absPath);
+                    case null when tuple.Required:
+                        throw new LoadException($"A required file is empty: {absPath}");
                     case null:
                         continue;
 
@@ -111,7 +131,18 @@ namespace TextRpgMaker.Workers
                 )
             ).ToList();
 
-            if (duplicates.Any()) throw LoadException.DuplicateIds(duplicates.AsEnumerable());
+            if (duplicates.Any())
+            {
+                string msg = "The project contains duplicate element ids, which is not allowed.\n";
+                foreach ((string id, var elements) in duplicates)
+                {
+                    msg += $"- id '{id}', defined in:\n";
+                    msg = elements.Aggregate(msg, (current, elem)
+                        => current + $"  - '{elem.OriginalFilePath}'\n");
+                }
+
+                throw new LoadException(msg);
+            }
 
             // matches 'id', 'some-id', 'id-9-test', but not ' id ', '%KHGSI'
             var idRegex = new Regex("[a-z][a-z]+(-([a-z]|[0-9])+)*"); // good regex tool: regexr.com
@@ -262,5 +293,93 @@ namespace TextRpgMaker.Workers
             e.OriginalFilePath = absPath;
             this._tles.Add(e);
         }
+    }
+
+    public class LoadException : Exception
+    {
+        public static LoadException BaseElementNotFound(IEnumerable<Element> errorElements)
+        {
+            string msg = errorElements.Aggregate(
+                "There are elements based on other elements that could not be found:\n",
+                (current, elem) => current + (
+                                       $"- '{elem.Id}' (from '{elem.OriginalFilePath})'\n" +
+                                       $"  is based on '{elem.BasedOnId}'"
+                                   )
+            );
+
+            return new LoadException(msg);
+        }
+
+        public static LoadException BaseElementHasDifferentType(
+            IEnumerable<(Element Base, Element Target)> errorTuples)
+        {
+            string msg = "The following elements are based on elements with different types:\n";
+            foreach (var (baseElem, targetElem) in errorTuples)
+            {
+                msg += $"- '{targetElem.Id}' of type '{targetElem.GetType().Name}' " +
+                       $"from '{targetElem.OriginalFilePath}'\n" +
+                       $"  based on '{baseElem.Id}' of type '{baseElem.GetType().Name}' " +
+                       $"from '{baseElem.OriginalFilePath}'";
+            }
+
+            return new LoadException(msg);
+        }
+
+        public static LoadException MalformedId(IEnumerable<Element> elems)
+        {
+            string msg = "The project contains malformed IDs:\n";
+            foreach (var element in elems)
+            {
+                msg += $"- {element.Id}";
+            }
+
+            msg += "IDs have to match the following criteria: " +
+                   "- IDs can only contain [a-z], '-' and [0-9]\n" +
+                   "- IDs cannot start with a number\n" +
+                   "- IDs cannot start or end with '-'";
+
+            return new LoadException(msg);
+        }
+
+        public static LoadException RequiredPropertyNull(
+            IEnumerable<(Element Element, string PropYamlName, string PropCsName)> errors)
+        {
+            string message = errors.Aggregate("The following required fields are not set:\n",
+                (current, err) =>
+                    current +
+                    $"- '{err.Element.Id}' of type '{err.Element.GetType().Name}'\n" +
+                    $"  requires property '{err.PropYamlName}' ({err.PropCsName})\n" +
+                    $"  in file {err.Element.OriginalFilePath}"
+            );
+
+            return new LoadException(message);
+        }
+
+        public static LoadException InheritanceLoopAborted(Queue<Element> realisationQueue)
+        {
+            string msg = "There was an error realizing the inheritance of elements. This might " +
+                         "be a circular reference. Below you can see a list of all elements that" +
+                         " were in the queue when the process was aborsysted:\n";
+            while (realisationQueue.TryDequeue(out var element))
+            {
+                msg += $"- id '{element.Id}'" +
+                       $"  based on id '{element.BasedOnId}'" +
+                       $"  defined in '{element.OriginalFilePath}'";
+            }
+
+            return new LoadException(msg);
+        }
+
+        public LoadException(string message, Exception innerException = null)
+            : base(message, innerException)
+        {
+        }
+
+
+        public static LoadException DeserializationError(string pathInProj, YamlException ex) =>
+            new LoadException(
+                $"Could not parse a file in the project: {pathInProj}",
+                ex
+            );
     }
 }

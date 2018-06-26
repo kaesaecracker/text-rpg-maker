@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.Models

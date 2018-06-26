@@ -1,9 +1,7 @@
 ﻿using System.Linq;
-using TextRpgMaker.IO;
 using TextRpgMaker.Models;
-using static TextRpgMaker.AppState;
 
-namespace TextRpgMaker
+namespace TextRpgMaker.Helpers
 {
     public static class OutputHelpers
     {
@@ -11,8 +9,8 @@ namespace TextRpgMaker
         {
             output.Write(">> look around");
 
-            var characters = Project.Characters
-                                    .GetIds(Game.CurrentScene.Characters)
+            var characters = AppState.Project.Characters
+                                    .GetIds(AppState.Game.CurrentScene.Characters)
                                     .Select(c => c.Name)
                                     .ToList();
             if (characters.Any())
@@ -33,9 +31,9 @@ namespace TextRpgMaker
         public static void PrintInventory(IOutput output)
         {
             var items =
-                from ig in Game.PlayerChar.Items
+                from ig in AppState.Game.PlayerChar.Items
                 select (
-                    Element: Project.TopLevelElements.First(tle => tle.Id == ig.ItemId),
+                    Element: AppState.Project.TopLevelElements.First(tle => tle.Id == ig.ItemId),
                     ig.Count
                 );
             string text = items.Aggregate("Current Inventory:", (s, tuple) =>

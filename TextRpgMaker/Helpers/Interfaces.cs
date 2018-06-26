@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TextRpgMaker.IO
+namespace TextRpgMaker.Helpers
 {
     public interface IInput
     {
@@ -10,5 +10,10 @@ namespace TextRpgMaker.IO
                           Action<T> callback);
 
         void GetTextInput(Action<string> callback);
+    }
+    
+    public interface IOutput
+    {
+        void Write(string text);
     }
 }

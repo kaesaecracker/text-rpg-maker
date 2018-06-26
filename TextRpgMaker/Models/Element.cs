@@ -1,4 +1,5 @@
-﻿using YamlDotNet.Serialization;
+﻿using TextRpgMaker.Helpers;
+using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.Models
 {

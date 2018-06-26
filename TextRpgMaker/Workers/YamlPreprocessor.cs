@@ -1,5 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Serilog;
+using TextRpgMaker.Helpers;
 
 namespace TextRpgMaker.Workers
 {
@@ -19,8 +23,14 @@ namespace TextRpgMaker.Workers
                 "PREPROCESSOR: Starting preprocessing of .typ files in folder {f}",
                 this._folder);
 
-            var filesToCheck = Helper.TypesToLoad();
-            foreach (var tuple in filesToCheck) this.ProcessFile(tuple.pathInProj);
+            var filesToCheck =
+                from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                from type in assembly.GetTypes()
+                let fileAnnotation = type.GetCustomAttribute<LoadFromProjectFileAttribute>()
+                where fileAnnotation != null
+                select fileAnnotation.ProjectRelativePath;
+
+            foreach (string file in filesToCheck) this.ProcessFile(file);
         }
 
         private void ProcessFile(string pathInProj)
@@ -125,5 +135,26 @@ namespace TextRpgMaker.Workers
 
             yamlWriter.WriteLine($"# --- END INCLUDE {path} --- #");
         }
+    }
+    
+    public class PreprocessorException : Exception
+    {
+        private PreprocessorException(string msg, Exception inner = null) : base(msg, inner)
+        {
+        }
+
+        public static PreprocessorException IncludedFileNotFound(string pathToInclude) =>
+            new PreprocessorException($"The included file '{pathToInclude}' was not found");
+
+        public static PreprocessorException TypCommandUnknown(
+            string command, string line, string file) =>
+            new PreprocessorException(
+                $"Unknown TYP command: '{command}' in line '{line}' in file {file}"
+            );
+
+        public static PreprocessorException ArgumentMissing(string file, string line) =>
+            new PreprocessorException(
+                $"Preprocessor argument missing in file '{file}' in line '{line}'"
+            );
     }
 }

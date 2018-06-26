@@ -4,6 +4,7 @@ using TextRpgMaker.Workers;
 
 namespace TextRpgMaker.Validations
 {
+    [ValidatorClass]
     public static class StartInfoValidations
     {
         public static void StartCharactersExist(ProjectModel p)

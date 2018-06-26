@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TextRpgMaker.IO;
 using TextRpgMaker.Models;
+using TextRpgMaker.Workers;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 
-namespace TextRpgMaker
+namespace TextRpgMaker.Helpers
 {
-    public static class Extensions
+    public static class Helper
     {
         public static object DeserializeSafely(
             this Deserializer d, Type t, string pathToFile, bool list)
@@ -55,5 +55,8 @@ namespace TextRpgMaker
         {
             return new MultiOutput(a, b);
         }
+
+        public static string ProjectToNormalPath(string pathInProj, string pathToProj) =>
+            pathToProj + "/" + pathInProj;
     }
 }

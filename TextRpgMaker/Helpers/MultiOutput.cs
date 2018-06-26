@@ -1,4 +1,4 @@
-﻿namespace TextRpgMaker.IO
+﻿namespace TextRpgMaker.Helpers
 {
     public class MultiOutput : IOutput
     {

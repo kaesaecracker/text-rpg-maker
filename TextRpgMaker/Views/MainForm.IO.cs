@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using TextRpgMaker.IO;
+using TextRpgMaker.Helpers;
 using TextRpgMaker.Models;
 
 namespace TextRpgMaker.Views

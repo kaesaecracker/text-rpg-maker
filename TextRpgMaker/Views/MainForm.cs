@@ -34,13 +34,13 @@ namespace TextRpgMaker.Views
                         Logger.Warning(ex, "Validation failed");
                         MessageBoxes.LoadFailedExceptionBox(vfe);
                         break;
-                    
+
                     default: throw;
                 }
             }
         }
 
-        internal static void UnimplementedClick(object sender, EventArgs e)
+        private static void UnimplementedClick(object sender, EventArgs e)
             => MessageBox.Show("Not implemented yet");
     }
 }
