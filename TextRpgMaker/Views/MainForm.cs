@@ -19,7 +19,7 @@ namespace TextRpgMaker.Views
             try
             {
                 ProjectLoader.LoadProject(pathToProject);
-                MessageBox.Show(this, "Project loaded", caption: "Done");
+                MessageBox.Show(this, "Project loaded", "Done");
             }
             catch (Exception ex)
             {
@@ -30,7 +30,8 @@ namespace TextRpgMaker.Views
                         Logger.Warning(ex, "Load failed");
                         MessageBoxes.LoadFailedExceptionBox(ex);
                         break;
-                    case TargetInvocationException tie when tie.InnerException is ValidationFailedException vfe:
+                    case TargetInvocationException tie
+                        when tie.InnerException is ValidationFailedException vfe:
                         Logger.Warning(ex, "Validation failed");
                         MessageBoxes.LoadFailedExceptionBox(vfe);
                         break;
@@ -41,6 +42,8 @@ namespace TextRpgMaker.Views
         }
 
         private static void UnimplementedClick(object sender, EventArgs e)
-            => MessageBox.Show("Not implemented yet");
+        {
+            MessageBox.Show("Not implemented yet");
+        }
     }
 }

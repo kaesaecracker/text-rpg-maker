@@ -7,7 +7,7 @@ namespace TextRpgMaker.Models
     public class Element
     {
         [YamlMember(Alias = "id")]
-        [YamlProperties(required: true)]
+        [YamlProperties(true)]
         public virtual string Id { get; set; }
 
         [YamlMember(Alias = "based-on")]
@@ -22,9 +22,6 @@ namespace TextRpgMaker.Models
         [YamlIgnore]
         public string OriginalFilePath { get; set; }
 
-        public override string ToString()
-        {
-            return $"[Element Id={this.Id}]";
-        }
+        public override string ToString() => $"[Element Id={this.Id}]";
     }
 }

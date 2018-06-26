@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Eto.Forms;
 using TextRpgMaker.Helpers;
-using Button = Eto.Forms.Button;
-using ComboBox = Eto.Forms.ComboBox;
 
 namespace TextRpgMaker.Views.Components
 {

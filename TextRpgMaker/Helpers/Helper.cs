@@ -18,10 +18,7 @@ namespace TextRpgMaker.Helpers
             {
                 using (var reader = new StreamReader(pathToFile))
                 {
-                    if (list)
-                    {
-                        t = typeof(List<>).MakeGenericType(t);
-                    }
+                    if (list) t = typeof(List<>).MakeGenericType(t);
 
                     return d.Deserialize(reader, t);
                 }
@@ -33,7 +30,7 @@ namespace TextRpgMaker.Helpers
         }
 
         /// <summary>
-        /// Enables things like AppState.LoadedProject.Characters.GetId("archer")
+        ///     Enables things like AppState.LoadedProject.Characters.GetId("archer")
         /// </summary>
         /// <param name="list">the list where it looks for the id</param>
         /// <param name="id">the id to search</param>
@@ -56,7 +53,9 @@ namespace TextRpgMaker.Helpers
             return new MultiOutput(a, b);
         }
 
-        public static string ProjectToNormalPath(string pathInProj, string pathToProj) =>
-            pathToProj + "/" + pathInProj;
+        public static string ProjectToNormalPath(string pathInProj, string pathToProj)
+        {
+            return pathToProj + "/" + pathInProj;
+        }
     }
 }

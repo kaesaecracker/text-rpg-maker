@@ -4,16 +4,12 @@ using System.Linq;
 using System.Reflection;
 using TextRpgMaker.Helpers;
 using TextRpgMaker.Models;
-using static Serilog.Log;
 using static TextRpgMaker.AppState;
-using Dialog = TextRpgMaker.Models.Dialog;
 
 namespace TextRpgMaker.Workers
 {
     public class InputLooper
     {
-        private IOutput Output { get; } = Ui.And(new LogOutput());
-        private IInput Input { get; } = Ui;
         private readonly List<(string command, MethodInfo method)> _commandMethods;
 
         public InputLooper()
@@ -38,6 +34,9 @@ namespace TextRpgMaker.Workers
                 )
             ).ToList();
         }
+
+        private IOutput Output { get; } = Ui.And(new LogOutput());
+        private IInput Input { get; } = Ui;
 
         public void StartFromNewGame()
         {
@@ -163,7 +162,7 @@ namespace TextRpgMaker.Workers
             this.Input.GetTextInput(this.HandleText);
         }
 
-        [InputCommand("look", paramDescription: "look at element with the specified id or name")]
+        [InputCommand("look", "look at element with the specified id or name")]
         private void LookAt(string idOrName)
         {
             // todo only allow look at elements in scene / inventory
@@ -203,20 +202,23 @@ namespace TextRpgMaker.Workers
             this.Input.GetTextInput(this.HandleText);
         }
 
-        [InputCommand("lookaround", paramDescription: "Lists elements in scene")]
+        [InputCommand("lookaround", "Lists elements in scene")]
         private void LookAround(string _)
         {
             OutputHelpers.LookAround(this.Output);
             this.Input.GetTextInput(this.HandleText);
         }
 
-        [InputCommand("inventory", paramDescription: "shows inventory")]
+        [InputCommand("inventory", "shows inventory")]
         private void ShowInventory(string _)
         {
             OutputHelpers.PrintInventory(this.Output);
             this.Input.GetTextInput(this.HandleText);
         }
 
-        public void Start() => this.HandleDialog(Game.CurrentDialog);
+        public void Start()
+        {
+            this.HandleDialog(Game.CurrentDialog);
+        }
     }
 }

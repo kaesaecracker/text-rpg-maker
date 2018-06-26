@@ -60,8 +60,8 @@ namespace TextRpgMaker.Workers
         }
 
         /// <summary>
-        /// Assumes the YAML file does not exist. Processes the file at the supplied absolute path
-        /// to generate a YAML file with the same name
+        ///     Assumes the YAML file does not exist. Processes the file at the supplied absolute path
+        ///     to generate a YAML file with the same name
         /// </summary>
         /// <param name="fromTyp">path to TYP</param>
         /// <param name="toYaml">path to resulting yaml</param>
@@ -87,9 +87,7 @@ namespace TextRpgMaker.Workers
                     string temp = line.Trim().Remove(0, 2).TrimStart(); // remove '#!'
                     int spaceIndex = temp.IndexOf(' ');
                     if (spaceIndex == -1)
-                    {
                         throw PreprocessorException.ArgumentMissing(fromTyp, line);
-                    }
 
                     string command = temp.Substring(0, spaceIndex).ToLower();
                     string argument = temp.Substring(spaceIndex).Trim();
@@ -117,10 +115,7 @@ namespace TextRpgMaker.Workers
                 pathInProj = pathInProj.Substring(0, pathInProj.Length - 1);
             string path = Helper.ProjectToNormalPath(pathInProj, this._folder);
 
-            if (!File.Exists(path))
-            {
-                throw PreprocessorException.IncludedFileNotFound(path);
-            }
+            if (!File.Exists(path)) throw PreprocessorException.IncludedFileNotFound(path);
 
             yamlWriter.WriteLine($"# --- START INCLUDE {path} --- #");
             using (var reader = new StreamReader(path))
@@ -136,25 +131,31 @@ namespace TextRpgMaker.Workers
             yamlWriter.WriteLine($"# --- END INCLUDE {path} --- #");
         }
     }
-    
+
     public class PreprocessorException : Exception
     {
         private PreprocessorException(string msg, Exception inner = null) : base(msg, inner)
         {
         }
 
-        public static PreprocessorException IncludedFileNotFound(string pathToInclude) =>
-            new PreprocessorException($"The included file '{pathToInclude}' was not found");
+        public static PreprocessorException IncludedFileNotFound(string pathToInclude)
+        {
+            return new PreprocessorException($"The included file '{pathToInclude}' was not found");
+        }
 
         public static PreprocessorException TypCommandUnknown(
-            string command, string line, string file) =>
-            new PreprocessorException(
+            string command, string line, string file)
+        {
+            return new PreprocessorException(
                 $"Unknown TYP command: '{command}' in line '{line}' in file {file}"
             );
+        }
 
-        public static PreprocessorException ArgumentMissing(string file, string line) =>
-            new PreprocessorException(
+        public static PreprocessorException ArgumentMissing(string file, string line)
+        {
+            return new PreprocessorException(
                 $"Preprocessor argument missing in file '{file}' in line '{line}'"
             );
+        }
     }
 }

@@ -6,14 +6,15 @@ using TextRpgMaker.Views;
 namespace TextRpgMaker
 {
     /// <summary>
-    /// basically global vars.
-    /// This class is supposed to hold the information that represents the current application state.
+    ///     basically global vars.
+    ///     This class is supposed to hold the information that represents the current application state.
     /// </summary>
     public static class AppState
     {
         private static ProjectModel _project;
+
+        private static GameState _game;
         public static bool IsProjectLoaded => Project != null;
-        public static event EventHandler<ProjectChangedEventArgs> ProjectChangeEvent;
 
         public static ProjectModel Project
         {
@@ -25,9 +26,7 @@ namespace TextRpgMaker
             }
         }
 
-        private static GameState _game;
         public static bool IsGameRunning => Game != null;
-        public static event EventHandler<GameChangedEventArgs> GameChangedEvent;
 
         public static GameState Game
         {
@@ -44,7 +43,9 @@ namespace TextRpgMaker
         public static Application EtoApp { get; set; }
 
         public static AppConfig Config { get; set; }
-        
+        public static event EventHandler<ProjectChangedEventArgs> ProjectChangeEvent;
+        public static event EventHandler<GameChangedEventArgs> GameChangedEvent;
+
         public class ProjectChangedEventArgs : EventArgs
         {
             public ProjectChangedEventArgs(ProjectModel newProject)

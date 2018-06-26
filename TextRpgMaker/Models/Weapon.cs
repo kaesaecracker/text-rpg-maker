@@ -3,23 +3,23 @@ using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.Models
 {
-    [LoadFromProjectFile("items/weapons.yaml", required: false, isList: true)]
+    [LoadFromProjectFile("items/weapons.yaml", false, true)]
     public class Weapon : Element
     {
         [YamlMember(Alias = "name")]
-        [YamlProperties(required: true)]
+        [YamlProperties(true)]
         public override string Name { get; set; }
 
         [YamlMember(Alias = "attack")]
-        [YamlProperties(required: false, defaultValue: 1.0)]
+        [YamlProperties(false, 1.0)]
         public double Attack { get; set; }
 
         [YamlMember(Alias = "timeout")]
-        [YamlProperties(required: false, defaultValue: 1.0)]
+        [YamlProperties(false, 1.0)]
         public double Timeout { get; set; }
 
         [YamlMember(Alias = "ammo")]
-        [YamlProperties(required: false)]
+        [YamlProperties(false)]
         public string AmmoId { get; set; }
     }
 }

@@ -4,21 +4,21 @@ using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.Models
 {
-    [LoadFromProjectFile("project-info.yaml", required: true)]
+    [LoadFromProjectFile("project-info.yaml", true)]
     public class ProjectInfo : Element
     {
         public override string Id { get; set; } = "project-info";
 
         [YamlMember(Alias = "title")]
-        [YamlProperties(required: true)]
+        [YamlProperties(true)]
         public string Title { get; set; }
 
         [YamlMember(Alias = "description")]
-        [YamlProperties(required: false, defaultValue: "")]
+        [YamlProperties(false, "")]
         public string Description { get; set; }
 
         [YamlMember(Alias = "start-info")]
-        [YamlProperties(required: true)]
+        [YamlProperties(true)]
         public StartInfoContainer StartInfo { get; set; }
 
         [DocumentedType]
@@ -26,17 +26,17 @@ namespace TextRpgMaker.Models
         {
             [YamlMember(Alias = "intro-text")]
             public string IntroText { get; set; }
-            
+
             [YamlMember(Alias = "scene")]
-            [YamlProperties(required: true)]
+            [YamlProperties(true)]
             public string SceneId { get; set; }
 
             [YamlMember(Alias = "dialog")]
-            [YamlProperties(required: true)]
+            [YamlProperties(true)]
             public string DialogId { get; set; }
 
             [YamlMember(Alias = "characters")]
-            [YamlProperties(required: true)]
+            [YamlProperties(true)]
             public List<string> CharacterIds { get; set; }
         }
     }

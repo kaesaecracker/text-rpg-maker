@@ -7,16 +7,22 @@ namespace TextRpgMaker.Views
 {
     public partial class MainForm : IInput, IOutput
     {
-        public void GetChoice<T>(List<T> possibleChoices, 
+        public void GetChoice<T>(List<T> possibleChoices,
                                  Func<T, string> textRepresentation,
                                  Action<T> callback)
-            => this._inputPanel.GetChoice(possibleChoices, textRepresentation, callback);
+        {
+            this._inputPanel.GetChoice(possibleChoices, textRepresentation, callback);
+        }
 
         public void GetTextInput(Action<string> callback)
-            => this._inputPanel.GetTextInput(callback);
+        {
+            this._inputPanel.GetTextInput(callback);
+        }
 
         public void Write(string text)
-            => this._outputPanel.WriteLine(text);
+        {
+            this._outputPanel.WriteLine(text);
+        }
 
         public void Write(List<Choice> choices)
         {

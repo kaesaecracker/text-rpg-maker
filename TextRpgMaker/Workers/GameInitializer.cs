@@ -10,9 +10,9 @@ namespace TextRpgMaker.Workers
         public static void StartNewGame()
         {
             // todo choose character
-            
-            
-            Game = new GameState()
+
+
+            Game = new GameState
             {
                 CurrentScene = Project.ById<Scene>(Project.StartInfo.SceneId),
                 CurrentDialog = Project.Dialogs.GetId(Project.StartInfo.DialogId)

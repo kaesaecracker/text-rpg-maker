@@ -4,13 +4,13 @@ using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.Models
 {
-    [LoadFromProjectFile("dialogs.yaml", required: true, isList: true)]
+    [LoadFromProjectFile("dialogs.yaml", true, true)]
     public class Dialog : Element
     {
         public override string Name => this.Id;
 
         [YamlMember(Alias = "text")]
-        [YamlProperties(required: true)]
+        [YamlProperties(true)]
         public string Text { get; set; }
 
         [YamlMember(Alias = "goto")]
@@ -24,7 +24,7 @@ namespace TextRpgMaker.Models
     public class Choice
     {
         [YamlMember(Alias = "text")]
-        [YamlProperties(required: true)]
+        [YamlProperties(true)]
         public string Text { get; set; }
 
         [YamlMember(Alias = "goto-dialog")]

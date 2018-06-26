@@ -37,7 +37,7 @@ namespace TextRpgMaker.Views
                 MessageBox.Show(this, "Aborted", "Aborted");
             }
         }
-        
+
         private void OpenProjectClick(object sender, EventArgs e)
         {
             // todo if project is already loaded, confirm action (current save state is lost)
@@ -51,10 +51,7 @@ namespace TextRpgMaker.Views
 
             // if user does not click on OK when opening, do nothing
             Logger.Debug("Opening file chooser dialog");
-            if (dialog.ShowDialog(this) == DialogResult.Ok)
-            {
-                this.OpenProject(dialog.Directory);
-            }
+            if (dialog.ShowDialog(this) == DialogResult.Ok) this.OpenProject(dialog.Directory);
         }
 
         private void OnStartNewGameClick(object sender, EventArgs e)

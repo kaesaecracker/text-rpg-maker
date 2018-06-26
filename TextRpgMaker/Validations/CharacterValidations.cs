@@ -21,10 +21,7 @@ namespace TextRpgMaker.Validations
             if (!errors.Any()) return;
 
             string msg = "The following characters have a talk dialog that does not exist: ";
-            foreach (var character in errors)
-            {
-                msg += $"\n- {character.Id} ({character.TalkDialog})";
-            }
+            foreach (var character in errors) msg += $"\n- {character.Id} ({character.TalkDialog})";
 
             throw new ValidationFailedException(msg);
         }

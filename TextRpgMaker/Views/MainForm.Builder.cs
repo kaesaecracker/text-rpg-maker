@@ -9,8 +9,8 @@ namespace TextRpgMaker.Views
 {
     public partial class MainForm
     {
-        private OutputPanel _outputPanel;
         private InputPanel _inputPanel;
+        private OutputPanel _outputPanel;
 
         private void InitializeComponents()
         {

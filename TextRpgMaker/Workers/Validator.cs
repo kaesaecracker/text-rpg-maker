@@ -9,10 +9,9 @@ namespace TextRpgMaker.Workers
     public static class Validator
     {
         /// <summary>
-        /// Runs all methods in Validator that have the [ValidationMethod] Attribute.
-        /// 
-        /// To write a new Validation, you can just add a new Method that throws a
-        /// ValidationFailedException if the validation fails with the [ValidationMethod] Attribute.
+        ///     Runs all methods in Validator that have the [ValidationMethod] Attribute.
+        ///     To write a new Validation, you can just add a new Method that throws a
+        ///     ValidationFailedException if the validation fails with the [ValidationMethod] Attribute.
         /// </summary>
         public static void ValidateAll(ProjectModel p)
         {
@@ -45,7 +44,7 @@ namespace TextRpgMaker.Workers
         }
     }
 
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class ValidatorClassAttribute : Attribute
     {
     }

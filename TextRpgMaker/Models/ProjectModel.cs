@@ -4,8 +4,8 @@ using System.Linq;
 namespace TextRpgMaker.Models
 {
     /// <summary>
-    /// Everything that gets loaded when you open a project.
-    /// Does <b>NOT</b> contain anything related to the current save etc
+    ///     Everything that gets loaded when you open a project.
+    ///     Does <b>NOT</b> contain anything related to the current save etc
     /// </summary>
     public class ProjectModel
     {
@@ -49,6 +49,8 @@ namespace TextRpgMaker.Models
             => this.TopLevelElements.OfType<Dialog>().ToList();
 
         public T ById<T>(string id) where T : Element
-            => this.TopLevelElements.OfType<T>().First(e => e.Id == id);
+        {
+            return this.TopLevelElements.OfType<T>().First(e => e.Id == id);
+        }
     }
 }

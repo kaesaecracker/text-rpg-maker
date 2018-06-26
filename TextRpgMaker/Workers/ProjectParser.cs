@@ -15,17 +15,15 @@ namespace TextRpgMaker.Workers
 {
     public class ProjectParser
     {
+        private readonly Deserializer _deserializer = new DeserializerBuilder().Build();
         private readonly string _folder;
         private readonly List<Element> _tles;
-        private readonly Deserializer _deserializer = new DeserializerBuilder().Build();
 
         public ProjectParser(string pathToFolder)
         {
             if (!Directory.Exists(pathToFolder))
-            {
                 throw new LoadException(
                     $"The specified project folder {pathToFolder} does not exist");
-            }
 
             this._folder = pathToFolder;
             this._tles = new List<Element>();
@@ -53,7 +51,7 @@ namespace TextRpgMaker.Workers
         }
 
         /// <summary>
-        /// load yaml files without doing anything special
+        ///     load yaml files without doing anything special
         /// </summary>
         private void RawYamlLoad()
         {
@@ -78,12 +76,10 @@ namespace TextRpgMaker.Workers
                 if (!File.Exists(absPath))
                 {
                     if (tuple.Required)
-                    {
                         throw new LoadException(
                             $"The required project file '{tuple.PathInProj}' is missing!\n" +
                             $"Expected it at '{absPath}'"
                         );
-                    }
 
                     Logger.Warning(
                         "File {f} does not exist, but is not required",
@@ -104,10 +100,7 @@ namespace TextRpgMaker.Workers
                         this.AddToList(elem, absPath);
                         continue;
                     case IList list:
-                        foreach (var elem in list)
-                        {
-                            this.AddToList((Element) elem, absPath);
-                        }
+                        foreach (var elem in list) this.AddToList((Element) elem, absPath);
 
                         continue;
                 }
@@ -115,7 +108,7 @@ namespace TextRpgMaker.Workers
         }
 
         /// <summary>
-        /// checks for duplicate ids and whether all ids are well-formed
+        ///     checks for duplicate ids and whether all ids are well-formed
         /// </summary>
         /// <exception cref="LoadException">if one or more elements does not fufill these rules</exception>
         private void ValidateUniqueWellformedIds()
@@ -151,11 +144,11 @@ namespace TextRpgMaker.Workers
         }
 
         /// <summary>
-        /// Checks for all elements with a based-on field that the referenced ids exist and have the
-        /// same type
+        ///     Checks for all elements with a based-on field that the referenced ids exist and have the
+        ///     same type
         /// </summary>
         /// <exception cref="LoadException">
-        /// if base id does not exist or base element does not have the same type
+        ///     if base id does not exist or base element does not have the same type
         /// </exception>
         private void ValidateBaseIdsExist()
         {
@@ -179,14 +172,11 @@ namespace TextRpgMaker.Workers
                 )
             ).ToList();
 
-            if (typeErrors.Any())
-            {
-                throw LoadException.BaseElementHasDifferentType(typeErrors);
-            }
+            if (typeErrors.Any()) throw LoadException.BaseElementHasDifferentType(typeErrors);
         }
 
         /// <summary>
-        /// process 'based-on' fields
+        ///     process 'based-on' fields
         /// </summary>
         /// <exception cref="LoadException"></exception>
         private void RealizeInheritance()
@@ -199,13 +189,19 @@ namespace TextRpgMaker.Workers
                 bool processedElement = false;
                 var targetElem = realisationQueue.Dequeue();
 
-                if (targetElem.BasedOnId == null) processedElement = true;
+                if (targetElem.BasedOnId == null)
+                {
+                    processedElement = true;
+                }
                 else
                 {
                     var baseElem = this._tles.First(e => e.Id == targetElem.BasedOnId);
 
                     // if base element is not done yet, postpone target element
-                    if (realisationQueue.Contains(baseElem)) realisationQueue.Enqueue(targetElem);
+                    if (realisationQueue.Contains(baseElem))
+                    {
+                        realisationQueue.Enqueue(targetElem);
+                    }
                     else
                     {
                         // base element done, do the actual work
@@ -235,14 +231,12 @@ namespace TextRpgMaker.Workers
             }
 
             if (realisationQueue.Count > 0)
-            {
                 throw LoadException.InheritanceLoopAborted(realisationQueue);
-            }
         }
 
         /// <summary>
-        /// Checks if all properties with the [YamlProperties] attribute and Required set to true
-        /// have a value for all of the loaded elements
+        ///     Checks if all properties with the [YamlProperties] attribute and Required set to true
+        ///     have a value for all of the loaded elements
         /// </summary>
         /// <exception cref="LoadException">if a required property is null</exception>
         private void ValidateRequiredFields()
@@ -262,14 +256,11 @@ namespace TextRpgMaker.Workers
                 )
             ).ToList();
 
-            if (errors.Any())
-            {
-                throw LoadException.RequiredPropertyNull(errors);
-            }
+            if (errors.Any()) throw LoadException.RequiredPropertyNull(errors);
         }
 
         /// <summary>
-        /// set the default values where no value is set
+        ///     set the default values where no value is set
         /// </summary>
         private void SetDefaultValues()
         {
@@ -282,10 +273,7 @@ namespace TextRpgMaker.Workers
                 where yamlPropAtt.DefaultValue != null
                 select (element, property, yamlPropAtt.DefaultValue);
 
-            foreach (var tuple in props)
-            {
-                tuple.property.SetValue(tuple.element, tuple.DefaultValue);
-            }
+            foreach (var tuple in props) tuple.property.SetValue(tuple.element, tuple.DefaultValue);
         }
 
         private void AddToList(Element e, string absPath)
@@ -297,14 +285,17 @@ namespace TextRpgMaker.Workers
 
     public class LoadException : Exception
     {
+        public LoadException(string message, Exception innerException = null)
+            : base(message, innerException)
+        {
+        }
+
         public static LoadException BaseElementNotFound(IEnumerable<Element> errorElements)
         {
             string msg = errorElements.Aggregate(
                 "There are elements based on other elements that could not be found:\n",
-                (current, elem) => current + (
-                                       $"- '{elem.Id}' (from '{elem.OriginalFilePath})'\n" +
-                                       $"  is based on '{elem.BasedOnId}'"
-                                   )
+                (current, elem) => current + $"- '{elem.Id}' (from '{elem.OriginalFilePath})'\n" +
+                                   $"  is based on '{elem.BasedOnId}'"
             );
 
             return new LoadException(msg);
@@ -315,12 +306,10 @@ namespace TextRpgMaker.Workers
         {
             string msg = "The following elements are based on elements with different types:\n";
             foreach (var (baseElem, targetElem) in errorTuples)
-            {
                 msg += $"- '{targetElem.Id}' of type '{targetElem.GetType().Name}' " +
                        $"from '{targetElem.OriginalFilePath}'\n" +
                        $"  based on '{baseElem.Id}' of type '{baseElem.GetType().Name}' " +
                        $"from '{baseElem.OriginalFilePath}'";
-            }
 
             return new LoadException(msg);
         }
@@ -328,10 +317,7 @@ namespace TextRpgMaker.Workers
         public static LoadException MalformedId(IEnumerable<Element> elems)
         {
             string msg = "The project contains malformed IDs:\n";
-            foreach (var element in elems)
-            {
-                msg += $"- {element.Id}";
-            }
+            foreach (var element in elems) msg += $"- {element.Id}";
 
             msg += "IDs have to match the following criteria: " +
                    "- IDs can only contain [a-z], '-' and [0-9]\n" +
@@ -361,25 +347,20 @@ namespace TextRpgMaker.Workers
                          "be a circular reference. Below you can see a list of all elements that" +
                          " were in the queue when the process was aborsysted:\n";
             while (realisationQueue.TryDequeue(out var element))
-            {
                 msg += $"- id '{element.Id}'" +
                        $"  based on id '{element.BasedOnId}'" +
                        $"  defined in '{element.OriginalFilePath}'";
-            }
 
             return new LoadException(msg);
         }
 
-        public LoadException(string message, Exception innerException = null)
-            : base(message, innerException)
+
+        public static LoadException DeserializationError(string pathInProj, YamlException ex)
         {
-        }
-
-
-        public static LoadException DeserializationError(string pathInProj, YamlException ex) =>
-            new LoadException(
+            return new LoadException(
                 $"Could not parse a file in the project: {pathInProj}",
                 ex
             );
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace TextRpgMaker.Models
 {
-    [LoadFromProjectFile("items/consumables.yaml", required: false, isList: true)]
+    [LoadFromProjectFile("items/consumables.yaml", false, true)]
     public class Consumable : Element
     {
     }

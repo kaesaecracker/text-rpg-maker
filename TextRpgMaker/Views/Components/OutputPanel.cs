@@ -27,7 +27,7 @@ namespace TextRpgMaker.Views.Components
 
         public void WriteLine(string text)
         {
-            this._box.Append(text + "\n", scrollToCursor: true);
+            this._box.Append(text + "\n", true);
         }
     }
 }
