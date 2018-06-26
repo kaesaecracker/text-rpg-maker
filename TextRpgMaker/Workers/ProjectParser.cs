@@ -36,16 +36,12 @@ namespace TextRpgMaker.Workers
                 this._folder);
 
             // TODO for errors: print out path where id is defined
-            // "Hard" errors - file not found, inheritance errors, etc
             this.RawYamlLoad();
             this.ValidateUniqueWellformedIds();
             this.ValidateBaseIdsExist();
             this.RealizeInheritance();
             this.ValidateRequiredFields();
             this.SetDefaultValues();
-
-            // "soft" errors - for example there is an item in a scene that does not exist
-            // TODO check if weapon ammo exists
 
             return new ProjectModel(this._folder, this._tles);
         }

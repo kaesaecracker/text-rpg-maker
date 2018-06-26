@@ -4,7 +4,7 @@ using System.Linq;
 using Eto.Forms;
 using TextRpgMaker.Helpers;
 
-namespace TextRpgMaker.Views.Components
+namespace TextRpgMaker.Views
 {
     public class InputPanel : Panel, IInput
     {

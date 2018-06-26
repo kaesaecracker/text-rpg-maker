@@ -2,7 +2,6 @@
 using System.Linq;
 using Eto.Drawing;
 using Eto.Forms;
-using TextRpgMaker.Views.Components;
 using static Serilog.Log;
 
 namespace TextRpgMaker.Views

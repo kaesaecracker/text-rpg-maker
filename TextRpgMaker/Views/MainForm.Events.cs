@@ -41,8 +41,6 @@ namespace TextRpgMaker.Views
         private void OpenProjectClick(object sender, EventArgs e)
         {
             // todo if project is already loaded, confirm action (current save state is lost)
-            Logger.Debug("Open project click");
-
             // create and show dialog
             var dialog = new SelectFolderDialog
             {
@@ -50,7 +48,6 @@ namespace TextRpgMaker.Views
             };
 
             // if user does not click on OK when opening, do nothing
-            Logger.Debug("Opening file chooser dialog");
             if (dialog.ShowDialog(this) == DialogResult.Ok) this.OpenProject(dialog.Directory);
         }
 

@@ -76,14 +76,18 @@ namespace TextRpgMaker.Workers
                 }
 
                 // todo only allow choices that meet the requirements
-                this.Input.GetChoice(dlg.Choices, c => c.Text, choice =>
-                {
-                    this.Output.Write($" >> {choice.Text}");
-                    this.HandleChoice(choice);
-                });
+                if (dlg.Choices != null && dlg.Choices.Count != 0)
+                    this.Input.GetChoice(dlg.Choices, c => c.Text, choice =>
+                    {
+                        this.Output.Write($" >> {choice.Text}");
+                        this.HandleChoice(choice);
+                    });
+                else this.GetTextInput();
                 break;
             }
         }
+
+        private void GetTextInput() => this.Input.GetTextInput(this.HandleText);
 
         private void HandleChoice(Choice choice)
         {
@@ -93,7 +97,7 @@ namespace TextRpgMaker.Workers
                 this.HandleDialog(Project.Dialogs.GetId(choice.GotoDialogId));
             else if (choice.GotoSceneId != null)
                 this.HandleScene(Project.Scenes.GetId(choice.GotoSceneId));
-            else this.Input.GetTextInput(this.HandleText);
+            else this.GetTextInput();
         }
 
         private void HandleScene(Scene scene)
@@ -104,8 +108,6 @@ namespace TextRpgMaker.Workers
 
         private void HandleText(string line)
         {
-            // todo parse command
-
             string lineLower = line.Trim().ToLower();
             foreach ((string command, var method) in this._commandMethods)
             {
@@ -118,7 +120,7 @@ namespace TextRpgMaker.Workers
             }
 
             this.Output.Write($">> Command not known: {line}");
-            this.Input.GetTextInput(this.HandleText);
+            this.GetTextInput();
         }
 
         [InputCommand("talk", "<character-id>")]
@@ -159,7 +161,7 @@ namespace TextRpgMaker.Workers
                     break;
             }
 
-            this.Input.GetTextInput(this.HandleText);
+            this.GetTextInput();
         }
 
         [InputCommand("look", "look at element with the specified id or name")]
@@ -199,26 +201,21 @@ namespace TextRpgMaker.Workers
                     break;
             }
 
-            this.Input.GetTextInput(this.HandleText);
+            this.GetTextInput();
         }
 
         [InputCommand("lookaround", "Lists elements in scene")]
         private void LookAround(string _)
         {
             OutputHelpers.LookAround(this.Output);
-            this.Input.GetTextInput(this.HandleText);
+            this.GetTextInput();
         }
 
         [InputCommand("inventory", "shows inventory")]
         private void ShowInventory(string _)
         {
             OutputHelpers.PrintInventory(this.Output);
-            this.Input.GetTextInput(this.HandleText);
-        }
-
-        public void Start()
-        {
-            this.HandleDialog(Game.CurrentDialog);
+            this.GetTextInput();
         }
     }
 }

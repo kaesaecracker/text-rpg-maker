@@ -9,9 +9,6 @@ namespace TextRpgMaker.Workers
     {
         public static void StartNewGame()
         {
-            // todo choose character
-
-
             Game = new GameState
             {
                 CurrentScene = Project.ById<Scene>(Project.StartInfo.SceneId),
@@ -24,8 +21,7 @@ namespace TextRpgMaker.Workers
 
         public static void StartSavedGame(string pathToSave)
         {
-            // todo load game
-            throw new NotImplementedException();
+            throw new NotImplementedException("TODO load game");
         }
     }
 }

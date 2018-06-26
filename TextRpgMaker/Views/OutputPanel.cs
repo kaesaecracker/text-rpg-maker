@@ -1,6 +1,6 @@
 ﻿using Eto.Forms;
 
-namespace TextRpgMaker.Views.Components
+namespace TextRpgMaker.Views
 {
     public class OutputPanel : Panel
     {

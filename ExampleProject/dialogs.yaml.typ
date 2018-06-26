@@ -14,3 +14,4 @@
 - id: guard-metajoke
   text: It has to be a wooden sword to be specific. That's just how the story was written. 
         You have to get the sword from the mayor, then you can go outside of the town to rescue the princess.
+  goto: guard-talk
