@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Eto;
 using Eto.Forms;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ namespace TextRpgMaker
 {
     public static class Program
     {
+        [STAThread]
         public static void Main(string[] args)
         {
             AppState.Config = new ConfigurationBuilder()
@@ -21,11 +23,9 @@ namespace TextRpgMaker
                               .Get<AppConfig>();
 
             Logger = new LoggerConfiguration()
-                     .MinimumLevel.Is(
-                         AppState.Config.Debug
-                             ? LogEventLevel.Debug
-                             : LogEventLevel.Information
-                     )
+                     .MinimumLevel.Is(AppState.Config.Debug
+                         ? LogEventLevel.Debug
+                         : LogEventLevel.Information)
                      .WriteTo.Console()
                      .CreateLogger();
 

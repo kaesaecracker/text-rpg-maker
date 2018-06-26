@@ -53,7 +53,7 @@ namespace TextRpgMaker.Views
                         {
                             Text = "LoadExampleProject",
                             Command = new Command((s, e) => this.OpenProject(
-                                Directory.GetCurrentDirectory() + "/../ExampleProject/"
+                                Path.GetFullPath("../ExampleProject")
                             ))
                         },
                         new ButtonMenuItem
@@ -61,8 +61,7 @@ namespace TextRpgMaker.Views
                             Text = "StartExampleProject",
                             Command = new Command((sender, args) =>
                             {
-                                this.OpenProject(Directory.GetCurrentDirectory() +
-                                                 "/../ExampleProject/");
+                                this.OpenProject(Path.GetFullPath("../ExampleProject"));
                                 this.OnStartNewGameClick(sender, args);
                             })
                         },
