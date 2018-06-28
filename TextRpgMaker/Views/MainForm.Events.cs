@@ -67,5 +67,13 @@ namespace TextRpgMaker.Views
         {
             this.OpenHelp("players-help.yaml");
         }
+
+        private void OnProjectHelpClick(object sender, EventArgs e)
+        {
+            // todo show user why nothing happens
+            if (!AppState.IsProjectLoaded) return;
+
+            this.OpenHelp(AppState.Project.ProjectDir + "/project-help.yaml", isAbsPath: true);
+        }
     }
 }

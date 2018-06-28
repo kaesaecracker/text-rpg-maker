@@ -52,10 +52,13 @@ namespace TextRpgMaker.Views
             );
         }
 
-        private void OpenHelp(string relativePathToYaml)
+
+        private void OpenHelp(string pathToYaml, bool isAbsPath = false)
         {
-            string absPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/" +
-                             relativePathToYaml;
+            string absPath = isAbsPath
+                ? pathToYaml
+                : Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
+                  $"/{pathToYaml}";
             if (!File.Exists(absPath))
             {
                 Logger.Error("Help file {h} not found", absPath);

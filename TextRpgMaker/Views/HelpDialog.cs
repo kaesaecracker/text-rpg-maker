@@ -32,6 +32,7 @@ namespace TextRpgMaker.Views
                 Height = 400
             };
 
+            // todo layout breaks when index >= 10
             var topLayout = new DynamicLayout {Width = 400};
             topLayout.BeginHorizontal();
             {

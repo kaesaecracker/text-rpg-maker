@@ -161,7 +161,7 @@ namespace TextRpgMaker.Views
                         new ButtonMenuItem
                         {
                             Text = "&Project Help",
-                            Command = new Command(NotImplementedClick)
+                            Command = new Command(this.OnProjectHelpClick)
                         }
                     }
                 }
