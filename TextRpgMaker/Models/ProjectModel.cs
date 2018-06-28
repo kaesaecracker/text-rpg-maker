@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using TextRpgMaker.Models.Items;
 
 namespace TextRpgMaker.Models
 {
     /// <summary>
-    /// Everything that gets loaded when you open a project.
-    /// Does <b>NOT</b> contain anything related to the current save etc
+    ///     Everything that gets loaded when you open a project.
+    ///     Does <b>NOT</b> contain anything related to the current save etc
     /// </summary>
-    public class Project
+    public class ProjectModel
     {
-        public Project(string dir, List<Element> tles)
+        public ProjectModel(string dir, List<BasicElement> tles)
         {
             this.ProjectDir = dir;
             this.TopLevelElements = tles;
@@ -19,7 +18,7 @@ namespace TextRpgMaker.Models
         public string ProjectDir { get; }
 
         // cannot be a dictionary because there could be duplicate ids
-        public List<Element> TopLevelElements { get; }
+        public List<BasicElement> TopLevelElements { get; }
 
         public ProjectInfo Info
             => this.TopLevelElements.OfType<ProjectInfo>().First();
@@ -40,13 +39,18 @@ namespace TextRpgMaker.Models
         public List<Consumable> ConsumableTypes
             => this.TopLevelElements.OfType<Consumable>().ToList();
 
-        public List<Ammo> AmmoTypes
-            => this.TopLevelElements.OfType<Ammo>().ToList();
+        public List<Item> AmmoTypes
+            => this.TopLevelElements.OfType<Item>().ToList();
 
         public List<Scene> Scenes
             => this.TopLevelElements.OfType<Scene>().ToList();
 
         public List<Dialog> Dialogs
             => this.TopLevelElements.OfType<Dialog>().ToList();
+
+        public T ById<T>(string id) where T : BasicElement
+        {
+            return this.TopLevelElements.OfType<T>().First(e => e.Id == id);
+        }
     }
 }

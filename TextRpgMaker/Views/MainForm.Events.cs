@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using Eto.Forms;
 using TextRpgMaker.Workers;
+using static Serilog.Log;
 
 namespace TextRpgMaker.Views
 {
@@ -35,6 +37,35 @@ namespace TextRpgMaker.Views
             {
                 MessageBox.Show(this, "Aborted", "Aborted");
             }
+        }
+
+        private void OpenProjectClick(object sender, EventArgs e)
+        {
+            // todo if project is already loaded, confirm action (current save state is lost)
+            // create and show dialog
+            var dialog = new SelectFolderDialog
+            {
+                Title = "Choose the project folder and confirm"
+            };
+
+            // if user does not click on OK when opening, do nothing
+            if (dialog.ShowDialog(this) == DialogResult.Ok) this.OpenProject(dialog.Directory);
+        }
+
+        private void OnStartNewGameClick(object sender, EventArgs e)
+        {
+            Logger.Debug("Start new game");
+            GameInitializer.StartNewGame();
+        }
+
+        private void OnCreatorsHelpClick(object sender, EventArgs e)
+        {
+            this.OpenHelp("creators-help.yaml");
+        }
+
+        private void OnPlayersHelpClick(object sender, EventArgs e)
+        {
+            this.OpenHelp("players-help.yaml");
         }
     }
 }

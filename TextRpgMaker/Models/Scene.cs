@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.Models
 {
-    [LoadFromProjectFile("scenes.yaml", required: true, isList: true)]
-    public class Scene : Element
+    [LoadFromProjectFile("scenes.yaml", true, true)]
+    public class Scene : BasicElement
     {
         [YamlMember(Alias = "characters")]
         public List<string> Characters { get; set; }

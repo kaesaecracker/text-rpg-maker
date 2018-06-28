@@ -8,9 +8,15 @@ namespace TextRpgMaker.Models
     ///     players character with current health, the inventory etc.
     /// </summary>
     [DocumentedType]
-    public class Save
+    public class GameState
     {
         [YamlMember(Alias = "player-char")]
         public Character PlayerChar { get; set; }
+
+        [YamlMember(Alias = "current-scene")]
+        public Scene CurrentScene { get; set; }
+
+        [YamlMember(Alias = "current-dialog")]
+        public Dialog CurrentDialog { get; set; }
     }
 }

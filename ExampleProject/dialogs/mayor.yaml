@@ -1,13 +1,12 @@
 - id: mayor-speech
   text: My daughter was kidnapped, bla bla bla. Get her back!
-  choices:
-  - goto: mayor-rescuechoice
+  goto: mayor-rescuechoice
 
 - id: mayor-rescuechoice
   text: Do you want to rescue her?
   choices:
   - text: Sure
-    goto: mayor-accepted
+    goto-dialog: mayor-accepted
   - text: No way! I am going back to sleep.
   
 - id: mayor-accepted
@@ -16,7 +15,4 @@
   - text: Take sword
     reward-items:
     - id: sword-wood
-  
-
-  
     

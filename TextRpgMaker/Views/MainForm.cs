@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using Eto.Forms;
 using TextRpgMaker.Workers;
@@ -15,35 +16,12 @@ namespace TextRpgMaker.Views
             this.InitializeEventHandlers();
         }
 
-        private void OpenProjectClick(object sender, EventArgs e)
-        {
-            // todo if project is already loaded, confirm action (current save state is lost)
-            
-            Logger.Debug("Open project click");
-
-            // create and show dialog
-            var dialog = new SelectFolderDialog
-            {
-                Title = "Choose the 'project-info.yaml' and confirm",
-                // TODO remove hardcoded path for debugging, replace with last opened path
-                Directory = Directory.GetCurrentDirectory() + "/../ExampleProject/"
-            };
-
-
-            // if user does not click on OK when opening, do nothing
-            Logger.Debug("Opening file chooser dialog");
-            if (dialog.ShowDialog(this) == DialogResult.Ok)
-            {
-                this.OpenProject(dialog.Directory);
-            }
-        }
-
         private void OpenProject(string pathToProject)
         {
             try
             {
-                ProjectLoader.LoadProject(pathToProject);
-                MessageBox.Show(this, "Project loaded", caption: "Done");
+                GameInitializer.LoadProject(pathToProject);
+                MessageBox.Show(this, "Project loaded", "Done");
             }
             catch (Exception ex)
             {
@@ -54,17 +32,56 @@ namespace TextRpgMaker.Views
                         Logger.Warning(ex, "Load failed");
                         MessageBoxes.LoadFailedExceptionBox(ex);
                         break;
-                    case TargetInvocationException tie when tie.InnerException is ValidationFailedException vfe:
+                    case TargetInvocationException tie
+                        when tie.InnerException is ValidationFailedException vfe:
                         Logger.Warning(ex, "Validation failed");
                         MessageBoxes.LoadFailedExceptionBox(vfe);
                         break;
-                    
+
                     default: throw;
                 }
             }
         }
 
-        internal static void UnimplementedClick(object sender, EventArgs e)
-            => MessageBox.Show("Not implemented yet");
+        private static void NotImplementedClick(object sender, EventArgs e)
+        {
+            MessageBox.Show(
+                parent: AppState.Ui,
+                text: "Not implemented yet",
+                type: MessageBoxType.Warning
+            );
+        }
+
+        private void OpenHelp(string relativePathToYaml)
+        {
+            string absPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/" +
+                             relativePathToYaml;
+            if (!File.Exists(absPath))
+            {
+                Logger.Error("Help file {h} not found", absPath);
+                MessageBox.Show(
+                    parent: this,
+                    caption: "Error",
+                    text: $"Could not find help file '{absPath}'",
+                    type: MessageBoxType.Error
+                );
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(File.ReadAllText(absPath)))
+            {
+                Logger.Error("Could not load help", absPath);
+                MessageBox.Show(
+                    parent: this,
+                    caption: "Error",
+                    text: $"Help file '{absPath}' is empty",
+                    type: MessageBoxType.Error
+                );
+                return;
+            }
+
+            // todo error catching
+            new HelpDialog(YamlParser.ParseHelpFile(absPath)).ShowModal(this);
+        }
     }
 }

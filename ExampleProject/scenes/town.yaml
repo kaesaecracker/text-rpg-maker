@@ -1,7 +1,6 @@
 - id: town
   characters: 
   - mayor
-  - crowd
   - guard
   
   items:

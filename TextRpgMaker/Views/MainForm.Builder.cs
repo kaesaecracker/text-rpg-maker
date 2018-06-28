@@ -1,15 +1,17 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Eto.Drawing;
 using Eto.Forms;
-using TextRpgMaker.Views.Components;
-using TextRpgMaker.Workers;
 using static Serilog.Log;
 
 namespace TextRpgMaker.Views
 {
     public partial class MainForm
     {
+        private InputPanel _inputPanel;
+        private OutputPanel _outputPanel;
+
         private void InitializeComponents()
         {
             this.Title = "TextRpgCreator";
@@ -21,24 +23,14 @@ namespace TextRpgMaker.Views
                 DefaultSpacing = new Size(3, 3)
             };
 
+            this._outputPanel = new OutputPanel();
+            this._inputPanel = new InputPanel();
             layout.BeginHorizontal();
             {
                 layout.BeginVertical();
                 {
-                    layout.Add(new OutputPanel());
-                    layout.Add(new InputPanel());
-                }
-
-                layout.EndBeginVertical();
-                {
-                    layout.Add(new InventoryPanel());
-                    layout.Add(new InfoTabsPanel());
-                }
-
-                layout.EndBeginVertical();
-                {
-                    layout.Add(new VitalsPanel());
-                    layout.Add(new CharacterPanel());
+                    layout.Add(this._outputPanel);
+                    layout.Add(this._inputPanel);
                 }
 
                 layout.EndVertical();
@@ -62,14 +54,23 @@ namespace TextRpgMaker.Views
                         {
                             Text = "LoadExampleProject",
                             Command = new Command((s, e) => this.OpenProject(
-                                Directory.GetCurrentDirectory() + "/../ExampleProject/"
+                                Path.GetFullPath("../ExampleProject")
                             ))
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "StartExampleProject",
+                            Command = new Command((sender, args) =>
+                            {
+                                this.OpenProject(Path.GetFullPath("../ExampleProject"));
+                                this.OnStartNewGameClick(sender, args);
+                            })
                         },
                         new ButtonMenuItem
                         {
                             Text = "LogIDs",
                             Command = new Command((s, e) => Logger.Debug(
-                                "IDs: {@ids}", AppState.LoadedProject.TopLevelElements
+                                "IDs: {@ids}", AppState.Project?.TopLevelElements
                                                        .Select(tle => tle.Id)
                             ))
                         },
@@ -77,12 +78,6 @@ namespace TextRpgMaker.Views
                         {
                             Text = "Break",
                             Command = new Command((s, e) => { Logger.Debug("BREAK"); })
-                        },
-                        new ButtonMenuItem
-                        {
-                            Text = "SelfDocument",
-                            Command = new Command((s, e) =>
-                                SelfDocumenter.Document("documentation.yaml"))
                         }
                     }
                 },
@@ -90,18 +85,33 @@ namespace TextRpgMaker.Views
 
                 new ButtonMenuItem
                 {
-                    Text = "Game",
+                    Text = "&Project",
                     Items =
                     {
                         new ButtonMenuItem
                         {
-                            Text = "Game Info",
-                            Command = new Command((s, e) => MessageBoxes.InfoAboutLoadedProject())
+                            Text = "&Load",
+                            Command = new Command(this.OpenProjectClick)
                         },
+                        new SeparatorMenuItem(),
                         new ButtonMenuItem
                         {
-                            Text = "Open Game",
-                            Command = new Command(this.OpenProjectClick)
+                            Text = "Project &Statistics",
+                            Command = new Command((s, e) => MessageBoxes.InfoAboutLoadedProject())
+                        }
+                    }
+                },
+
+                new ButtonMenuItem
+                {
+                    Text = "&Game",
+                    Items =
+                    {
+                        new ButtonMenuItem
+                        {
+                            Text = "Start &new",
+                            Enabled = false,
+                            Command = new Command(this.OnStartNewGameClick)
                         }
                     }
                 },
@@ -109,32 +119,51 @@ namespace TextRpgMaker.Views
                 new ButtonMenuItem
                 {
                     Text = "Load / Save",
-                    Command = new Command(UnimplementedClick)
+                    Command = new Command(NotImplementedClick)
                 }
             },
 
             AboutItem = new ButtonMenuItem
             {
-                Text = "About",
-                Command = new Command(UnimplementedClick)
+                Text = "&About",
+                Command = new Command(NotImplementedClick)
             },
 
             HelpItems =
             {
                 new ButtonMenuItem
                 {
-                    Text = "Game Help",
-                    Command = new Command(UnimplementedClick)
+                    Text = "&Creators",
+                    Items =
+                    {
+                        new ButtonMenuItem
+                        {
+                            Text = "&Help Text",
+                            Command = new Command(this.OnCreatorsHelpClick)
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "Export yaml &type documentation",
+                            Command = new Command(this.OnGenerateTypeDocClick)
+                        }
+                    }
                 },
                 new ButtonMenuItem
                 {
-                    Text = "Engine Help",
-                    Command = new Command(UnimplementedClick)
-                },
-                new ButtonMenuItem
-                {
-                    Text = "Export yaml type documentation",
-                    Command = new Command(this.OnGenerateTypeDocClick)
+                    Text = "&Players",
+                    Items =
+                    {
+                        new ButtonMenuItem
+                        {
+                            Text = "&TextRpgCreator Help",
+                            Command = new Command(this.OnPlayersHelpClick)
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "&Project Help",
+                            Command = new Command(NotImplementedClick)
+                        }
+                    }
                 }
             }
         };

@@ -13,38 +13,39 @@ namespace TextRpgMaker.Views
                          $"At: {ex.TargetSite.Name}\n\n";
 
             if (ex.InnerException != null)
-            {
                 msg += $"By : {ex.InnerException.GetType().Name} - {ex.InnerException.Message}";
-            }
 
             MessageBox.Show(
-                parent: AppState.Ui,
-                text: msg,
-                caption: "Load failed",
+                AppState.Ui,
+                msg,
+                "Load failed",
                 type: MessageBoxType.Error,
                 buttons: MessageBoxButtons.OK
             );
         }
 
-        public static void InfoAboutLoadedProject() => MessageBox.Show(
-            parent: AppState.Ui,
-            text: AppState.IsProjectLoaded
-                ? $"- Path: \"{AppState.LoadedProject.ProjectDir}\"\n" +
-                  $"- ProjectInfo.Title: {AppState.LoadedProject.Info.Title}\n" +
-                  $"- Elements: {AppState.LoadedProject.TopLevelElements.Count}\n" +
-                  $"- Weapons: {AppState.LoadedProject.WeaponTypes.Count}\n" +
-                  $"- Ammo: {AppState.LoadedProject.AmmoTypes.Count}\n" +
-                  $"- Armor: {AppState.LoadedProject.ArmorTypes.Count}\n" +
-                  $"- Consumables: {AppState.LoadedProject.ConsumableTypes.Count}\n" +
-                  $"- Characters: {AppState.LoadedProject.Characters.Count}\n" +
-                  $"- Start Info:\n" +
-                  $"  - Scene: {AppState.LoadedProject.StartInfo.SceneId}\n" +
-                  $"  - Dialog: {AppState.LoadedProject.StartInfo.DialogId}\n" +
-                  $"  - Characters: {AppState.LoadedProject.StartInfo.CharacterIds.Aggregate((c, s) => $"{c}, {s}")}\n"
-                : "No project loaded",
-            caption: "Loaded Project",
-            type: MessageBoxType.Information,
-            buttons: MessageBoxButtons.OK
-        );
+        public static void InfoAboutLoadedProject()
+        {
+            MessageBox.Show(
+                AppState.Ui,
+                AppState.IsProjectLoaded
+                    ? $"- Path: \"{AppState.Project.ProjectDir}\"\n" +
+                      $"- ProjectInfo.Title: {AppState.Project.Info.Title}\n" +
+                      $"- Elements: {AppState.Project.TopLevelElements.Count}\n" +
+                      $"- Weapons: {AppState.Project.WeaponTypes.Count}\n" +
+                      $"- Ammo: {AppState.Project.AmmoTypes.Count}\n" +
+                      $"- Armor: {AppState.Project.ArmorTypes.Count}\n" +
+                      $"- Consumables: {AppState.Project.ConsumableTypes.Count}\n" +
+                      $"- Characters: {AppState.Project.Characters.Count}\n" +
+                      $"- Start Info:\n" +
+                      $"  - Scene: {AppState.Project.StartInfo.SceneId}\n" +
+                      $"  - Dialog: {AppState.Project.StartInfo.DialogId}\n" +
+                      $"  - Characters: {AppState.Project.StartInfo.CharacterIds.Aggregate((c, s) => $"{c}, {s}")}\n"
+                    : "No project loaded",
+                "Loaded Project",
+                type: MessageBoxType.Information,
+                buttons: MessageBoxButtons.OK
+            );
+        }
     }
 }
