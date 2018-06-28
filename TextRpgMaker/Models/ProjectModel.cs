@@ -9,7 +9,7 @@ namespace TextRpgMaker.Models
     /// </summary>
     public class ProjectModel
     {
-        public ProjectModel(string dir, List<Element> tles)
+        public ProjectModel(string dir, List<BasicElement> tles)
         {
             this.ProjectDir = dir;
             this.TopLevelElements = tles;
@@ -18,7 +18,7 @@ namespace TextRpgMaker.Models
         public string ProjectDir { get; }
 
         // cannot be a dictionary because there could be duplicate ids
-        public List<Element> TopLevelElements { get; }
+        public List<BasicElement> TopLevelElements { get; }
 
         public ProjectInfo Info
             => this.TopLevelElements.OfType<ProjectInfo>().First();
@@ -48,7 +48,7 @@ namespace TextRpgMaker.Models
         public List<Dialog> Dialogs
             => this.TopLevelElements.OfType<Dialog>().ToList();
 
-        public T ById<T>(string id) where T : Element
+        public T ById<T>(string id) where T : BasicElement
         {
             return this.TopLevelElements.OfType<T>().First(e => e.Id == id);
         }

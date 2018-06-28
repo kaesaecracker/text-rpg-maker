@@ -11,6 +11,15 @@ namespace TextRpgMaker
     /// </summary>
     public static class AppState
     {
+        private const bool IsDebugBuild =
+#if DEBUG
+            true;
+#else
+            false;
+#endif
+
+        public static bool IsDebugRun => IsDebugBuild || Config.Debug;
+
         private static ProjectModel _project;
 
         private static GameState _game;

@@ -5,7 +5,7 @@ using YamlDotNet.Serialization;
 namespace TextRpgMaker.Models
 {
     [LoadFromProjectFile("characters.yaml", true, true)]
-    public class Character : Element
+    public class Character : LookableElement
     {
         [YamlMember(Alias = "current-hp")]
         [YamlProperties(false)]

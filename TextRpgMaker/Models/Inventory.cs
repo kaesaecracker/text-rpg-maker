@@ -10,7 +10,7 @@ namespace TextRpgMaker.Models
     {
         public override string ToString()
         {
-            var names = this.Select(ig => AppState.Project.ById<Element>(ig.ItemId).Name);
+            var names = this.Select(ig => AppState.Project.ById<BasicElement>(ig.ItemId).Name);
             return $"[{names.Aggregate((curr, name) => $"{curr}, {name}")}]";
         }
     }

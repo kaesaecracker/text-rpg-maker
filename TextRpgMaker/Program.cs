@@ -23,7 +23,7 @@ namespace TextRpgMaker
                               .Get<AppConfig>();
 
             Logger = new LoggerConfiguration()
-                     .MinimumLevel.Is(AppState.Config.Debug
+                     .MinimumLevel.Is(AppState.IsDebugRun
                          ? LogEventLevel.Debug
                          : LogEventLevel.Information)
                      .WriteTo.Console()

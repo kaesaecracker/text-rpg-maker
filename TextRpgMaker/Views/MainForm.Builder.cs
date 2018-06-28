@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Eto.Drawing;
 using Eto.Forms;
@@ -84,18 +85,18 @@ namespace TextRpgMaker.Views
 
                 new ButtonMenuItem
                 {
-                    Text = "Project",
+                    Text = "&Project",
                     Items =
                     {
                         new ButtonMenuItem
                         {
-                            Text = "Load",
+                            Text = "&Load",
                             Command = new Command(this.OpenProjectClick)
                         },
                         new SeparatorMenuItem(),
                         new ButtonMenuItem
                         {
-                            Text = "Project Statistics",
+                            Text = "Project &Statistics",
                             Command = new Command((s, e) => MessageBoxes.InfoAboutLoadedProject())
                         }
                     }
@@ -103,12 +104,12 @@ namespace TextRpgMaker.Views
 
                 new ButtonMenuItem
                 {
-                    Text = "Game",
+                    Text = "&Game",
                     Items =
                     {
                         new ButtonMenuItem
                         {
-                            Text = "Start new",
+                            Text = "Start &new",
                             Enabled = false,
                             Command = new Command(this.OnStartNewGameClick)
                         }
@@ -118,32 +119,51 @@ namespace TextRpgMaker.Views
                 new ButtonMenuItem
                 {
                     Text = "Load / Save",
-                    Command = new Command(UnimplementedClick)
+                    Command = new Command(NotImplementedClick)
                 }
             },
 
             AboutItem = new ButtonMenuItem
             {
-                Text = "About",
-                Command = new Command(UnimplementedClick)
+                Text = "&About",
+                Command = new Command(NotImplementedClick)
             },
 
             HelpItems =
             {
                 new ButtonMenuItem
                 {
-                    Text = "Game Help",
-                    Command = new Command(UnimplementedClick)
+                    Text = "&Creators",
+                    Items =
+                    {
+                        new ButtonMenuItem
+                        {
+                            Text = "&Help Text",
+                            Command = new Command(this.OnCreatorsHelpClick)
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "Export yaml &type documentation",
+                            Command = new Command(this.OnGenerateTypeDocClick)
+                        }
+                    }
                 },
                 new ButtonMenuItem
                 {
-                    Text = "Engine Help",
-                    Command = new Command(UnimplementedClick)
-                },
-                new ButtonMenuItem
-                {
-                    Text = "Export yaml type documentation",
-                    Command = new Command(this.OnGenerateTypeDocClick)
+                    Text = "&Players",
+                    Items =
+                    {
+                        new ButtonMenuItem
+                        {
+                            Text = "&TextRpgCreator Help",
+                            Command = new Command(this.OnPlayersHelpClick)
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "&Project Help",
+                            Command = new Command(NotImplementedClick)
+                        }
+                    }
                 }
             }
         };

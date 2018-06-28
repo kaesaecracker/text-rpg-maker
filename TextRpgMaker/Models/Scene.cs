@@ -5,7 +5,7 @@ using YamlDotNet.Serialization;
 namespace TextRpgMaker.Models
 {
     [LoadFromProjectFile("scenes.yaml", true, true)]
-    public class Scene : Element
+    public class Scene : BasicElement
     {
         [YamlMember(Alias = "characters")]
         public List<string> Characters { get; set; }

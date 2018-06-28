@@ -3,7 +3,7 @@
 namespace TextRpgMaker.Models
 {
     [LoadFromProjectFile("items/consumables.yaml", false, true)]
-    public class Consumable : Element
+    public class Consumable : BasicElement
     {
     }
 }

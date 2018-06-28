@@ -6,14 +6,14 @@ using static Serilog.Log;
 
 namespace TextRpgMaker.Workers
 {
-    public static class Validator
+    public static class ProjectValidator
     {
         /// <summary>
         ///     Runs all methods in Validator that have the [ValidationMethod] Attribute.
         ///     To write a new Validation, you can just add a new Method that throws a
         ///     ValidationFailedException if the validation fails with the [ValidationMethod] Attribute.
         /// </summary>
-        public static void ValidateAll(ProjectModel p)
+        public static void RunAllValidations(ProjectModel p)
         {
             Logger.Information("VALIDATOR: Starting validation");
             var methods = (

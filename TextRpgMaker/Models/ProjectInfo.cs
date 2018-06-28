@@ -5,7 +5,7 @@ using YamlDotNet.Serialization;
 namespace TextRpgMaker.Models
 {
     [LoadFromProjectFile("project-info.yaml", true)]
-    public class ProjectInfo : Element
+    public class ProjectInfo : BasicElement
     {
         public override string Id { get; set; } = "project-info";
 

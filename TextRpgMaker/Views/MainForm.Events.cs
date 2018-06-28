@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Eto.Forms;
 using TextRpgMaker.Workers;
 using static Serilog.Log;
@@ -55,6 +56,16 @@ namespace TextRpgMaker.Views
         {
             Logger.Debug("Start new game");
             GameInitializer.StartNewGame();
+        }
+
+        private void OnCreatorsHelpClick(object sender, EventArgs e)
+        {
+            this.OpenHelp("creators-help.yaml");
+        }
+
+        private void OnPlayersHelpClick(object sender, EventArgs e)
+        {
+            this.OpenHelp("players-help.yaml");
         }
     }
 }

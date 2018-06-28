@@ -169,7 +169,7 @@ namespace TextRpgMaker.Workers
         {
             // todo only allow look at elements in scene / inventory
             var elems = (
-                from Element element in Project.TopLevelElements
+                from  element in Project.TopLevelElements.OfType<LookableElement>()
                 where string.Equals(element.Id, idOrName,
                           StringComparison.InvariantCultureIgnoreCase)
                       || string.Equals(element.Name, idOrName,

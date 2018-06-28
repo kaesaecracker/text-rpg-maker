@@ -3,7 +3,7 @@
 namespace TextRpgMaker.Models
 {
     [LoadFromProjectFile("items/ammo.yaml", false, true)]
-    public class Item : Element
+    public class Item : BasicElement
     {
     }
 }

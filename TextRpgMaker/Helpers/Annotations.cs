@@ -34,7 +34,7 @@ namespace TextRpgMaker.Helpers
         public bool Required { get; }
     }
 
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false)]
     public sealed class DocumentedTypeAttribute : Attribute
     {
     }

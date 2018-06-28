@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using TextRpgMaker.Helpers;
 using TextRpgMaker.Models;
@@ -13,20 +14,26 @@ using static Serilog.Log;
 
 namespace TextRpgMaker.Workers
 {
-    public class ProjectParser
+    public class YamlParser
     {
-        private readonly Deserializer _deserializer = new DeserializerBuilder().Build();
+        private static readonly Deserializer Deserializer = new DeserializerBuilder().Build();
         private readonly string _folder;
-        private readonly List<Element> _tles;
+        private readonly List<BasicElement> _tles;
 
-        public ProjectParser(string pathToFolder)
+        public static List<string> ParseHelpFile(string path)
+        {
+            Logger.Debug("PARSER: ParseHelpFile {f}", path);
+            return Deserializer.Deserialize<List<string>>(File.ReadAllText(path));
+        }
+
+        public YamlParser(string pathToFolder)
         {
             if (!Directory.Exists(pathToFolder))
                 throw new LoadException(
                     $"The specified project folder {pathToFolder} does not exist");
 
             this._folder = pathToFolder;
-            this._tles = new List<Element>();
+            this._tles = new List<BasicElement>();
         }
 
         public ProjectModel ParseAll()
@@ -84,7 +91,7 @@ namespace TextRpgMaker.Workers
                 }
 
                 var elementOrList =
-                    this._deserializer.DeserializeSafely(tuple.Type, absPath, tuple.IsList);
+                    Deserializer.DeserializeSafely(tuple.Type, absPath, tuple.IsList);
                 switch (elementOrList)
                 {
                     case null when tuple.Required:
@@ -92,11 +99,11 @@ namespace TextRpgMaker.Workers
                     case null:
                         continue;
 
-                    case Element elem:
+                    case BasicElement elem:
                         this.AddToList(elem, absPath);
                         continue;
                     case IList list:
-                        foreach (var elem in list) this.AddToList((Element) elem, absPath);
+                        foreach (var elem in list) this.AddToList((BasicElement) elem, absPath);
 
                         continue;
                 }
@@ -177,7 +184,7 @@ namespace TextRpgMaker.Workers
         /// <exception cref="LoadException"></exception>
         private void RealizeInheritance()
         {
-            var realisationQueue = new Queue<Element>(this._tles);
+            var realisationQueue = new Queue<BasicElement>(this._tles);
             int stepsBeforeAbort = realisationQueue.Count;
             while (realisationQueue.Count > 0 && stepsBeforeAbort > 0)
             {
@@ -272,7 +279,7 @@ namespace TextRpgMaker.Workers
             foreach (var tuple in props) tuple.property.SetValue(tuple.element, tuple.DefaultValue);
         }
 
-        private void AddToList(Element e, string absPath)
+        private void AddToList(BasicElement e, string absPath)
         {
             e.OriginalFilePath = absPath;
             this._tles.Add(e);
@@ -286,7 +293,7 @@ namespace TextRpgMaker.Workers
         {
         }
 
-        public static LoadException BaseElementNotFound(IEnumerable<Element> errorElements)
+        public static LoadException BaseElementNotFound(IEnumerable<BasicElement> errorElements)
         {
             string msg = errorElements.Aggregate(
                 "There are elements based on other elements that could not be found:\n",
@@ -298,7 +305,7 @@ namespace TextRpgMaker.Workers
         }
 
         public static LoadException BaseElementHasDifferentType(
-            IEnumerable<(Element Base, Element Target)> errorTuples)
+            IEnumerable<(BasicElement Base, BasicElement Target)> errorTuples)
         {
             string msg = "The following elements are based on elements with different types:\n";
             foreach (var (baseElem, targetElem) in errorTuples)
@@ -310,7 +317,7 @@ namespace TextRpgMaker.Workers
             return new LoadException(msg);
         }
 
-        public static LoadException MalformedId(IEnumerable<Element> elems)
+        public static LoadException MalformedId(IEnumerable<BasicElement> elems)
         {
             string msg = "The project contains malformed IDs:\n";
             foreach (var element in elems) msg += $"- {element.Id}";
@@ -324,7 +331,7 @@ namespace TextRpgMaker.Workers
         }
 
         public static LoadException RequiredPropertyNull(
-            IEnumerable<(Element Element, string PropYamlName, string PropCsName)> errors)
+            IEnumerable<(BasicElement Element, string PropYamlName, string PropCsName)> errors)
         {
             string message = errors.Aggregate("The following required fields are not set:\n",
                 (current, err) =>
@@ -337,7 +344,7 @@ namespace TextRpgMaker.Workers
             return new LoadException(message);
         }
 
-        public static LoadException InheritanceLoopAborted(Queue<Element> realisationQueue)
+        public static LoadException InheritanceLoopAborted(Queue<BasicElement> realisationQueue)
         {
             string msg = "There was an error realizing the inheritance of elements. This might " +
                          "be a circular reference. Below you can see a list of all elements that" +

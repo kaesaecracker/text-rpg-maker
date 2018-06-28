@@ -36,13 +36,13 @@ namespace TextRpgMaker.Helpers
         /// <param name="id">the id to search</param>
         /// <typeparam name="T">the element type</typeparam>
         /// <returns>the element in the list with the specified id, or null if not found</returns>
-        public static T GetId<T>(this IEnumerable<T> list, string id) where T : Element
+        public static T GetId<T>(this IEnumerable<T> list, string id) where T : BasicElement
         {
             return list.FirstOrDefault(e => e.Id == id);
         }
 
         public static List<T> GetIds<T>(this IEnumerable<T> list, List<string> ids)
-            where T : Element
+            where T : BasicElement
         {
             return list.Where(elem => ids.Contains(elem.Id))
                        .ToList();

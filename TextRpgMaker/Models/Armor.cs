@@ -4,7 +4,7 @@ using YamlDotNet.Serialization;
 namespace TextRpgMaker.Models
 {
     [LoadFromProjectFile("items/armor.yaml", false, true)]
-    public class Armor : Element
+    public class Armor : BasicElement
     {
         public enum ArmorSlot
         {
