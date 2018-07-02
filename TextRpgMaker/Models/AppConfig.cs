@@ -1,7 +1,21 @@
-﻿namespace TextRpgMaker.Models
+﻿using System;
+
+namespace TextRpgMaker.Models
 {
     public class AppConfig
     {
-        public bool Debug { get; set; }
+        private bool _debug;
+
+        public bool Debug
+        {
+            get => this._debug;
+            set
+            {
+                this.ValueChangedEvent?.Invoke(this, EventArgs.Empty);
+                this._debug = value;
+            }
+        }
+
+        public event EventHandler<EventArgs> ValueChangedEvent;
     }
 }

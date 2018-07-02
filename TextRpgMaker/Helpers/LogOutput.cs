@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Serilog;
-using TextRpgMaker.Models;
+﻿using Serilog;
 
 namespace TextRpgMaker.Helpers
 {

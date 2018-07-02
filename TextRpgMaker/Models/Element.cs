@@ -23,7 +23,7 @@ namespace TextRpgMaker.Models
     }
 
     [DocumentedType]
-    public class LookableElement:BasicElement
+    public class LookableElement : BasicElement
     {
         [YamlMember(Alias = "look-text")]
         public string LookText { get; set; }

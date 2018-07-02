@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Mime;
 using Eto.Drawing;
 using Eto.Forms;
-using Pango;
-using WrapMode = Eto.Forms.WrapMode;
 
 namespace TextRpgMaker.Views
 {

@@ -21,15 +21,16 @@ namespace TextRpgMaker
                               .AddYamlFile("settings.yaml")
                               .Build()
                               .Get<AppConfig>();
-
             Logger = new LoggerConfiguration()
                      .MinimumLevel.Is(AppState.IsDebugRun
                          ? LogEventLevel.Debug
                          : LogEventLevel.Information)
                      .WriteTo.Console()
                      .CreateLogger();
-
             Logger.Debug("PROGRAM: Startet prgram with parameters {@args}", args);
+
+            // todo
+            AppState.Config.ValueChangedEvent += (s, e) => { };
 
             AppState.EtoApp = new Application(Platform.Detect);
             AppState.Ui = new MainForm();

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using TextRpgMaker.Helpers;
+using TextRpgMaker.Models;
 using YamlDotNet.Serialization;
 using static Serilog.Log;
 
@@ -27,9 +28,11 @@ namespace TextRpgMaker.Workers
                 var types =
                     from assembly in AppDomain.CurrentDomain.GetAssemblies()
                     from type in assembly.GetTypes()
+                    let loadFromFileAtt =
+                        type.IsDefined(typeof(LoadFromProjectFileAttribute), inherit: false)
                     where type.IsDefined(typeof(DocumentedTypeAttribute), inherit: false)
-                          || type.IsDefined(typeof(LoadFromProjectFileAttribute), inherit: false)
-                    orderby type.Name
+                          || loadFromFileAtt
+                    orderby loadFromFileAtt descending, type.Name
                     select type;
 
                 DocumentTypes(types, writer);
@@ -40,8 +43,16 @@ namespace TextRpgMaker.Workers
         {
             foreach (var t in types)
             {
+                string extraLines = "";
+                LoadFromProjectFileAttribute attribute;
+                if ((attribute = t.GetCustomAttribute<LoadFromProjectFileAttribute>()) != null)
+                {
+                    extraLines += $"in file: {attribute.ProjectRelativePath}\n";
+                }
+
                 writer.WriteLine($"---\n" +
                                  $"type: {t.Name}\n" +
+                                 extraLines +
                                  $"properties:");
                 foreach (var prop in t.GetProperties())
                 {
@@ -56,10 +67,14 @@ namespace TextRpgMaker.Workers
             if (yamlMemberAtt == null) return;
 
             writer.WriteLine($"- name: {yamlMemberAtt.Alias}");
-            if (prop.PropertyType.GetInterfaces().Contains(typeof(IList)))
+            if (typeof(IList).IsAssignableFrom(prop.PropertyType))
             {
                 // prop is list type
-                string ofType = prop.PropertyType.GenericTypeArguments[0].Name;
+                string ofType = prop.PropertyType == typeof(Inventory)
+                    // Inventory is IList, but does not have generic type parameter because it
+                    // inherits from List<ItemGrouping> directly
+                    ? "Inventory (= List<ItemGrouping>)"
+                    : prop.PropertyType.GenericTypeArguments[0].Name;
                 writer.WriteLine($"  type: List of {ofType}");
             }
             else

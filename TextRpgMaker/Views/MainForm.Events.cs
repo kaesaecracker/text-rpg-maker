@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Eto.Forms;
 using TextRpgMaker.Workers;
 using static Serilog.Log;
