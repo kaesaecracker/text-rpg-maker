@@ -1,7 +1,7 @@
 ﻿using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
-namespace TextRpgMaker.Models
+namespace TextRpgMaker.ProjectModels
 {
     [DocumentedType]
     public class BasicElement

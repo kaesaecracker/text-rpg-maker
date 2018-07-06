@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using TextRpgMaker.Models;
+using TextRpgMaker.ProjectModels;
 using static Serilog.Log;
 
 namespace TextRpgMaker.Workers

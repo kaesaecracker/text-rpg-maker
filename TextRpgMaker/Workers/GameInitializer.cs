@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using TextRpgMaker.Helpers;
-using TextRpgMaker.Models;
+using TextRpgMaker.ProjectModels;
 using TextRpgMaker.Views;
 using static Serilog.Log;
 

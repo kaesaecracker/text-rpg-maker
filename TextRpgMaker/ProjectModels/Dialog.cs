@@ -2,7 +2,7 @@
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
-namespace TextRpgMaker.Models
+namespace TextRpgMaker.ProjectModels
 {
     [LoadFromProjectFile("dialogs.yaml", true, true)]
     public class Dialog : BasicElement

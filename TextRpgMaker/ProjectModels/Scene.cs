@@ -2,7 +2,7 @@
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
-namespace TextRpgMaker.Models
+namespace TextRpgMaker.ProjectModels
 {
     [LoadFromProjectFile("scenes.yaml", true, true)]
     public class Scene : BasicElement

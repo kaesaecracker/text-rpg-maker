@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using TextRpgMaker.Helpers;
-using TextRpgMaker.Models;
+using TextRpgMaker.ProjectModels;
 using YamlDotNet.Serialization;
 using static Serilog.Log;
 

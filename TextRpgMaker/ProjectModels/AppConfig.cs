@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TextRpgMaker.Models
+namespace TextRpgMaker.ProjectModels
 {
     public class AppConfig
     {

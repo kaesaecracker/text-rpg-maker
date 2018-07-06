@@ -2,7 +2,7 @@
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
-namespace TextRpgMaker.Models
+namespace TextRpgMaker.ProjectModels
 {
     [LoadFromProjectFile("project-info.yaml", true)]
     public class ProjectInfo : BasicElement
