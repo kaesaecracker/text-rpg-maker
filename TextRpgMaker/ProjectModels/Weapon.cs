@@ -4,7 +4,7 @@ using YamlDotNet.Serialization;
 namespace TextRpgMaker.ProjectModels
 {
     [LoadFromProjectFile("items/weapons.yaml", false, true)]
-    public class Weapon : BasicElement
+    public class Weapon : Element
     {
         [YamlMember(Alias = "attack")]
         [YamlProperties(false, 1.0)]

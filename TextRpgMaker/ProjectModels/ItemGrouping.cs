@@ -6,16 +6,6 @@ using YamlDotNet.Serialization;
 namespace TextRpgMaker.ProjectModels
 {
     [DocumentedType]
-    public class Inventory : List<ItemGrouping>
-    {
-        public override string ToString()
-        {
-            var names = this.Select(ig => AppState.Project.ById<BasicElement>(ig.ItemId).Name);
-            return $"[{names.Aggregate((curr, name) => $"{curr}, {name}")}]";
-        }
-    }
-
-    [DocumentedType]
     public class ItemGrouping
     {
         public ItemGrouping()

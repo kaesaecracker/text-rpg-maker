@@ -70,11 +70,7 @@ namespace TextRpgMaker.Workers
             if (typeof(IList).IsAssignableFrom(prop.PropertyType))
             {
                 // prop is list type
-                string ofType = prop.PropertyType == typeof(Inventory)
-                    // Inventory is IList, but does not have generic type parameter because it
-                    // inherits from List<ItemGrouping> directly
-                    ? "Inventory (= List<ItemGrouping>)"
-                    : prop.PropertyType.GenericTypeArguments[0].Name;
+                string ofType = prop.PropertyType.GenericTypeArguments[0].Name;
                 writer.WriteLine($"  type: List of {ofType}");
             }
             else

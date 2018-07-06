@@ -5,7 +5,7 @@ using YamlDotNet.Serialization;
 namespace TextRpgMaker.ProjectModels
 {
     [LoadFromProjectFile("characters.yaml", true, true)]
-    public class Character : LookableElement
+    public class Character : Element
     {
         [YamlMember(Alias = "current-hp")]
         [YamlProperties(false)]
@@ -32,7 +32,7 @@ namespace TextRpgMaker.ProjectModels
         public double? Speed { get; set; }
 
         [YamlMember(Alias = "items")]
-        public Inventory Items { get; set; }
+        public List<ItemGrouping> Items { get; set; }
 
         [YamlMember(Alias = "drops")]
         public List<Drop> Drops { get; set; }

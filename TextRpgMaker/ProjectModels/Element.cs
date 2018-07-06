@@ -4,7 +4,7 @@ using YamlDotNet.Serialization;
 namespace TextRpgMaker.ProjectModels
 {
     [DocumentedType]
-    public class BasicElement
+    public class Element
     {
         [YamlMember(Alias = "id")]
         [YamlProperties(true)]
@@ -19,13 +19,9 @@ namespace TextRpgMaker.ProjectModels
         [YamlIgnore]
         public string OriginalFilePath { get; set; }
 
-        public override string ToString() => $"[Element Id={this.Id}]";
-    }
-
-    [DocumentedType]
-    public class LookableElement : BasicElement
-    {
         [YamlMember(Alias = "look-text")]
         public string LookText { get; set; }
+
+        public override string ToString() => $"[Element Id={this.Id}]";
     }
 }

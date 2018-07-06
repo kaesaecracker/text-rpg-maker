@@ -5,7 +5,7 @@ using YamlDotNet.Serialization;
 namespace TextRpgMaker.ProjectModels
 {
     [LoadFromProjectFile("dialogs.yaml", true, true)]
-    public class Dialog : BasicElement
+    public class Dialog : Element
     {
         public override string Name => this.Id;
 

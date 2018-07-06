@@ -17,8 +17,7 @@ namespace TextRpgMaker.Workers
                 CurrentDialog = AppState.Project.Dialogs.GetId(AppState.Project.StartInfo.DialogId)
             };
 
-            var looper = new InputLooper();
-            looper.StartFromNewGame();
+            
         }
 
         public static void StartSavedGame(string pathToSave)
