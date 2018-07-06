@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using TextRpgMaker.Helpers;
-using TextRpgMaker.Models;
+using TextRpgMaker.ProjectModels;
 using static TextRpgMaker.AppState;
 
 namespace TextRpgMaker.Workers

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TextRpgMaker.Models;
+using TextRpgMaker.ProjectModels;
 using TextRpgMaker.Workers;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;

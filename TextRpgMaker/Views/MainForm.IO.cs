@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TextRpgMaker.Helpers;
-using TextRpgMaker.Models;
+using TextRpgMaker.ProjectModels;
 
 namespace TextRpgMaker.Views
 {

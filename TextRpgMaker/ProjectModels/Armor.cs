@@ -1,7 +1,7 @@
 ﻿using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
-namespace TextRpgMaker.Models
+namespace TextRpgMaker.ProjectModels
 {
     [LoadFromProjectFile("items/armor.yaml", false, true)]
     public class Armor : BasicElement

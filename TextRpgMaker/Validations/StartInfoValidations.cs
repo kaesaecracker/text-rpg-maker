@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using TextRpgMaker.Models;
+using TextRpgMaker.ProjectModels;
 using TextRpgMaker.Workers;
 
 namespace TextRpgMaker.Validations

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using TextRpgMaker.Helpers;
-using TextRpgMaker.Models;
+using TextRpgMaker.ProjectModels;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using static Serilog.Log;

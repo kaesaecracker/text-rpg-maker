@@ -2,7 +2,7 @@
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
-namespace TextRpgMaker.Models
+namespace TextRpgMaker.ProjectModels
 {
     [LoadFromProjectFile("characters.yaml", true, true)]
     public class Character : LookableElement

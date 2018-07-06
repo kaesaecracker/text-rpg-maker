@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRpgMaker.Models
+namespace TextRpgMaker.ProjectModels
 {
     /// <summary>
     ///     Everything that gets loaded when you open a project.

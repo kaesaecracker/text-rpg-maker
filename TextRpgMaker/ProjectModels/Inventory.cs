@@ -3,7 +3,7 @@ using System.Linq;
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
-namespace TextRpgMaker.Models
+namespace TextRpgMaker.ProjectModels
 {
     [DocumentedType]
     public class Inventory : List<ItemGrouping>

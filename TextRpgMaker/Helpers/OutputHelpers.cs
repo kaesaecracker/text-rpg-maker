@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using TextRpgMaker.Models;
+using TextRpgMaker.ProjectModels;
 
 namespace TextRpgMaker.Helpers
 {
