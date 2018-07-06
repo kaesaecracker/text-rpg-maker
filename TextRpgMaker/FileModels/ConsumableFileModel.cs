@@ -1,9 +1,9 @@
 ﻿using TextRpgMaker.Helpers;
 
-namespace TextRpgMaker.ProjectModels
+namespace TextRpgMaker.FileModels
 {
     [LoadFromProjectFile("items/consumables.yaml", false, true)]
-    public class Consumable : Element
+    public class ConsumableFileModel : ElementFileModel
     {
     }
 }

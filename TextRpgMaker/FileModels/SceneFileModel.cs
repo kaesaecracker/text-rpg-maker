@@ -2,15 +2,15 @@
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
-namespace TextRpgMaker.ProjectModels
+namespace TextRpgMaker.FileModels
 {
     [LoadFromProjectFile("scenes.yaml", true, true)]
-    public class Scene : Element
+    public class SceneFileModel : ElementFileModel
     {
         [YamlMember(Alias = "characters")]
         public List<string> Characters { get; set; }
 
         [YamlMember(Alias = "items")]
-        public List<ItemGrouping> Items { get; set; }
+        public List<ItemGroupingFileModel> Items { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace TextRpgMaker.Views
         private void OnProjectChange(object sender, AppState.ProjectChangedEventArgs e)
         {
             this.Title = e.NewProject != null
-                ? $"{e.NewProject.Info.Title} - TextRpgCreator"
+                ? $"{e.NewProject.InfoFileModel.Title} - TextRpgCreator"
                 : "TextRpgCreator";
         }
 

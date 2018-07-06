@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using TextRpgMaker.FileModels;
 using TextRpgMaker.ProjectModels;
 using static Serilog.Log;
 

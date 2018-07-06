@@ -30,7 +30,7 @@ namespace TextRpgMaker.Views
                 AppState.Ui,
                 AppState.IsProjectLoaded
                     ? $"- Path: \"{AppState.Project.ProjectDir}\"\n" +
-                      $"- ProjectInfo.Title: {AppState.Project.Info.Title}\n" +
+                      $"- ProjectInfo.Title: {AppState.Project.InfoFileModel.Title}\n" +
                       $"- Elements: {AppState.Project.TopLevelElements.Count}\n" +
                       $"- Weapons: {AppState.Project.WeaponTypes.Count}\n" +
                       $"- Ammo: {AppState.Project.AmmoTypes.Count}\n" +

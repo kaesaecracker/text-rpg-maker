@@ -1,9 +1,9 @@
 ﻿using TextRpgMaker.Helpers;
 
-namespace TextRpgMaker.ProjectModels
+namespace TextRpgMaker.FileModels
 {
     [LoadFromProjectFile("items/ammo.yaml", false, true)]
-    public class Item : Element
+    public class ItemFileModel : ElementFileModel
     {
     }
 }

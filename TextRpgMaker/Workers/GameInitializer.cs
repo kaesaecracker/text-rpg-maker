@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using TextRpgMaker.FileModels;
 using TextRpgMaker.Helpers;
 using TextRpgMaker.ProjectModels;
 using TextRpgMaker.Views;
@@ -13,8 +14,8 @@ namespace TextRpgMaker.Workers
         {
             AppState.Game = new GameState
             {
-                CurrentScene = AppState.Project.ById<Scene>(AppState.Project.StartInfo.SceneId),
-                CurrentDialog = AppState.Project.Dialogs.GetId(AppState.Project.StartInfo.DialogId)
+                CurrentSceneFileModel = AppState.Project.ById<SceneFileModel>(AppState.Project.StartInfo.SceneId),
+                CurrentDialogFileModel = AppState.Project.Dialogs.GetId(AppState.Project.StartInfo.DialogId)
             };
 
             

@@ -2,10 +2,10 @@
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
-namespace TextRpgMaker.ProjectModels
+namespace TextRpgMaker.FileModels
 {
     [LoadFromProjectFile("dialogs.yaml", true, true)]
-    public class Dialog : Element
+    public class DialogFileModel : ElementFileModel
     {
         public override string Name => this.Id;
 
@@ -17,11 +17,11 @@ namespace TextRpgMaker.ProjectModels
         public string GotoId { get; set; }
 
         [YamlMember(Alias = "choices")]
-        public List<Choice> Choices { get; set; }
+        public List<ChoiceFileModel> Choices { get; set; }
     }
 
     [DocumentedType]
-    public class Choice
+    public class ChoiceFileModel
     {
         [YamlMember(Alias = "text")]
         [YamlProperties(true)]
@@ -34,9 +34,9 @@ namespace TextRpgMaker.ProjectModels
         public string GotoSceneId { get; set; }
 
         [YamlMember(Alias = "reward-items")]
-        public List<ItemGrouping> RewardItems { get; set; } = new List<ItemGrouping>();
+        public List<ItemGroupingFileModel> RewardItems { get; set; } = new List<ItemGroupingFileModel>();
 
         [YamlMember(Alias = "required-items")]
-        public List<ItemGrouping> RequiredItems { get; set; } = new List<ItemGrouping>();
+        public List<ItemGroupingFileModel> RequiredItems { get; set; } = new List<ItemGroupingFileModel>();
     }
 }

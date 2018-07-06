@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TextRpgMaker.FileModels;
 using TextRpgMaker.Helpers;
 using TextRpgMaker.ProjectModels;
 
@@ -24,7 +25,7 @@ namespace TextRpgMaker.Views
             this._outputPanel.WriteLine(text);
         }
 
-        public void Write(List<Choice> choices)
+        public void Write(List<ChoiceFileModel> choices)
         {
             for (int index = 0; index < choices.Count; index++)
             {

@@ -1,4 +1,5 @@
-﻿using TextRpgMaker.Helpers;
+﻿using TextRpgMaker.FileModels;
+using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.ProjectModels
@@ -11,12 +12,12 @@ namespace TextRpgMaker.ProjectModels
     public class GameState
     {
         [YamlMember(Alias = "player-char")]
-        public Character PlayerChar { get; set; }
+        public CharacterFileModel PlayerChar { get; set; }
 
         [YamlMember(Alias = "current-scene")]
-        public Scene CurrentScene { get; set; }
+        public SceneFileModel CurrentSceneFileModel { get; set; }
 
         [YamlMember(Alias = "current-dialog")]
-        public Dialog CurrentDialog { get; set; }
+        public DialogFileModel CurrentDialogFileModel { get; set; }
     }
 }

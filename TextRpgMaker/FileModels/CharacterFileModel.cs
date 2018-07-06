@@ -2,19 +2,11 @@
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
-namespace TextRpgMaker.ProjectModels
+namespace TextRpgMaker.FileModels
 {
     [LoadFromProjectFile("characters.yaml", true, true)]
-    public class Character : Element
+    public class CharacterFileModel : ElementFileModel
     {
-        [YamlMember(Alias = "current-hp")]
-        [YamlProperties(false)]
-        public double CurrentHp { get; set; } = 100;
-
-        [YamlMember(Alias = "name")]
-        [YamlProperties(true)]
-        public override string Name { get; set; }
-
         [YamlMember(Alias = "health")]
         [YamlProperties(false, 1.0)]
         public double? Health { get; set; }
@@ -32,7 +24,7 @@ namespace TextRpgMaker.ProjectModels
         public double? Speed { get; set; }
 
         [YamlMember(Alias = "items")]
-        public List<ItemGrouping> Items { get; set; }
+        public List<ItemGroupingFileModel> Items { get; set; }
 
         [YamlMember(Alias = "drops")]
         public List<Drop> Drops { get; set; }

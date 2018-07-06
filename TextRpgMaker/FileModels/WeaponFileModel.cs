@@ -1,10 +1,10 @@
 ﻿using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
-namespace TextRpgMaker.ProjectModels
+namespace TextRpgMaker.FileModels
 {
     [LoadFromProjectFile("items/weapons.yaml", false, true)]
-    public class Weapon : Element
+    public class WeaponFileModel : ElementFileModel
     {
         [YamlMember(Alias = "attack")]
         [YamlProperties(false, 1.0)]
