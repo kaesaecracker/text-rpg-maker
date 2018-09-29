@@ -105,17 +105,22 @@ namespace TextRpgMaker.Workers
         {
             // remove required items
             foreach (var requiredItem in choice.RequiredItems)
-            {
                 Game.PlayerChar.Items.RemoveItem(requiredItem);
-            }
             
             // give reward items
             foreach (var rewardItem in choice.RewardItems)
-            {
                 Game.PlayerChar.Items.AddItem(rewardItem);
-            }
             
-            // todo give reward items
+            // apply scene changes
+            foreach (var changeCharacter in choice.ChangeCharacters)
+                changeCharacter.Apply();
+            
+            // apply char changes
+            foreach (var changeScene in choice.ChangeScenes)
+                changeScene.Apply();
+           
+            
+            // Priority: GotoDialog, GotoScene. If none specified, wait for input
             if (choice.GotoDialogId != null)
                 this.HandleDialog(Project.Dialogs.GetId(choice.GotoDialogId));
             else if (choice.GotoSceneId != null)
