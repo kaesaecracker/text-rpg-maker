@@ -15,7 +15,7 @@
   - text: Take sword
     reward-items:
     - id: sword-wood
-    change-scene:
-      id: town
+    change-scenes:
+    - id: town
       add-connection-to: fields
     
