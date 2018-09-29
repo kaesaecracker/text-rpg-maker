@@ -11,9 +11,9 @@ namespace TextRpgMaker.ProjectModels
         public List<string> Characters { get; set; }
 
         [YamlMember(Alias = "items")]
-        public List<ItemGrouping> Items { get; set; }
+        public List<ItemGrouping> Items { get; set; } = new List<ItemGrouping>();
         
         [YamlMember(Alias = "connections-to")]
-        public List<string> Connections { get; set; }
+        public List<string> Connections { get; set; } = new List<string>();
     }
 }
