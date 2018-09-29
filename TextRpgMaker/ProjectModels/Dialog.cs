@@ -17,7 +17,7 @@ namespace TextRpgMaker.ProjectModels
         public string GotoId { get; set; }
 
         [YamlMember(Alias = "choices")]
-        public List<Choice> Choices { get; set; }
+        public List<Choice> Choices { get; set; } = new List<Choice>();
     }
 
     [DocumentedType]
