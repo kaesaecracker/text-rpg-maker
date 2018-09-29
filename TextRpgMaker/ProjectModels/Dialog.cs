@@ -38,5 +38,8 @@ namespace TextRpgMaker.ProjectModels
 
         [YamlMember(Alias = "required-items")]
         public List<ItemGrouping> RequiredItems { get; set; } = new List<ItemGrouping>();
+
+        [YamlMember(Alias = "change-scene")]
+        public List<ChangeScene> ChangeScenes { get; set; } = new List<ChangeScene>();
     }
 }
