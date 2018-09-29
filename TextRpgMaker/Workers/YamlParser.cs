@@ -15,7 +15,7 @@ namespace TextRpgMaker.Workers
 {
     public class YamlParser
     {
-        private static readonly Deserializer Deserializer = new DeserializerBuilder().Build();
+        private static readonly IDeserializer Deserializer = new DeserializerBuilder().Build();
         private readonly string _folder;
         private readonly List<BasicElement> _tles;
 

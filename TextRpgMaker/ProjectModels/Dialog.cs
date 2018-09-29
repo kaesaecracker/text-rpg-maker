@@ -17,7 +17,7 @@ namespace TextRpgMaker.ProjectModels
         public string GotoId { get; set; }
 
         [YamlMember(Alias = "choices")]
-        public List<Choice> Choices { get; set; }
+        public List<Choice> Choices { get; set; } = new List<Choice>();
     }
 
     [DocumentedType]
@@ -38,5 +38,11 @@ namespace TextRpgMaker.ProjectModels
 
         [YamlMember(Alias = "required-items")]
         public List<ItemGrouping> RequiredItems { get; set; } = new List<ItemGrouping>();
+
+        [YamlMember(Alias = "change-scenes")]
+        public List<ChangeScene> ChangeScenes { get; set; } = new List<ChangeScene>();
+        
+        [YamlMember(Alias = "change-characters")]
+        public List<ChangeCharacter> ChangeCharacters { get; set; } = new List<ChangeCharacter>();
     }
 }

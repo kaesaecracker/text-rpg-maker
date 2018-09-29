@@ -75,14 +75,26 @@ namespace TextRpgMaker.Workers
                     continue;
                 }
 
-                // todo only allow choices that meet the requirements
-                if (dlg.Choices != null && dlg.Choices.Count != 0)
-                    this.Input.GetChoice(dlg.Choices, c => c.Text, choice =>
+                var choicesThatMeetRequirements = (
+                    from c in dlg.Choices
+                    let mismatchedItems = (
+                        from reqItem in c.RequiredItems
+                        where !Game.PlayerChar.Items.HasItem(reqItem)
+                        select reqItem
+                    )
+                    where !mismatchedItems.Any()
+                    select c
+                ).ToList();
+
+                if (choicesThatMeetRequirements.Count == 0)
+                    this.GetTextInput();
+                else
+                    this.Input.GetChoice(choicesThatMeetRequirements, c => c.Text, choice =>
                     {
                         this.Output.Write($" >> {choice.Text}");
                         this.HandleChoice(choice);
                     });
-                else this.GetTextInput();
+
                 break;
             }
         }
@@ -91,8 +103,24 @@ namespace TextRpgMaker.Workers
 
         private void HandleChoice(Choice choice)
         {
-            // todo remove required items
-            // todo give reward items
+            // remove required items
+            foreach (var requiredItem in choice.RequiredItems)
+                Game.PlayerChar.Items.RemoveItem(requiredItem);
+            
+            // give reward items
+            foreach (var rewardItem in choice.RewardItems)
+                Game.PlayerChar.Items.AddItem(rewardItem);
+            
+            // apply scene changes
+            foreach (var changeCharacter in choice.ChangeCharacters)
+                changeCharacter.Apply();
+            
+            // apply char changes
+            foreach (var changeScene in choice.ChangeScenes)
+                changeScene.Apply();
+           
+            
+            // Priority: GotoDialog, GotoScene. If none specified, wait for input
             if (choice.GotoDialogId != null)
                 this.HandleDialog(Project.Dialogs.GetId(choice.GotoDialogId));
             else if (choice.GotoSceneId != null)
@@ -169,7 +197,7 @@ namespace TextRpgMaker.Workers
         {
             // todo only allow look at elements in scene / inventory
             var elems = (
-                from  element in Project.TopLevelElements.OfType<LookableElement>()
+                from element in Project.TopLevelElements.OfType<LookableElement>()
                 where string.Equals(element.Id, idOrName,
                           StringComparison.InvariantCultureIgnoreCase)
                       || string.Equals(element.Name, idOrName,
