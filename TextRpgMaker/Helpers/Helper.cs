@@ -12,7 +12,7 @@ namespace TextRpgMaker.Helpers
     public static class Helper
     {
         public static object DeserializeSafely(
-            this Deserializer d, Type t, string pathToFile, bool list)
+            this IDeserializer d, Type t, string pathToFile, bool list)
         {
             try
             {
