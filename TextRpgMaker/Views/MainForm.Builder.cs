@@ -1,5 +1,4 @@
-﻿
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using Eto.Drawing;
 using Eto.Forms;
@@ -44,6 +43,7 @@ namespace TextRpgMaker.Views
         {
             Items =
             {
+// TODO find a way to enable debug menu according to AppState.IsDebugRun without breaking this structure
 #if DEBUG
                 new ButtonMenuItem
                 {
@@ -78,6 +78,19 @@ namespace TextRpgMaker.Views
                         {
                             Text = "Break",
                             Command = new Command((s, e) => { Logger.Debug("BREAK"); })
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "ConfirmationDialogTest",
+                            Command = new Command(
+                                (s, e) => new ConfirmationDialog
+                                {
+                                    Text = "This is the text",
+                                    Title = "This is the title",
+                                    Yes = "Yes Btn",
+                                    No = "No Btn"
+                                }.ShowModal()
+                            )
                         }
                     }
                 },
