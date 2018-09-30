@@ -48,9 +48,9 @@ namespace TextRpgMaker.Helpers
                        .ToList();
         }
 
-        public static MultiOutput And(this IOutput a, IOutput b)
+        public static IOController.MultiOutput And(this IOController.IOutput a, IOController.IOutput b)
         {
-            return new MultiOutput(a, b);
+            return new IOController.MultiOutput(a, b);
         }
 
         public static string ProjectToNormalPath(string pathInProj, string pathToProj)

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Eto.Forms;
 using TextRpgMaker.Helpers;
+using TextRpgMaker.Workers;
 using static Serilog.Log;
 
 namespace TextRpgMaker.Views
 {
-    public class InputPanel : Panel, IInput
+    public class InputPanel : Panel, IOController.IInput
     {
         public InputPanel()
         {

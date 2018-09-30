@@ -35,12 +35,11 @@ namespace TextRpgMaker.Workers
             ).ToList();
         }
 
-        private IOutput Output { get; } = Ui.And(new LogOutput());
-        private IInput Input { get; } = Ui;
+        
 
         public void StartFromNewGame()
         {
-            this.Output.Write("Choose one of the following characters:");
+            IO.Write("Choose one of the following characters:");
 
             var startChars = (
                 from id in Project.StartInfo.CharacterIds
@@ -49,15 +48,15 @@ namespace TextRpgMaker.Workers
 
             foreach (var c in startChars)
             {
-                OutputHelpers.PrintCharacter(c, this.Output);
-                this.Output.Write("");
+                OutputHelpers.PrintCharacter(c);
+                IO.Write("");
             }
 
-            this.Input.GetChoice(startChars, c => c.Name, choosenChar =>
+            IO.GetChoice(startChars, c => c.Name, choosenChar =>
             {
                 Game.PlayerChar = choosenChar;
-                this.Output.Write($">> {choosenChar.Name}\n");
-                this.Output.Write(Project.StartInfo.IntroText
+                IO.Write($">> {choosenChar.Name}\n");
+                IO.Write(Project.StartInfo.IntroText
                                   ?? "The project does not have an intro text");
                 this.HandleDialog(Game.CurrentDialog);
             });
@@ -68,7 +67,7 @@ namespace TextRpgMaker.Workers
             // was recursive, this is the iterative way (gotos)
             while (true)
             {
-                this.Output.Write('"' + dlg.Text + '"');
+                IO.Write('"' + dlg.Text + '"');
                 if (dlg.GotoId != null)
                 {
                     dlg = Project.ById<Dialog>(dlg.GotoId);
@@ -89,9 +88,9 @@ namespace TextRpgMaker.Workers
                 if (choicesThatMeetRequirements.Count == 0)
                     this.GetTextInput();
                 else
-                    this.Input.GetChoice(choicesThatMeetRequirements, c => c.Text, choice =>
+                    IO.GetChoice(choicesThatMeetRequirements, c => c.Text, choice =>
                     {
-                        this.Output.Write($" >> {choice.Text}");
+                        IO.Write($" >> {choice.Text}");
                         this.HandleChoice(choice);
                     });
 
@@ -99,7 +98,7 @@ namespace TextRpgMaker.Workers
             }
         }
 
-        private void GetTextInput() => this.Input.GetTextInput(this.HandleText);
+        private void GetTextInput() => IO.GetTextInput(this.HandleText);
 
         private void HandleChoice(Choice choice)
         {
@@ -147,7 +146,7 @@ namespace TextRpgMaker.Workers
                 return;
             }
 
-            this.Output.Write($">> Command not known: {line}");
+            IO.Write($">> Command not known: {line}");
             this.GetTextInput();
         }
 
@@ -167,22 +166,22 @@ namespace TextRpgMaker.Workers
             switch (matchingChars.Count)
             {
                 case 0:
-                    this.Output.Write($">> Could not find character {idOrName} in current scene");
+                    IO.Write($">> Could not find character {idOrName} in current scene");
                     break;
 
                 case 1 when matchingChars.First().TalkDialog == null:
-                    this.Output.Write(
+                    IO.Write(
                         $">> {matchingChars.First().Name} does not want to talk to you.");
                     break;
 
                 case 1:
-                    this.Output.Write($">> Talking to {matchingChars.First().Name}");
+                    IO.Write($">> Talking to {matchingChars.First().Name}");
                     this.HandleDialog(
                         Project.ById<Dialog>(matchingChars.First().TalkDialog));
                     return;
 
                 default:
-                    this.Output.Write(matchingChars.Select(c => c.Name).Aggregate(
+                    IO.Write(matchingChars.Select(c => c.Name).Aggregate(
                         ">> There are multiple characters you could mean:",
                         (str, elem) => str + ", " + elem
                     ));
@@ -208,21 +207,21 @@ namespace TextRpgMaker.Workers
             switch (elems.Count)
             {
                 case 0:
-                    this.Output.Write($">> Could not find '{idOrName}' in current scene");
+                    IO.Write($">> Could not find '{idOrName}' in current scene");
                     break;
 
                 case 1 when elems.First().LookText == null:
-                    this.Output.Write(
+                    IO.Write(
                         $">> {elems.First().Name} does not have a look text.");
                     break;
 
                 case 1:
-                    this.Output.Write($">> Look at {elems.First().Name}");
-                    this.Output.Write(elems.First().LookText);
+                    IO.Write($">> Look at {elems.First().Name}");
+                    IO.Write(elems.First().LookText);
                     break;
 
                 default:
-                    this.Output.Write(elems.Select(c => c.Name).Aggregate(
+                    IO.Write(elems.Select(c => c.Name).Aggregate(
                         ">> There are multiple characters you could mean:",
                         (str, elem) => str + ", " + elem
                     ));
@@ -235,14 +234,14 @@ namespace TextRpgMaker.Workers
         [InputCommand("lookaround", "Lists elements in scene")]
         private void LookAround(string _)
         {
-            OutputHelpers.LookAround(this.Output);
+            OutputHelpers.LookAround();
             this.GetTextInput();
         }
 
         [InputCommand("inventory", "shows inventory")]
         private void ShowInventory(string _)
         {
-            OutputHelpers.PrintInventory(this.Output);
+            OutputHelpers.PrintInventory();
             this.GetTextInput();
         }
     }

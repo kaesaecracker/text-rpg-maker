@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using TextRpgMaker.Helpers;
 using TextRpgMaker.ProjectModels;
+using TextRpgMaker.Workers;
 
 namespace TextRpgMaker.Views
 {
-    public partial class MainForm : IInput, IOutput
+    public partial class MainForm : IOController.IInput, IOController.IOutput
     {
         public void GetChoice<T>(List<T> possibleChoices,
                                  Func<T, string> textRepresentation,

@@ -1,27 +1,28 @@
 ﻿using System.Linq;
 using TextRpgMaker.ProjectModels;
+using static TextRpgMaker.AppState;
 
 namespace TextRpgMaker.Helpers
 {
     public static class OutputHelpers
     {
-        public static void LookAround(IOutput output)
+        public static void LookAround()
         {
-            output.Write(">> look around");
+            IO.Write(">> look around");
 
             var characters = AppState.Project.Characters
                                      .GetIds(AppState.Game.CurrentScene.Characters)
                                      .Select(c => c.Name)
                                      .ToList();
             if (characters.Any())
-                output.Write("Characters: " +
+                IO.Write("Characters: " +
                              characters.Aggregate((str, cName) => $"{str}, {cName}"));
             // todo look around items etc
         }
 
-        public static void PrintCharacter(Character c, IOutput output)
+        public static void PrintCharacter(Character c)
         {
-            output.Write(
+            IO.Write(
                 $"{c.Name}: {c.LookText}\n" +
                 $"- Attack: {c.Attack}\n" +
                 $"- Evade: {c.Evade}\n" +
@@ -31,7 +32,7 @@ namespace TextRpgMaker.Helpers
             );
         }
 
-        public static void PrintInventory(IOutput output)
+        public static void PrintInventory()
         {
             var items =
                 from ig in AppState.Game.PlayerChar.Items
@@ -46,7 +47,7 @@ namespace TextRpgMaker.Helpers
                     : "")
             );
 
-            output.Write(text);
+            IO.Write(text);
         }
     }
 }

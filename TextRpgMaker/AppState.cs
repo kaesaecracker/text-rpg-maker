@@ -2,6 +2,7 @@
 using Eto.Forms;
 using TextRpgMaker.ProjectModels;
 using TextRpgMaker.Views;
+using TextRpgMaker.Workers;
 
 namespace TextRpgMaker
 {
@@ -48,6 +49,8 @@ namespace TextRpgMaker
         }
 
         public static MainForm Ui { get; set; }
+        
+        public static IOController IO { get; } = new IOController();
 
         public static Application EtoApp { get; set; }
 
