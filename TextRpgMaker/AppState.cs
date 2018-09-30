@@ -12,18 +12,15 @@ namespace TextRpgMaker
     /// </summary>
     public static class AppState
     {
-        private const bool IsDebugBuild =
+        public static bool IsDebugRun =>
 #if DEBUG
             true;
 #else
-            false;
+            Config.Debug;
 #endif
 
-        public static bool IsDebugRun => IsDebugBuild || Config.Debug;
 
         private static ProjectModel _project;
-
-        private static GameState _game;
         public static bool IsProjectLoaded => Project != null;
 
         public static ProjectModel Project
@@ -36,6 +33,7 @@ namespace TextRpgMaker
             }
         }
 
+        private static GameState _game;
         public static bool IsGameRunning => Game != null;
 
         public static GameState Game
@@ -49,10 +47,8 @@ namespace TextRpgMaker
         }
 
         public static MainForm Ui { get; set; }
-        
-        public static IOController IO { get; } = new IOController();
 
-        public static Application EtoApp { get; set; }
+        public static IOController IO { get; } = new IOController();
 
         public static AppConfig Config { get; set; }
         public static event EventHandler<ProjectChangedEventArgs> ProjectChangeEvent;

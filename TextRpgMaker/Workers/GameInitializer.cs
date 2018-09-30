@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using TextRpgMaker.Helpers;
 using TextRpgMaker.ProjectModels;
@@ -17,8 +18,32 @@ namespace TextRpgMaker.Workers
                 CurrentDialog = AppState.Project.Dialogs.GetId(AppState.Project.StartInfo.DialogId)
             };
 
-            var looper = new InputLooper();
-            looper.StartFromNewGame();
+            StartFromNewGame();
+        }
+        
+        private static void StartFromNewGame()
+        {
+            AppState.IO.Write("Choose one of the following characters:");
+
+            var startChars = (
+                from id in AppState.Project.StartInfo.CharacterIds
+                select AppState.Project.Characters.GetId(id)
+            ).ToList();
+
+            foreach (var c in startChars)
+            {
+                OutputHelpers.PrintCharacter(c);
+                AppState.IO.Write("");
+            }
+
+            AppState.IO.GetChoice(startChars, c => c.Name, choosenChar =>
+            {
+                AppState.Game.PlayerChar = choosenChar;
+                AppState.IO.Write($">> {choosenChar.Name}\n");
+                AppState.IO.Write(AppState.Project.StartInfo.IntroText
+                         ?? "The project does not have an intro text");
+                AppState.Game.CurrentDialog.Start();
+            });
         }
 
         public static void StartSavedGame(string pathToSave)

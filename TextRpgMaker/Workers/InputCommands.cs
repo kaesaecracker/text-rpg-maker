@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using TextRpgMaker.Helpers;
@@ -8,50 +9,11 @@ using static TextRpgMaker.AppState;
 
 namespace TextRpgMaker.Workers
 {
-    public class InputLooper
+    [SuppressMessage("ReSharper", "UnusedMember.Local", Justification = "These methods get called via reflection.")]
+    public class InputCommands
     {
-        public InputLooper()
-        {
-            if (!IsProjectLoaded)
-                throw new InvalidOperationException(
-                    "Cannot create InputLooper when no project is loaded");
-            if (!IsGameRunning)
-                throw new InvalidOperationException(
-                    "Cannot create InputLooper when game is not running");
-        }
-
-        public void StartFromNewGame()
-        {
-            IO.Write("Choose one of the following characters:");
-
-            var startChars = (
-                from id in Project.StartInfo.CharacterIds
-                select Project.Characters.GetId(id)
-            ).ToList();
-
-            foreach (var c in startChars)
-            {
-                OutputHelpers.PrintCharacter(c);
-                IO.Write("");
-            }
-
-            IO.GetChoice(startChars, c => c.Name, choosenChar =>
-            {
-                Game.PlayerChar = choosenChar;
-                IO.Write($">> {choosenChar.Name}\n");
-                IO.Write(Project.StartInfo.IntroText
-                         ?? "The project does not have an intro text");
-                Game.CurrentDialog.Start();
-            });
-        }
-
-        private void HandleScene(Scene scene)
-        {
-        }
-
-
         [InputCommand("talk", "<character-id>")]
-        private void TalkTo(string idOrName)
+        private static void TalkTo(string idOrName)
         {
             var matchingChars = (
                 from character in Project.Characters
@@ -91,7 +53,7 @@ namespace TextRpgMaker.Workers
         }
 
         [InputCommand("look", "look at element with the specified id or name")]
-        private void LookAt(string idOrName)
+        private static void LookAt(string idOrName)
         {
             // todo only allow look at elements in scene / inventory
             var elems = (
@@ -131,14 +93,14 @@ namespace TextRpgMaker.Workers
         }
 
         [InputCommand("lookaround", "Lists elements in scene")]
-        private void LookAround(string _)
+        private static void LookAround(string _)
         {
             OutputHelpers.LookAround();
             IO.GetTextInput();
         }
 
         [InputCommand("inventory", "shows inventory")]
-        private void ShowInventory(string _)
+        private static void ShowInventory(string _)
         {
             OutputHelpers.PrintInventory();
             IO.GetTextInput();

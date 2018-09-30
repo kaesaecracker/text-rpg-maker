@@ -14,6 +14,10 @@ namespace TextRpgMaker.Views
         {
             this.InitializeComponents();
             this.InitializeEventHandlers();
+            
+            // Add the UI as In/Output
+            AppState.IO.RegisterOutput(this);
+            AppState.IO.ReplaceInput(this);
         }
 
         private void OpenProject(string pathToProject)
@@ -43,10 +47,10 @@ namespace TextRpgMaker.Views
             }
         }
 
-        private static void NotImplementedClick(object sender, EventArgs e)
+        private void NotImplementedClick(object sender, EventArgs e)
         {
             MessageBox.Show(
-                parent: AppState.Ui,
+                parent: this,
                 text: "Not implemented yet",
                 type: MessageBoxType.Warning
             );

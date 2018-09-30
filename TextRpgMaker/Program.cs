@@ -32,9 +32,9 @@ namespace TextRpgMaker
             // todo
             AppState.Config.ValueChangedEvent += (s, e) => { };
 
-            AppState.EtoApp = new Application(Platform.Detect);
+            var app = new Application(Platform.Detect);
             AppState.Ui = new MainForm();
-            AppState.EtoApp.Run(AppState.Ui);
+            app.Run(AppState.Ui);
         }
     }
 }

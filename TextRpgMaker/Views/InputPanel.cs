@@ -36,7 +36,7 @@ namespace TextRpgMaker.Views
             void RunCallback()
             {
                 if (combo.SelectedIndex == -1)
-                    AppState.Ui.Write(">> Choose an option from the dropdown below");
+                    AppState.IO.Write(">> Choose an option from the dropdown below");
                 else
                 {
                     this.Content = null;

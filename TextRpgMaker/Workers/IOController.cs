@@ -9,15 +9,15 @@ namespace TextRpgMaker.Workers
 {
     public class IOController : IOController.IOutput, IOController.IInput
     {
-        private IOutput Output { get; } = AppState.Ui.And(new LogOutput());
-        private IInput Input { get; } = AppState.Ui;
+        private IOutput Output { get; set; } = new LogOutput();
+        private IInput Input { get; set; } = AppState.Ui;
         private readonly List<(string command, MethodInfo method)> _commandMethods;
 
         public IOController()
         {
             this._commandMethods = (
-                from method in typeof(InputLooper)
-                    .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                from method in typeof(InputCommands)
+                    .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
                 let attribute = method.GetCustomAttribute<InputCommandAttribute>()
                 where attribute != null
                 // order by length => "lookaround" shouldnt result in a Look("around")
@@ -29,6 +29,15 @@ namespace TextRpgMaker.Workers
             ).ToList();
         }
 
+        public void RegisterOutput(IOutput additionalOutput)
+        {
+            this.Output = this.Output.And(additionalOutput);
+        }
+
+        public void ReplaceInput(IInput newInput)
+        {
+            this.Input = newInput;
+        }
 
         public void Write(string text)
         {
@@ -48,7 +57,7 @@ namespace TextRpgMaker.Workers
             this.Input.GetTextInput(callback);
         }
 
-        public void HandleText(string line)
+        private void HandleText(string line)
         {
             string lineLower = line.Trim().ToLower();
             foreach ((string command, var method) in this._commandMethods)
@@ -56,7 +65,7 @@ namespace TextRpgMaker.Workers
                 if (!lineLower.StartsWith(command)) continue;
 
                 string lineWithoutCommand = line.Substring(command.Length).Trim();
-                method.Invoke(this, new object[] {lineWithoutCommand});
+                method.Invoke(null, new object[] {lineWithoutCommand});
 
                 return;
             }
@@ -95,8 +104,8 @@ namespace TextRpgMaker.Workers
 
             public MultiOutput(IOutput a, IOutput b)
             {
-                this._a = a;
-                this._b = b;
+                this._a = a ?? throw new ArgumentNullException(nameof(a));
+                this._b = b ?? throw new ArgumentNullException(nameof(b));
             }
 
             public void Write(string text)
