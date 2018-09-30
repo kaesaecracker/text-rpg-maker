@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
+
+using static TextRpgMaker.AppState;
 
 namespace TextRpgMaker.ProjectModels
 {
@@ -18,31 +21,39 @@ namespace TextRpgMaker.ProjectModels
 
         [YamlMember(Alias = "choices")]
         public List<Choice> Choices { get; set; } = new List<Choice>();
-    }
 
-    [DocumentedType]
-    public class Choice
-    {
-        [YamlMember(Alias = "text")]
-        [YamlProperties(true)]
-        public string Text { get; set; }
+        /// <summary>
+        /// Start the dialog.
+        /// </summary>
+        public void Start()
+        {
+            IO.Write('"' + this.Text + '"');
+            if (this.GotoId != null)
+            {
+                Project.ById<Dialog>(this.GotoId).Start();
+                return;
+            }
 
-        [YamlMember(Alias = "goto-dialog")]
-        public string GotoDialogId { get; set; }
+            var choicesThatMeetRequirements = (
+                from c in this.Choices
+                let mismatchedItems = (
+                    from reqItem in c.RequiredItems
+                    where !Game.PlayerChar.Items.HasItem(reqItem)
+                    select reqItem
+                )
+                where !mismatchedItems.Any()
+                select c
+            ).ToList();
 
-        [YamlMember(Alias = "goto-scene")]
-        public string GotoSceneId { get; set; }
+            if (choicesThatMeetRequirements.Count == 0)
+                IO.GetTextInput();
+            else
+                IO.GetChoice(choicesThatMeetRequirements, c => c.Text, choice =>
+                {
+                    IO.Write($" >> {choice.Text}");
+                    choice.Handle();
+                });
 
-        [YamlMember(Alias = "reward-items")]
-        public List<ItemGrouping> RewardItems { get; set; } = new List<ItemGrouping>();
-
-        [YamlMember(Alias = "required-items")]
-        public List<ItemGrouping> RequiredItems { get; set; } = new List<ItemGrouping>();
-
-        [YamlMember(Alias = "change-scenes")]
-        public List<ChangeScene> ChangeScenes { get; set; } = new List<ChangeScene>();
-        
-        [YamlMember(Alias = "change-characters")]
-        public List<ChangeCharacter> ChangeCharacters { get; set; } = new List<ChangeCharacter>();
+        }
     }
 }

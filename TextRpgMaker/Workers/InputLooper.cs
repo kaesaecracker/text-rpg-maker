@@ -10,8 +10,6 @@ namespace TextRpgMaker.Workers
 {
     public class InputLooper
     {
-        private readonly List<(string command, MethodInfo method)> _commandMethods;
-
         public InputLooper()
         {
             if (!IsProjectLoaded)
@@ -20,22 +18,7 @@ namespace TextRpgMaker.Workers
             if (!IsGameRunning)
                 throw new InvalidOperationException(
                     "Cannot create InputLooper when game is not running");
-
-            this._commandMethods = (
-                from method in this.GetType()
-                                   .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
-                let attribute = method.GetCustomAttribute<InputCommandAttribute>()
-                where attribute != null
-                // order by length => "lookaround" shouldnt result in a Look("around")
-                orderby attribute.Command.Length descending
-                select (
-                    attribute.Command.ToLower(),
-                    method
-                )
-            ).ToList();
         }
-
-        
 
         public void StartFromNewGame()
         {
@@ -57,98 +40,15 @@ namespace TextRpgMaker.Workers
                 Game.PlayerChar = choosenChar;
                 IO.Write($">> {choosenChar.Name}\n");
                 IO.Write(Project.StartInfo.IntroText
-                                  ?? "The project does not have an intro text");
-                this.HandleDialog(Game.CurrentDialog);
+                         ?? "The project does not have an intro text");
+                Game.CurrentDialog.Start();
             });
-        }
-
-        private void HandleDialog(Dialog dlg)
-        {
-            // was recursive, this is the iterative way (gotos)
-            while (true)
-            {
-                IO.Write('"' + dlg.Text + '"');
-                if (dlg.GotoId != null)
-                {
-                    dlg = Project.ById<Dialog>(dlg.GotoId);
-                    continue;
-                }
-
-                var choicesThatMeetRequirements = (
-                    from c in dlg.Choices
-                    let mismatchedItems = (
-                        from reqItem in c.RequiredItems
-                        where !Game.PlayerChar.Items.HasItem(reqItem)
-                        select reqItem
-                    )
-                    where !mismatchedItems.Any()
-                    select c
-                ).ToList();
-
-                if (choicesThatMeetRequirements.Count == 0)
-                    this.GetTextInput();
-                else
-                    IO.GetChoice(choicesThatMeetRequirements, c => c.Text, choice =>
-                    {
-                        IO.Write($" >> {choice.Text}");
-                        this.HandleChoice(choice);
-                    });
-
-                break;
-            }
-        }
-
-        private void GetTextInput() => IO.GetTextInput(this.HandleText);
-
-        private void HandleChoice(Choice choice)
-        {
-            // remove required items
-            foreach (var requiredItem in choice.RequiredItems)
-                Game.PlayerChar.Items.RemoveItem(requiredItem);
-            
-            // give reward items
-            foreach (var rewardItem in choice.RewardItems)
-                Game.PlayerChar.Items.AddItem(rewardItem);
-            
-            // apply scene changes
-            foreach (var changeCharacter in choice.ChangeCharacters)
-                changeCharacter.Apply();
-            
-            // apply char changes
-            foreach (var changeScene in choice.ChangeScenes)
-                changeScene.Apply();
-           
-            
-            // Priority: GotoDialog, GotoScene. If none specified, wait for input
-            if (choice.GotoDialogId != null)
-                this.HandleDialog(Project.Dialogs.GetId(choice.GotoDialogId));
-            else if (choice.GotoSceneId != null)
-                this.HandleScene(Project.Scenes.GetId(choice.GotoSceneId));
-            else this.GetTextInput();
         }
 
         private void HandleScene(Scene scene)
         {
-            Game.CurrentScene = scene;
-            // todo handle scene
         }
 
-        private void HandleText(string line)
-        {
-            string lineLower = line.Trim().ToLower();
-            foreach ((string command, var method) in this._commandMethods)
-            {
-                if (!lineLower.StartsWith(command)) continue;
-
-                string lineWithoutCommand = line.Substring(command.Length).Trim();
-                method.Invoke(this, new object[] {lineWithoutCommand});
-
-                return;
-            }
-
-            IO.Write($">> Command not known: {line}");
-            this.GetTextInput();
-        }
 
         [InputCommand("talk", "<character-id>")]
         private void TalkTo(string idOrName)
@@ -176,8 +76,7 @@ namespace TextRpgMaker.Workers
 
                 case 1:
                     IO.Write($">> Talking to {matchingChars.First().Name}");
-                    this.HandleDialog(
-                        Project.ById<Dialog>(matchingChars.First().TalkDialog));
+                    Project.ById<Dialog>(matchingChars.First().TalkDialog).Start();
                     return;
 
                 default:
@@ -188,7 +87,7 @@ namespace TextRpgMaker.Workers
                     break;
             }
 
-            this.GetTextInput();
+            IO.GetTextInput();
         }
 
         [InputCommand("look", "look at element with the specified id or name")]
@@ -228,21 +127,21 @@ namespace TextRpgMaker.Workers
                     break;
             }
 
-            this.GetTextInput();
+            IO.GetTextInput();
         }
 
         [InputCommand("lookaround", "Lists elements in scene")]
         private void LookAround(string _)
         {
             OutputHelpers.LookAround();
-            this.GetTextInput();
+            IO.GetTextInput();
         }
 
         [InputCommand("inventory", "shows inventory")]
         private void ShowInventory(string _)
         {
             OutputHelpers.PrintInventory();
-            this.GetTextInput();
+            IO.GetTextInput();
         }
     }
 }

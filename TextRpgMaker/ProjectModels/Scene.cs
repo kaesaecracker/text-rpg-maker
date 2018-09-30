@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
+using static TextRpgMaker.AppState;
 
 namespace TextRpgMaker.ProjectModels
 {
@@ -15,5 +16,11 @@ namespace TextRpgMaker.ProjectModels
         
         [YamlMember(Alias = "connections-to")]
         public List<string> Connections { get; set; } = new List<string>();
+
+        public void Handle()
+        {
+            Game.CurrentScene = this;
+            // todo handle scene
+        }
     }
 }
