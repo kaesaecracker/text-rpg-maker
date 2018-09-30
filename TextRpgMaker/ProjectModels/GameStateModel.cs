@@ -1,4 +1,5 @@
-﻿using TextRpgMaker.Helpers;
+﻿using System;
+using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.ProjectModels
@@ -11,12 +12,30 @@ namespace TextRpgMaker.ProjectModels
     public class GameState
     {
         [YamlMember(Alias = "player-char")]
-        public Character PlayerChar { get; set; }
+        public string PlayerCharId { get; set; }
 
         [YamlMember(Alias = "current-scene")]
-        public Scene CurrentScene { get; set; }
+        public string CurrentSceneId { get; set; }
 
         [YamlMember(Alias = "current-dialog")]
-        public Dialog CurrentDialog { get; set; }
+        public string CurrentDialogId { get; set; }
+
+        public Character PlayerChar
+        {
+            get => AppState.Project.ById<Character>(this.PlayerCharId);
+            set => this.PlayerCharId = value.Id;
+        }
+
+        public Scene CurrentScene
+        {
+            get => AppState.Project.ById<Scene>(this.CurrentSceneId);
+            set => this.CurrentSceneId = value.Id;
+        }
+
+        public Dialog CurrentDialog
+        {
+            get => AppState.Project.ById<Dialog>(this.CurrentDialogId);
+            set => this.CurrentDialogId = value.Id;
+        }
     }
 }

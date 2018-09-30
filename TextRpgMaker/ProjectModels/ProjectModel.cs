@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.ProjectModels
 {
@@ -18,35 +19,27 @@ namespace TextRpgMaker.ProjectModels
         public string ProjectDir { get; }
 
         // cannot be a dictionary because there could be duplicate ids
-        public List<BasicElement> TopLevelElements { get; }
+        [YamlMember(Alias = "top-level-elements")]
+        public List<BasicElement> TopLevelElements { get; set; }
 
-        public ProjectInfo Info
-            => this.TopLevelElements.OfType<ProjectInfo>().First();
+        public ProjectInfo Info => this.TopLevelElements.OfType<ProjectInfo>().First();
 
         // shortcut, cant change structure of ProjectInfo because it has to be the same structure as the yaml file
-        public ProjectInfo.StartInfoContainer StartInfo
-            => this.Info.StartInfo;
+        public ProjectInfo.StartInfoContainer StartInfo => this.Info.StartInfo;
 
-        public List<Character> Characters
-            => this.TopLevelElements.OfType<Character>().ToList();
+        public List<Character> Characters => this.TopLevelElements.OfType<Character>().ToList();
 
-        public List<Armor> ArmorTypes
-            => this.TopLevelElements.OfType<Armor>().ToList();
+        public List<Armor> ArmorTypes => this.TopLevelElements.OfType<Armor>().ToList();
 
-        public List<Weapon> WeaponTypes
-            => this.TopLevelElements.OfType<Weapon>().ToList();
+        public List<Weapon> WeaponTypes => this.TopLevelElements.OfType<Weapon>().ToList();
 
-        public List<Consumable> ConsumableTypes
-            => this.TopLevelElements.OfType<Consumable>().ToList();
+        public List<Consumable> ConsumableTypes => this.TopLevelElements.OfType<Consumable>().ToList();
 
-        public List<Item> AmmoTypes
-            => this.TopLevelElements.OfType<Item>().ToList();
+        public List<Item> AmmoTypes => this.TopLevelElements.OfType<Item>().ToList();
 
-        public List<Scene> Scenes
-            => this.TopLevelElements.OfType<Scene>().ToList();
+        public List<Scene> Scenes => this.TopLevelElements.OfType<Scene>().ToList();
 
-        public List<Dialog> Dialogs
-            => this.TopLevelElements.OfType<Dialog>().ToList();
+        public List<Dialog> Dialogs => this.TopLevelElements.OfType<Dialog>().ToList();
 
         public T ById<T>(string id) where T : BasicElement
         {
