@@ -18,7 +18,7 @@
     change-scenes:
     - id: town
       add-connection-to: fields
-    change-character:
+    change-characters:
     - id: mayor
       set-talk-dialog: mayor-gorescue
     

@@ -1,9 +1,7 @@
 - id: warrior
   name: The Warrior
-  attack: 1.1
+  attack: 1.2
   health: 1.1
-  items: 
-  - id: sword-wood
 
 - id: thief
   name: The Thief
