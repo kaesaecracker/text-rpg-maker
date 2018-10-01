@@ -32,10 +32,10 @@ namespace TextRpgMaker.ProjectModels
         public double? Speed { get; set; }
 
         [YamlMember(Alias = "items")]
-        public Inventory Items { get; set; }
+        public Inventory Items { get; set; } = new Inventory();
 
         [YamlMember(Alias = "drops")]
-        public List<Drop> Drops { get; set; }
+        public List<Drop> Drops { get; set; } = new List<Drop>();
 
         [YamlMember(Alias = "talk-dialog")]
         public string TalkDialog { get; set; }

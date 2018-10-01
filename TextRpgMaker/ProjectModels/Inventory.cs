@@ -13,6 +13,11 @@ namespace TextRpgMaker.ProjectModels
     {
         public override string ToString()
         {
+            if (this.Count == 0)
+            {
+                return "[(empty)]";
+            }
+            
             var names = this.Select(ig => AppState.Project.ById<BasicElement>(ig.ItemId).Name);
             return $"[{names.Aggregate((curr, name) => $"{curr}, {name}")}]";
         }
