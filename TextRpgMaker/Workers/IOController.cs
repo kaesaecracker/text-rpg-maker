@@ -11,23 +11,6 @@ namespace TextRpgMaker.Workers
     {
         private IOutput Output { get; set; } = new LogOutput();
         private IInput Input { get; set; } = AppState.Ui;
-        private readonly List<(string command, MethodInfo method)> _commandMethods;
-
-        public IOController()
-        {
-            this._commandMethods = (
-                from method in typeof(InputCommands)
-                    .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
-                let attribute = method.GetCustomAttribute<InputCommandAttribute>()
-                where attribute != null
-                // order by length => "lookaround" shouldnt result in a Look("around")
-                orderby attribute.Command.Length descending
-                select (
-                    attribute.Command.ToLower(),
-                    method
-                )
-            ).ToList();
-        }
 
         public void RegisterOutput(IOutput additionalOutput)
         {
@@ -61,7 +44,7 @@ namespace TextRpgMaker.Workers
         private void HandleText(string line)
         {
             string lineLower = line.Trim().ToLower();
-            foreach ((string command, var method) in this._commandMethods)
+            foreach ((string command, var method) in InputCommands.CommandMethods)
             {
                 if (!lineLower.StartsWith(command)) continue;
 

@@ -9,9 +9,33 @@ using static TextRpgMaker.AppState;
 
 namespace TextRpgMaker.Workers
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Local", Justification = "These methods get called via reflection.")]
+    [SuppressMessage("ReSharper", "UnusedMember.Local", Justification =
+        "These methods get called via reflection.")]
     public class InputCommands
     {
+        public static readonly List<(string command, MethodInfo method)> CommandMethods = (
+            from method in typeof(InputCommands)
+                .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+            let attribute = method.GetCustomAttribute<InputCommandAttribute>()
+            where attribute != null
+            // order by length => "lookaround" shouldnt result in a Look("around")
+            orderby attribute.Command descending
+            select (
+                attribute.Command.ToLower(),
+                method
+            )
+        ).ToList();
+
+        [InputCommand("help")]
+        private static void Help(string commandName)
+        {
+            IO.Write("Available commands:");
+            foreach (var tuple in CommandMethods)
+            {
+                IO.Write($"- {tuple.command}");
+            }
+        }
+
         [InputCommand("talk", "<character-id>")]
         private static void TalkTo(string idOrName)
         {
