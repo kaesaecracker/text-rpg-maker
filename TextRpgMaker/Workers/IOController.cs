@@ -54,6 +54,7 @@ namespace TextRpgMaker.Workers
 
         public void GetTextInput(Action<string> callback)
         {
+            AppState.Game.CurrentDialogId = null;
             this.Input.GetTextInput(callback);
         }
 

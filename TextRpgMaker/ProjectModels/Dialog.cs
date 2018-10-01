@@ -27,6 +27,8 @@ namespace TextRpgMaker.ProjectModels
         /// </summary>
         public void Start()
         {
+            Game.CurrentDialog = this;
+            
             IO.Write('"' + this.Text + '"');
             if (this.GotoId != null)
             {
