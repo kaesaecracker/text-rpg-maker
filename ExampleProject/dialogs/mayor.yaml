@@ -18,4 +18,9 @@
     change-scenes:
     - id: town
       add-connection-to: fields
+    change-character:
+    - id: mayor
+      set-talk-dialog: mayor-gorescue
     
+- id: mayor-gorescue
+  text: Don't wait any longer, rescue my daughter!
