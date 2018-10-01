@@ -1,4 +1,6 @@
 ﻿using System;
+using Serilog;
+using Serilog.Core;
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
@@ -11,27 +13,58 @@ namespace TextRpgMaker.ProjectModels
     [DocumentedType]
     public class GameState
     {
+        private string _playerCharId;
+        private string _currentSceneId;
+        private string _currentDialogId;
+
         [YamlMember(Alias = "player-char")]
-        public string PlayerCharId { get; set; }
+        public string PlayerCharId
+        {
+            get => this._playerCharId;
+            set
+            {
+                this._playerCharId = value;
+                Log.Verbose("Switched {var} to {val}", nameof(PlayerCharId), value);
+            }
+        }
 
         [YamlMember(Alias = "current-scene")]
-        public string CurrentSceneId { get; set; }
+        public string CurrentSceneId
+        {
+            get => this._currentSceneId;
+            set
+            {
+                this._currentSceneId = value;
+                Log.Verbose("Switched {var} to {val}", nameof(CurrentSceneId), value);
+            }
+        }
 
         [YamlMember(Alias = "current-dialog")]
-        public string CurrentDialogId { get; set; }
+        public string CurrentDialogId
+        {
+            get => this._currentDialogId;
+            set
+            {
+                this._currentDialogId = value;
+                Log.Verbose("Switched {var} to {val}", nameof(CurrentDialogId), value);
+            }
+        }
 
+        [YamlIgnore]
         public Character PlayerChar
         {
             get => AppState.Project.ById<Character>(this.PlayerCharId);
             set => this.PlayerCharId = value.Id;
         }
 
+        [YamlIgnore]
         public Scene CurrentScene
         {
             get => AppState.Project.ById<Scene>(this.CurrentSceneId);
             set => this.CurrentSceneId = value.Id;
         }
 
+        [YamlIgnore]
         public Dialog CurrentDialog
         {
             get => AppState.Project.ById<Dialog>(this.CurrentDialogId);
