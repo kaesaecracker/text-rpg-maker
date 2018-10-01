@@ -2,6 +2,7 @@
 using System.Linq;
 using Eto.Drawing;
 using Eto.Forms;
+using TextRpgMaker.Workers;
 using static Serilog.Log;
 
 namespace TextRpgMaker.Views
@@ -91,6 +92,14 @@ namespace TextRpgMaker.Views
                                     No = "No Btn"
                                 }.ShowModal()
                             )
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "SaveToTest",
+                            Command = new Command((s, e) =>
+                            {
+                                SaveManager.Save("Test");
+                            })
                         }
                     }
                 },
