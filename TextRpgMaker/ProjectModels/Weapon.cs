@@ -7,7 +7,7 @@ namespace TextRpgMaker.ProjectModels
     /// Represents an weapon entry in YAML files
     /// </summary>
     [LoadFromProjectFile("items/weapons.yaml", false, true)]
-    public class Weapon : BasicElement
+    public class Weapon : LookableElement
     {
         [YamlMember(Alias = "attack")]
         [YamlProperties(false, 1.0)]
