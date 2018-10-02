@@ -2,8 +2,8 @@
 
 namespace TextRpgMaker.ProjectModels
 {
-    [LoadFromProjectFile("items/ammo.yaml", false, true)]
-    public class Item : BasicElement
+    [LoadFromProjectFile("items/generic.yaml", false, true)]
+    public class Item : LookableElement
     {
     }
 }

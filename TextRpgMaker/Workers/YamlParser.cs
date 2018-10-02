@@ -246,7 +246,9 @@ namespace TextRpgMaker.Workers
             var errors = (
                 from element in this._tles
                 from property in element.GetType().GetProperties()
-                where property.GetValue(element) == null &&
+                // ignore properties that have [YamlIgnore]
+                where !property.IsDefined(typeof(YamlIgnoreAttribute)) &&
+                      property.GetValue(element) == null &&
                       property.IsDefined(typeof(YamlPropertiesAttribute), true)
                 let yamlPropsAttr = property.GetCustomAttribute<YamlPropertiesAttribute>()
                 where yamlPropsAttr.Required
@@ -269,7 +271,9 @@ namespace TextRpgMaker.Workers
             var props =
                 from element in this._tles
                 from property in element.GetType().GetProperties()
-                where property.GetValue(element) == null
+                // ignore props with [YamlIgnore]
+                where !property.IsDefined(typeof(YamlIgnoreAttribute)) &&
+                      property.GetValue(element) == null
                       && property.IsDefined(typeof(YamlPropertiesAttribute))
                 let yamlPropAtt = property.GetCustomAttribute<YamlPropertiesAttribute>()
                 where yamlPropAtt.DefaultValue != null

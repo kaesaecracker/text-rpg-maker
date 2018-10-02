@@ -24,9 +24,9 @@ namespace TextRpgMaker.Views
         /// <exception cref="ArgumentNullException">If pages is null</exception>
         public HelpDialog(List<string> pages)
         {
-            if (pages == null || pages.Count == 0)
+            if (pages?.Count == 0)
                 throw new ArgumentException("Should not be null or empty", nameof(pages));
-            this._pages = pages;
+            this._pages = pages ?? throw new ArgumentNullException(nameof(pages));
 
             this.Resizable = true;
             this.Title = "Help";

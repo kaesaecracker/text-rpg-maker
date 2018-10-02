@@ -13,13 +13,20 @@ namespace TextRpgMaker.Helpers
         {
             IO.Write(">> look around");
 
-            var characters = AppState.Project.Characters
-                                     .GetIds(AppState.Game.CurrentScene.Characters)
-                                     .Select(c => c.Name)
-                                     .ToList();
-            if (characters.Any())
-                IO.Write("Characters: " +
-                             characters.Aggregate((str, cName) => $"{str}, {cName}"));
+            // print characters if any
+            var characters = Game.CurrentScene.Characters.Select(c => c.Name).ToList();
+            if (characters.Any()) IO.Write("   Characters: " + string.Join(", ", characters));
+
+            // print connections if any
+            var connections = Game.CurrentScene.Connections.Select(s => s.Name).ToList();
+            if (connections.Any()) IO.Write("   Connections: " + string.Join(", ", connections));
+
+            // print items if any
+            var items = Game.CurrentScene.Items
+                            .Select(ig => ig.ToString(Project.ById(ig.ItemId).Name))
+                            .ToList();
+            if (items.Any()) IO.Write("   Items: " + string.Join(", ", items));
+
             // todo look around items etc
         }
 
@@ -44,9 +51,9 @@ namespace TextRpgMaker.Helpers
         public static void PrintInventory()
         {
             var items =
-                from ig in AppState.Game.PlayerChar.Items
+                from ig in Game.PlayerChar.Items
                 select (
-                    Element: AppState.Project.TopLevelElements.First(tle => tle.Id == ig.ItemId),
+                    Element: Project.TopLevelElements.First(tle => tle.Id == ig.ItemId),
                     ig.Count
                 );
             string text = items.Aggregate("Current Inventory:", (s, tuple) =>
@@ -57,6 +64,7 @@ namespace TextRpgMaker.Helpers
             );
 
             IO.Write(text);
+            IO.Write("Type 'look <item name>'.");
         }
     }
 }

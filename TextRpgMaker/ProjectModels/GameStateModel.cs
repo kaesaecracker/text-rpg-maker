@@ -1,6 +1,4 @@
-﻿using System;
-using Serilog;
-using Serilog.Core;
+﻿using Serilog;
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
@@ -24,7 +22,7 @@ namespace TextRpgMaker.ProjectModels
             set
             {
                 this._playerCharId = value;
-                Log.Verbose("Switched {var} to {val}", nameof(PlayerCharId), value);
+                Log.Verbose("Switched {var} to {val}", nameof(this.PlayerCharId), value);
             }
         }
 
@@ -35,7 +33,7 @@ namespace TextRpgMaker.ProjectModels
             set
             {
                 this._currentSceneId = value;
-                Log.Verbose("Switched {var} to {val}", nameof(CurrentSceneId), value);
+                Log.Verbose("Switched {var} to {val}", nameof(this.CurrentSceneId), value);
             }
         }
 
@@ -46,7 +44,7 @@ namespace TextRpgMaker.ProjectModels
             set
             {
                 this._currentDialogId = value;
-                Log.Verbose("Switched {var} to {val}", nameof(CurrentDialogId), value);
+                Log.Verbose("Switched {var} to {val}", nameof(this.CurrentDialogId), value);
             }
         }
 

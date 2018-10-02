@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Eto.Forms;
-using TextRpgMaker.Helpers;
+using Serilog;
 using TextRpgMaker.Workers;
-using static Serilog.Log;
 
 namespace TextRpgMaker.Views
 {
@@ -33,6 +32,8 @@ namespace TextRpgMaker.Views
                                  Func<T, string> textRepresentation,
                                  Action<T> callback)
         {
+            Log.Debug("InputPanel: Get choice in {num}", possibleChoices.Count);
+            
             var combo = new ComboBox {DataStore = possibleChoices.Select(textRepresentation)};
             if (possibleChoices.Count == 1) combo.SelectedIndex = 0; // preselect if only one option
             combo.KeyDown += (sender, args) =>
@@ -50,12 +51,14 @@ namespace TextRpgMaker.Views
             {
                 // nothing chosen or user entered own text -> do not do it
                 if (combo.SelectedIndex == -1)
-                    AppState.IO.Write(">> Choose an option from the dropdown below");
-                else
                 {
+                    AppState.IO.Write(">> Choose an option from the dropdown below");
+                    return; // return in helper method, not GetChoice
+                }
+
+                // remove choice box and run callback
                 this.Content = null;
                 callback(possibleChoices[combo.SelectedIndex]);
-            }
             }
 
             // set layout on UI

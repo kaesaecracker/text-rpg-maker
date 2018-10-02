@@ -150,14 +150,14 @@ namespace TextRpgMaker.Views
                 new ButtonMenuItem
                 {
                     Text = "Load / Save",
-                    Command = new Command(NotImplementedClick)
+                    Command = new Command(this.NotImplementedClick)
                 }
             },
 
             AboutItem = new ButtonMenuItem
             {
                 Text = "&About",
-                Command = new Command(NotImplementedClick)
+                Command = new Command(this.NotImplementedClick)
             },
 
             // Help menu

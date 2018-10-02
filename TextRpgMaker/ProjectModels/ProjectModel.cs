@@ -50,7 +50,7 @@ namespace TextRpgMaker.ProjectModels
         public List<Consumable> ConsumableTypes => this.TopLevelElements.OfType<Consumable>().ToList();
 
         [YamlIgnore]
-        public List<Item> AmmoTypes => this.TopLevelElements.OfType<Item>().ToList();
+        public List<Item> GenericItemTypes => this.TopLevelElements.OfType<Item>().ToList();
 
         [YamlIgnore]
         public List<Scene> Scenes => this.TopLevelElements.OfType<Scene>().ToList();
@@ -67,5 +67,10 @@ namespace TextRpgMaker.ProjectModels
         {
             return this.TopLevelElements.OfType<T>().First(e => e.Id == id);
         }
+
+        /// <summary>
+        /// Alias for ById[`BasicElement]
+        /// </summary>
+        public BasicElement ById(string id) => this.ById<BasicElement>(id);
     }
 }

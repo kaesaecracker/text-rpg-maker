@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Reflection;
 using Eto.Forms;
 using TextRpgMaker.Workers;

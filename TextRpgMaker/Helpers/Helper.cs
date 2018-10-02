@@ -53,11 +53,25 @@ namespace TextRpgMaker.Helpers
         public static List<T> GetIds<T>(this IEnumerable<T> list, List<string> ids)
             where T : BasicElement
         {
-            return list.Where(elem => ids.Contains(elem.Id))
-                       .ToList();
+            // return if no ids supplied
+            if (!ids.Any()) return new List<T>();
+            
+            // return found items if the count matches
+            var found = list.Where(elem => ids.Contains(elem.Id)).ToList();
+            if (found.Count == ids.Count) return found;
+            
+            // some IDs are missing -> throw exception
+            string idList = string.Join(", ", ids);
+            throw new ArgumentException(
+                $"{ids.Count - found.Count} IDs where not found. Looked for IDs: {idList}"
+            );
         }
 
-        public static IOController.MultiOutput And(this IOController.IOutput a, IOController.IOutput b)
+        /// <summary>
+        /// Combine multiple IOutputs into one with a.And(b)
+        /// </summary>
+        public static IOController.MultiOutput And(this IOController.IOutput a,
+                                                   IOController.IOutput b)
         {
             return new IOController.MultiOutput(a, b);
         }

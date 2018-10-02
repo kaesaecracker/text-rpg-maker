@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Serilog;
 using TextRpgMaker.Helpers;
 
@@ -30,10 +28,11 @@ namespace TextRpgMaker.Workers
         public void GetChoice<T>(List<T> possibleChoices, Func<T, string> textRepresentation,
                                  Action<T> callback)
         {
+            Log.Debug("Get one of {num} choices", possibleChoices.Count);
             this.Input.GetChoice(possibleChoices, textRepresentation, callback);
         }
 
-        public void GetTextInput() => this.GetTextInput(HandleText);
+        public void GetTextInput() => this.GetTextInput(this.HandleText);
 
         public void GetTextInput(Action<string> callback)
         {
@@ -54,7 +53,11 @@ namespace TextRpgMaker.Workers
                 return;
             }
 
-            this.Write($">> Command not known: {line}");
+            this.Write(
+                $">> Command not known.\n" +
+                $"   Try 'help' or '/?' for a list of commands.\n" +
+                $"   Input: {line}"
+            );
             this.GetTextInput();
         }
 

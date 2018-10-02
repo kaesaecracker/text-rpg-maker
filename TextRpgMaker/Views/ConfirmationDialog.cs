@@ -1,6 +1,5 @@
 using Eto.Drawing;
 using Eto.Forms;
-using Gtk;
 using Button = Eto.Forms.Button;
 using Label = Eto.Forms.Label;
 
@@ -40,7 +39,11 @@ namespace TextRpgMaker.Views
         /// </returns>
         public bool ShowModal()
         {
-            var dlg = new Dialog<bool> {Title = this.Title};
+            var dlg = new Dialog<bool>
+            {
+                Title = this.Title,
+                Result = false // return false by default
+            };
 
             var layout = new DynamicLayout
             {
@@ -72,6 +75,7 @@ namespace TextRpgMaker.Views
 
             // add layout to Dialog
             dlg.Content = layout;
+            
             // show dialog and return result
             return dlg.ShowModal(AppState.Ui);
         }

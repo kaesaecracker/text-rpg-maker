@@ -7,7 +7,7 @@ namespace TextRpgMaker.Workers
 {
     public static class SaveManager
     {
-        private static readonly ISerializer serializer = new SerializerBuilder()
+        private static readonly ISerializer Serializer = new SerializerBuilder()
                                                          .EnsureRoundtrip()
                                                          .WithTagMapping("!Character", typeof(ProjectModels.Character))
                                                          .WithTagMapping("!Dialog", typeof(ProjectModels.Dialog))
@@ -19,7 +19,7 @@ namespace TextRpgMaker.Workers
 
         public static void Save(string saveName)
         {
-            var saveFolder = Path.Combine(AppState.Project.ProjectDir, "saves", saveName);
+            string saveFolder = Path.Combine(AppState.Project.ProjectDir, "saves", saveName);
 
             // if it exists and the user confirms, delete the old folder
             if (Directory.Exists(saveFolder))
@@ -44,7 +44,7 @@ namespace TextRpgMaker.Workers
         private static void Serialize(object obj, string pathToFile)
         {
             var writer = new StreamWriter(pathToFile, false, Encoding.UTF8);
-            serializer.Serialize(writer, obj, obj.GetType());
+            Serializer.Serialize(writer, obj, obj.GetType());
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using Eto.Forms;
 using TextRpgMaker.ProjectModels;
 using TextRpgMaker.Views;
 using TextRpgMaker.Workers;
