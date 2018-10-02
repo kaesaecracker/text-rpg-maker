@@ -3,6 +3,9 @@ using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.ProjectModels
 {
+    /// <summary>
+    /// Represents an change-character entry in a dialog choice
+    /// </summary>
     [DocumentedType]
     public class ChangeCharacter
     {

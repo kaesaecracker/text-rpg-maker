@@ -3,6 +3,9 @@ using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.ProjectModels
 {
+    /// <summary>
+    /// Represents a change-scene element in a dialog choice.
+    /// </summary>
     [DocumentedType]
     public class ChangeScene
     {
@@ -22,6 +25,9 @@ namespace TextRpgMaker.ProjectModels
         [YamlMember(Alias = "remove-connection-to")]
         public string SceneToDisconnect { get; set; }
 
+        /// <summary>
+        /// Change scene according to properties
+        /// </summary>
         public void Apply()
         {
             // TODO Validations that check whether those scenes / characters actually exist

@@ -58,6 +58,11 @@ namespace TextRpgMaker.ProjectModels
         [YamlIgnore]
         public List<Dialog> Dialogs => this.TopLevelElements.OfType<Dialog>().ToList();
 
+        /// <summary>
+        /// Get element by id
+        /// </summary>
+        /// <param name="id">The ID to look for</param>
+        /// <typeparam name="T">The type of the element. Use BasicElement to ignore.</typeparam>
         public T ById<T>(string id) where T : BasicElement
         {
             return this.TopLevelElements.OfType<T>().First(e => e.Id == id);

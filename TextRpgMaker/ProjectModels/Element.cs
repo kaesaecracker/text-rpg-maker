@@ -3,6 +3,9 @@ using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.ProjectModels
 {
+    /// <summary>
+    /// Base type for all elements
+    /// </summary>
     [DocumentedType]
     public class BasicElement
     {
@@ -22,6 +25,9 @@ namespace TextRpgMaker.ProjectModels
         public override string ToString() => $"[Element Id={this.Id}]";
     }
 
+    /// <summary>
+    /// Base type for all elements you can look at
+    /// </summary>
     [DocumentedType]
     public class LookableElement : BasicElement
     {

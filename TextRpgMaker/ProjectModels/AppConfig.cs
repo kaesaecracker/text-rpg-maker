@@ -2,6 +2,9 @@
 
 namespace TextRpgMaker.ProjectModels
 {
+    /// <summary>
+    /// The application configuration.
+    /// </summary>
     public class AppConfig
     {
         private bool _debug;

@@ -8,6 +8,9 @@ using static Serilog.Log;
 
 namespace TextRpgMaker.Views
 {
+    /// <summary>
+    /// The main application window. This file is for general stuff.
+    /// </summary>
     public partial class MainForm : Form
     {
         public MainForm()

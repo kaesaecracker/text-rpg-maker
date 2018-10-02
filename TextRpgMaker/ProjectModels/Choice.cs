@@ -5,6 +5,9 @@ using static TextRpgMaker.AppState;
 
 namespace TextRpgMaker.ProjectModels
 {
+    /// <summary>
+    /// Represents an choice entry in a dialog
+    /// </summary>
     [DocumentedType]
     public class Choice
     {

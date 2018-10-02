@@ -9,6 +9,9 @@ using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.Helpers
 {
+    /// <summary>
+    /// A collection of static helper methods.
+    /// </summary>
     public static class Helper
     {
         public static object DeserializeSafely(
@@ -41,6 +44,12 @@ namespace TextRpgMaker.Helpers
             return list.FirstOrDefault(e => e.Id == id);
         }
 
+        /// <summary>
+        /// Get the elements with the specified type and ids as a list
+        /// </summary>
+        /// <param name="list">The list to search in</param>
+        /// <param name="ids">The IDs to retrieve</param>
+        /// <typeparam name="T">The type of the elements. Use BasicElement to get any type.</typeparam>
         public static List<T> GetIds<T>(this IEnumerable<T> list, List<string> ids)
             where T : BasicElement
         {

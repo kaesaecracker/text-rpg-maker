@@ -70,9 +70,11 @@ namespace TextRpgMaker.ProjectModels
     [DocumentedType]
     public class ItemGrouping
     {
+        /// <summary>
+        /// empty constructor for serialization
+        /// </summary>
         public ItemGrouping()
         {
-            // empty contructor for serialization
         }
 
         public ItemGrouping(string itemId, uint count)

@@ -31,6 +31,13 @@ namespace TextRpgMaker.Views
         /// </summary>
         public string No { get; set; } = "No";
 
+        /// <summary>
+        /// Show the dialog and return true or false
+        /// </summary>
+        /// <returns>
+        /// true if yesBtn was clicked,
+        /// false if noBtn was clicked or window was closed
+        /// </returns>
         public bool ShowModal()
         {
             var dlg = new Dialog<bool> {Title = this.Title};
@@ -41,6 +48,7 @@ namespace TextRpgMaker.Views
                 DefaultSpacing = new Size(3, 3)
             };
 
+            // build layout
             layout.BeginVertical(xscale: true, yscale: true);
             {
                 layout.Add(new Label {Text = this.Text});
@@ -62,7 +70,9 @@ namespace TextRpgMaker.Views
                 }
             }
 
+            // add layout to Dialog
             dlg.Content = layout;
+            // show dialog and return result
             return dlg.ShowModal(AppState.Ui);
         }
     }

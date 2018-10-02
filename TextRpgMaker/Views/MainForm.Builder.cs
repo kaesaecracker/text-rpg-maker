@@ -7,6 +7,9 @@ using static Serilog.Log;
 
 namespace TextRpgMaker.Views
 {
+    /// <summary>
+    /// The main application window. This file is for building the UI.
+    /// </summary>
     public partial class MainForm
     {
         private InputPanel _inputPanel;
@@ -41,6 +44,9 @@ namespace TextRpgMaker.Views
             this.Content = layout;
         }
 
+        /// <summary>
+        /// The menu bar in the main application window.
+        /// </summary>
         private MenuBar InitializeMenu() => new MenuBar
         {
             Items =
@@ -106,6 +112,7 @@ namespace TextRpgMaker.Views
                 },
 #endif
 
+                // items related to project
                 new ButtonMenuItem
                 {
                     Text = "&Project",
@@ -125,6 +132,7 @@ namespace TextRpgMaker.Views
                     }
                 },
 
+                // items related to the game state
                 new ButtonMenuItem
                 {
                     Text = "&Game",
@@ -152,6 +160,7 @@ namespace TextRpgMaker.Views
                 Command = new Command(NotImplementedClick)
             },
 
+            // Help menu
             HelpItems =
             {
                 new ButtonMenuItem

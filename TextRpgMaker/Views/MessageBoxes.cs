@@ -4,6 +4,9 @@ using Eto.Forms;
 
 namespace TextRpgMaker.Views
 {
+    /// <summary>
+    /// Helper MessageBox methods
+    /// </summary>
     public static class MessageBoxes
     {
         public static void LoadFailedExceptionBox(Exception ex)

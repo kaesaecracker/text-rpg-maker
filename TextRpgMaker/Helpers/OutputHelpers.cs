@@ -6,6 +6,9 @@ namespace TextRpgMaker.Helpers
 {
     public static class OutputHelpers
     {
+        /// <summary>
+        /// Print elements in current scene
+        /// </summary>
         public static void LookAround()
         {
             IO.Write(">> look around");
@@ -20,6 +23,9 @@ namespace TextRpgMaker.Helpers
             // todo look around items etc
         }
 
+        /// <summary>
+        /// print info about a character
+        /// </summary>
         public static void PrintCharacter(Character c)
         {
             IO.Write(
@@ -32,6 +38,9 @@ namespace TextRpgMaker.Helpers
             );
         }
 
+        /// <summary>
+        /// Print your inventory
+        /// </summary>
         public static void PrintInventory()
         {
             var items =

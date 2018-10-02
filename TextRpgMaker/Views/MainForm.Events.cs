@@ -5,6 +5,9 @@ using static Serilog.Log;
 
 namespace TextRpgMaker.Views
 {
+    /// <summary>
+    /// The main application window. This file contains the methods called on click etc.
+    /// </summary>
     public partial class MainForm
     {
         private void InitializeEventHandlers()
@@ -19,6 +22,9 @@ namespace TextRpgMaker.Views
                 : "TextRpgCreator";
         }
 
+        /// <summary>
+        /// Choose a path and then generate the type documentation and save to that file.
+        /// </summary>
         private void OnGenerateTypeDocClick(object sender, EventArgs e)
         {
             var fc = new SaveFileDialog
@@ -29,11 +35,13 @@ namespace TextRpgMaker.Views
 
             if (fc.ShowDialog(this) == DialogResult.Ok)
             {
+                // user has chosen a file and clicked OK
                 SelfDocumenter.Document(fc.FileName);
                 MessageBox.Show(this, "Done writing type documentation", "Done");
             }
             else
             {
+                // user clicked abort
                 MessageBox.Show(this, "Aborted", "Aborted");
             }
         }

@@ -2,6 +2,9 @@
 
 namespace TextRpgMaker.Validations
 {
+    /// <summary>
+    /// Validations for dialogs
+    /// </summary>
     [ValidatorClass]
     public class DialogValidations
     {

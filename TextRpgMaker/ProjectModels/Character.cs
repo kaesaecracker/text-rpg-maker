@@ -4,6 +4,9 @@ using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.ProjectModels
 {
+    /// <summary>
+    /// Represents a character entry in YAML files
+    /// </summary>
     [LoadFromProjectFile("characters.yaml", true, true)]
     public class Character : LookableElement
     {
