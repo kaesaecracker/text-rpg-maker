@@ -1,5 +1,6 @@
 ﻿using System;
 using Eto.Forms;
+using Gtk;
 using TextRpgMaker.Workers;
 using static Serilog.Log;
 
@@ -62,6 +63,21 @@ namespace TextRpgMaker.Views
         private void OnStartNewGameClick(object sender, EventArgs e)
         {
             Logger.Debug("Start new game");
+
+            // if game is already running, get confirmation from user
+            if (AppState.IsGameRunning)
+            {
+                var dlg = new ConfirmationDialog
+                {
+                    Text = "A game is currently running. All progress will be lost!",
+                    Title = "Game already running",
+                    Yes = "Continue, loose progress",
+                    No = "Cancel"
+                };
+
+                if (!dlg.ShowModal()) return;
+            }
+
             GameInitializer.StartNewGame();
         }
 
@@ -77,8 +93,11 @@ namespace TextRpgMaker.Views
 
         private void OnProjectHelpClick(object sender, EventArgs e)
         {
-            // todo show user why nothing happens
-            if (!AppState.IsProjectLoaded) return;
+            if (!AppState.IsProjectLoaded)
+            {
+                MessageBox.Show(this, "Project help cannot be opened - no project is loaded");
+                return;
+            }
 
             this.OpenHelp(AppState.Project.ProjectDir + "/project-help.yaml", isAbsPath: true);
         }
