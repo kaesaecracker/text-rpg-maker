@@ -1,5 +1,6 @@
 - id: sword-wood
   name: Wooden Sword
+  look-text: A wooden sword. Many kids play with those.
   attack: 1
   timeout: 1.0
 
@@ -10,6 +11,7 @@
 
 - id: bow-basic
   name: Basic Bow
+  look-text: That will surely come in handy.
   attack: 1.0
   timeout: 0.75
   ammo: arrow
@@ -22,8 +24,6 @@
   
 - id: dagger
   name: Dagger
+  look-text: That will surely come in handy.
   attack: 0.5
   timeout: 0.5
-  
-#- id: weapon-wo-name
-#  based-on: something-that-does-not-exist
