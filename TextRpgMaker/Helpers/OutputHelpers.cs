@@ -12,6 +12,9 @@ namespace TextRpgMaker.Helpers
         public static void LookAround()
         {
             IO.Write(">> look around");
+            
+            // print current scene
+            IO.Write($"Current scene: {Game.CurrentScene.Name}");
 
             // print characters if any
             var characters = Game.CurrentScene.Characters.Select(c => c.Name).ToList();

@@ -5,8 +5,10 @@
 
 - id: guard
   name: Town Guard
+  look-text: He looks a bit bored.
   talk-dialog: guard-talk
 
 - id: beggar
   name: Beggar
+  look-text: Everyone just knows him as the beggar. I am not really sure if he has a proper name. 
   talk-dialog: beggar-talk
