@@ -16,6 +16,7 @@ namespace TextRpgMaker.Views
         {
             this.Title = "TextRpgCreator";
             this.Menu = this.InitializeMenu();
+            this.Icon = new Icon("icon.ico");
 
             var layout = new DynamicLayout
             {
