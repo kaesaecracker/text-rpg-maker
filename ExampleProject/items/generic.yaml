@@ -1,0 +1,19 @@
+- id: arrow
+  name: Arrow
+  look-text: A normal wooden arrow.
+- id: golden-key
+  name: Golden Key
+- id: money
+  name: Silver Coin
+  look-text: The local currency.
+- id: booze
+  name: Bottle of Moonshine
+  look-text: Just a bottle of moonshine.\
+             I do not intend to drink that, but I might be able to clean a wound with it.
+- id: ring
+  name: Ring of Mayor's Daughter
+  look-text: The mayor will not be happy about this...
+
+- id: mayors-seal
+  name: Official Mayor Seal
+  look-text: What the --- IT'S AN ACTUAL SEAL. Like a pet. Wow. I did not know he had that in his pocket.

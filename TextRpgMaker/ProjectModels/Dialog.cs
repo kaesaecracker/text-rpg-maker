@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Serilog;
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
-
 using static TextRpgMaker.AppState;
 
 namespace TextRpgMaker.ProjectModels
@@ -16,7 +16,7 @@ namespace TextRpgMaker.ProjectModels
         [YamlProperties(true)]
         public string Text { get; set; }
 
-        [YamlMember(Alias = "goto")]
+        [YamlMember(Alias = "goto-dialog")]
         public string GotoId { get; set; }
 
         [YamlMember(Alias = "choices")]
@@ -27,6 +27,8 @@ namespace TextRpgMaker.ProjectModels
         /// </summary>
         public void Start()
         {
+            Game.CurrentDialog = this;
+
             IO.Write('"' + this.Text + '"');
             if (this.GotoId != null)
             {
@@ -34,26 +36,44 @@ namespace TextRpgMaker.ProjectModels
                 return;
             }
 
+            // find available choices
             var choicesThatMeetRequirements = (
                 from c in this.Choices
-                let mismatchedItems = (
+                // where the player has the cost items
+                where !(
+                    from costItem in c.CostItems
+                    where !Game.PlayerChar.Items.HasItem(costItem)
+                    select costItem
+                ).Any()
+                // and the required items
+                where !(
                     from reqItem in c.RequiredItems
                     where !Game.PlayerChar.Items.HasItem(reqItem)
                     select reqItem
-                )
-                where !mismatchedItems.Any()
+                ).Any()
                 select c
             ).ToList();
 
-            if (choicesThatMeetRequirements.Count == 0)
-                IO.GetTextInput();
-            else
-                IO.GetChoice(choicesThatMeetRequirements, c => c.Text, choice =>
-                {
-                    IO.Write($" >> {choice.Text}");
-                    choice.Handle();
-                });
+            Log.Debug(
+                "Choices in dialog: {dlgChoices}, Choices that meet requirements {matchingChoices}",
+                this.Choices.Count, choicesThatMeetRequirements.Count
+            );
 
+            // no choice available
+            if (choicesThatMeetRequirements.Count == 0)
+            {
+                Log.Debug("No choices match");
+                IO.GetTextInput();
+                return;
+            }
+
+            IO.GetChoice(choicesThatMeetRequirements,
+                c => $"{c.Text}{c.CostItemsText}{c.RequiredItemsText}{c.RewardItemsText}", choice =>
+                {
+                    Log.Debug("Chosen a choice: {text}", choice.Text);
+                    choice.Handle();
+                }
+            );
         }
     }
 }

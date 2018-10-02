@@ -10,8 +10,12 @@ ExampleProject/characters\.yaml
 
 ExampleProject/scenes\.yaml
 
+ExampleProject/saves
+
 *.orig
 
 ExampleProject/dialogs\.yaml
 
 TextRpgMaker/documentation\.yaml
+
+ExampleProject/doc\.yaml

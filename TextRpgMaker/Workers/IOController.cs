@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Serilog;
 using TextRpgMaker.Helpers;
 
@@ -11,23 +9,6 @@ namespace TextRpgMaker.Workers
     {
         private IOutput Output { get; set; } = new LogOutput();
         private IInput Input { get; set; } = AppState.Ui;
-        private readonly List<(string command, MethodInfo method)> _commandMethods;
-
-        public IOController()
-        {
-            this._commandMethods = (
-                from method in typeof(InputCommands)
-                    .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
-                let attribute = method.GetCustomAttribute<InputCommandAttribute>()
-                where attribute != null
-                // order by length => "lookaround" shouldnt result in a Look("around")
-                orderby attribute.Command.Length descending
-                select (
-                    attribute.Command.ToLower(),
-                    method
-                )
-            ).ToList();
-        }
 
         public void RegisterOutput(IOutput additionalOutput)
         {
@@ -47,20 +28,22 @@ namespace TextRpgMaker.Workers
         public void GetChoice<T>(List<T> possibleChoices, Func<T, string> textRepresentation,
                                  Action<T> callback)
         {
+            Log.Debug("Get one of {num} choices", possibleChoices.Count);
             this.Input.GetChoice(possibleChoices, textRepresentation, callback);
         }
 
-        public void GetTextInput() => this.GetTextInput(HandleText);
+        public void GetTextInput() => this.GetTextInput(this.HandleText);
 
         public void GetTextInput(Action<string> callback)
         {
+            AppState.Game.CurrentDialogId = null;
             this.Input.GetTextInput(callback);
         }
 
         private void HandleText(string line)
         {
             string lineLower = line.Trim().ToLower();
-            foreach ((string command, var method) in this._commandMethods)
+            foreach ((string command, var method) in InputCommands.CommandMethods)
             {
                 if (!lineLower.StartsWith(command)) continue;
 
@@ -70,7 +53,11 @@ namespace TextRpgMaker.Workers
                 return;
             }
 
-            this.Write($">> Command not known: {line}");
+            this.Write(
+                $">> Command not known.\n" +
+                $"   Try 'help' or '/?' for a list of commands.\n" +
+                $"   Input: {line}"
+            );
             this.GetTextInput();
         }
 

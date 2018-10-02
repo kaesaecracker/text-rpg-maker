@@ -4,6 +4,9 @@ using Eto.Forms;
 
 namespace TextRpgMaker.Views
 {
+    /// <summary>
+    /// Helper MessageBox methods
+    /// </summary>
     public static class MessageBoxes
     {
         public static void LoadFailedExceptionBox(Exception ex)
@@ -33,7 +36,7 @@ namespace TextRpgMaker.Views
                       $"- ProjectInfo.Title: {AppState.Project.Info.Title}\n" +
                       $"- Elements: {AppState.Project.TopLevelElements.Count}\n" +
                       $"- Weapons: {AppState.Project.WeaponTypes.Count}\n" +
-                      $"- Ammo: {AppState.Project.AmmoTypes.Count}\n" +
+                      $"- Ammo: {AppState.Project.GenericItemTypes.Count}\n" +
                       $"- Armor: {AppState.Project.ArmorTypes.Count}\n" +
                       $"- Consumables: {AppState.Project.ConsumableTypes.Count}\n" +
                       $"- Characters: {AppState.Project.Characters.Count}\n" +

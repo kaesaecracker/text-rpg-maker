@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Reflection;
 using Eto.Forms;
 using TextRpgMaker.Workers;
@@ -8,6 +7,9 @@ using static Serilog.Log;
 
 namespace TextRpgMaker.Views
 {
+    /// <summary>
+    /// The main application window. This file is for general stuff.
+    /// </summary>
     public partial class MainForm : Form
     {
         public MainForm()

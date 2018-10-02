@@ -1,4 +1,5 @@
 - id: town
+  name: Town
   characters: 
   - mayor
   - guard

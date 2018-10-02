@@ -5,6 +5,10 @@ using Eto.Forms;
 
 namespace TextRpgMaker.Views
 {
+    /// <summary>
+    /// The help window opened by Help->Creators->Help Text and Help->Players->TextRpgCreator Help.
+    /// Provides a way to display it in pages.
+    /// </summary>
     public class HelpDialog : Dialog
     {
         private readonly TextArea _textArea;
@@ -12,11 +16,17 @@ namespace TextRpgMaker.Views
         private readonly List<string> _pages;
         private int _index = 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pages">Each entry is a page</param>
+        /// <exception cref="ArgumentException">If pages does not contain anything</exception>
+        /// <exception cref="ArgumentNullException">If pages is null</exception>
         public HelpDialog(List<string> pages)
         {
-            if (pages == null || pages.Count == 0)
+            if (pages?.Count == 0)
                 throw new ArgumentException("Should not be null or empty", nameof(pages));
-            this._pages = pages;
+            this._pages = pages ?? throw new ArgumentNullException(nameof(pages));
 
             this.Resizable = true;
             this.Title = "Help";
@@ -30,6 +40,7 @@ namespace TextRpgMaker.Views
             };
 
             // todo layout breaks when index >= 10
+            // build layout on the top (<- <current page> ->)
             var topLayout = new DynamicLayout {Width = 400};
             topLayout.BeginHorizontal();
             {
@@ -53,6 +64,7 @@ namespace TextRpgMaker.Views
             }
             topLayout.EndHorizontal();
 
+            // set layout, add text area on bottom
             this.Content = new StackLayout
             {
                 Orientation = Orientation.Vertical,
@@ -64,6 +76,9 @@ namespace TextRpgMaker.Views
             };
         }
 
+        /// <summary>
+        /// Goto next page by setting index, update UI
+        /// </summary>
         private void NextClick(object sender, EventArgs e)
         {
             if (this._pages.Count <= this._index + 1) return;
@@ -72,6 +87,9 @@ namespace TextRpgMaker.Views
             this.UpdateUi();
         }
 
+        /// <summary>
+        /// Goto previous page by setting index, update UI
+        /// </summary>
         private void PrevClick(object sender, EventArgs e)
         {
             if (this._index == 0) return;
@@ -80,6 +98,9 @@ namespace TextRpgMaker.Views
             this.UpdateUi();
         }
 
+        /// <summary>
+        /// Update help text and current index according to current index
+        /// </summary>
         private void UpdateUi()
         {
             this._textArea.Text = this._pages[this._index];

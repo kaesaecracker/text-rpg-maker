@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Gtk;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using TextRpgMaker.Helpers;
 using YamlDotNet.Serialization;
 
@@ -13,8 +12,29 @@ namespace TextRpgMaker.ProjectModels
     {
         public override string ToString()
         {
-            var names = this.Select(ig => AppState.Project.ById<BasicElement>(ig.ItemId).Name);
-            return $"[{names.Aggregate((curr, name) => $"{curr}, {name}")}]";
+            if (this.Count == 0)
+            {
+                return "[(empty)]";
+            }
+
+            var builder = new StringBuilder("[");
+            for (int i = 0; i < this.Count; i++)
+            {
+                var ig = this[i];
+
+                string name = AppState.Project.ById(ig.ItemId).Name;
+                string count = this.Count < 2 ? string.Empty : $" [{ig.Count}]";
+
+                builder.Append($"{name}{count}");
+
+                if (i + 1 < this.Count)
+                {
+                    builder.Append(", ");
+                }
+            }
+
+            builder.Append("]");
+            return builder.ToString();
         }
 
         private ItemGrouping GetItemGrouping(string id)
@@ -53,7 +73,7 @@ namespace TextRpgMaker.ProjectModels
         public bool RemoveItem(ItemGrouping item)
         {
             if (!this.HasItem(item)) return false;
-            
+
             var ig = this.GetItemGrouping(item.ItemId);
             ig.Count -= item.Count;
 
@@ -63,11 +83,15 @@ namespace TextRpgMaker.ProjectModels
     }
 
     [DocumentedType]
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification =
+        "Is instantiated by YAML lib")]
     public class ItemGrouping
     {
+        /// <summary>
+        /// empty constructor for serialization
+        /// </summary>
         public ItemGrouping()
         {
-            // empty contructor for serialization
         }
 
         public ItemGrouping(string itemId, uint count)
@@ -76,12 +100,26 @@ namespace TextRpgMaker.ProjectModels
             this.Count = count;
         }
 
+        public override string ToString() => this.ToString(null);
+
+        /// <summary>
+        /// A user friendly text representation.
+        /// </summary>
+        /// <param name="name">The name part.</param>
+        /// <returns>something like 'Coin [6]'</returns>
+        public string ToString(string name)
+        {
+            string namePart = name ?? this.ItemId;
+            string count = this.Count < 2 ? string.Empty : $" [{this.Count}]";
+
+            return $"{namePart}{count}";
+        }
+
         [YamlMember(Alias = "id")]
         [YamlProperties(true)]
         public string ItemId { get; set; }
 
         [YamlMember(Alias = "count")]
-        [YamlProperties(false, 1)]
-        public uint Count { get; set; }
+        public uint Count { get; set; } = 1;
     }
 }

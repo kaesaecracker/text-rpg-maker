@@ -3,6 +3,9 @@ using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.ProjectModels
 {
+    /// <summary>
+    /// Represents an armor entry in YAML files
+    /// </summary>
     [LoadFromProjectFile("items/armor.yaml", false, true)]
     public class Armor : BasicElement
     {

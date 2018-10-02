@@ -1,12 +1,15 @@
-﻿
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using Eto.Drawing;
 using Eto.Forms;
+using TextRpgMaker.Workers;
 using static Serilog.Log;
 
 namespace TextRpgMaker.Views
 {
+    /// <summary>
+    /// The main application window. This file is for building the UI.
+    /// </summary>
     public partial class MainForm
     {
         private InputPanel _inputPanel;
@@ -16,6 +19,7 @@ namespace TextRpgMaker.Views
         {
             this.Title = "TextRpgCreator";
             this.Menu = this.InitializeMenu();
+            this.Icon = new Icon("icon.ico");
 
             var layout = new DynamicLayout
             {
@@ -40,10 +44,14 @@ namespace TextRpgMaker.Views
             this.Content = layout;
         }
 
+        /// <summary>
+        /// The menu bar in the main application window.
+        /// </summary>
         private MenuBar InitializeMenu() => new MenuBar
         {
             Items =
             {
+// TODO find a way to enable debug menu according to AppState.IsDebugRun without breaking this structure
 #if DEBUG
                 new ButtonMenuItem
                 {
@@ -78,11 +86,33 @@ namespace TextRpgMaker.Views
                         {
                             Text = "Break",
                             Command = new Command((s, e) => { Logger.Debug("BREAK"); })
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "ConfirmationDialogTest",
+                            Command = new Command(
+                                (s, e) => new ConfirmationDialog
+                                {
+                                    Text = "This is the text",
+                                    Title = "This is the title",
+                                    Yes = "Yes Btn",
+                                    No = "No Btn"
+                                }.ShowModal()
+                            )
+                        },
+                        new ButtonMenuItem
+                        {
+                            Text = "SaveToTest",
+                            Command = new Command((s, e) =>
+                            {
+                                SaveManager.Save("Test");
+                            })
                         }
                     }
                 },
 #endif
 
+                // items related to project
                 new ButtonMenuItem
                 {
                     Text = "&Project",
@@ -102,6 +132,7 @@ namespace TextRpgMaker.Views
                     }
                 },
 
+                // items related to the game state
                 new ButtonMenuItem
                 {
                     Text = "&Game",
@@ -119,16 +150,17 @@ namespace TextRpgMaker.Views
                 new ButtonMenuItem
                 {
                     Text = "Load / Save",
-                    Command = new Command(NotImplementedClick)
+                    Command = new Command(this.NotImplementedClick)
                 }
             },
 
             AboutItem = new ButtonMenuItem
             {
                 Text = "&About",
-                Command = new Command(NotImplementedClick)
+                Command = new Command(this.NotImplementedClick)
             },
 
+            // Help menu
             HelpItems =
             {
                 new ButtonMenuItem

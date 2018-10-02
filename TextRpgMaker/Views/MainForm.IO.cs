@@ -5,6 +5,10 @@ using TextRpgMaker.Workers;
 
 namespace TextRpgMaker.Views
 {
+    /// <summary>
+    /// The main application window. This file implements the IInput and IOutput interfaces, so the
+    /// window can be used to output text or input something.
+    /// </summary>
     public partial class MainForm : IOController.IInput, IOController.IOutput
     {
         public void GetChoice<T>(List<T> possibleChoices,

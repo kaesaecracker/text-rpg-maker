@@ -4,6 +4,9 @@ using TextRpgMaker.Workers;
 
 namespace TextRpgMaker.Validations
 {
+    /// <summary>
+    /// Validations for StartInfo
+    /// </summary>
     [ValidatorClass]
     public static class StartInfoValidations
     {

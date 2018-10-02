@@ -2,6 +2,9 @@
 
 namespace TextRpgMaker.Helpers
 {
+    /// <summary>
+    /// Helper attribute to require a field to have value or set default one
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class YamlPropertiesAttribute : Attribute
     {
@@ -16,6 +19,9 @@ namespace TextRpgMaker.Helpers
         public bool Required { get; }
     }
 
+    /// <summary>
+    /// Helper attribute to mark a model to be loaded from a specific file
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class LoadFromProjectFileAttribute : Attribute
     {
@@ -34,11 +40,17 @@ namespace TextRpgMaker.Helpers
         public bool Required { get; }
     }
 
+    /// <summary>
+    /// Helper attribute to mark a type to be documented by the documentation generator
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false)]
     public sealed class DocumentedTypeAttribute : Attribute
     {
     }
 
+    /// <summary>
+    /// Marks a method to be callable by text input.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public sealed class InputCommandAttribute : Attribute
     {

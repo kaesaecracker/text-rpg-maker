@@ -8,6 +8,9 @@ using static Serilog.Log;
 
 namespace TextRpgMaker.Workers
 {
+    /// <summary>
+    /// Everything needed to start a project on disk
+    /// </summary>
     public static class GameInitializer
     {
         public static void StartNewGame()
@@ -21,6 +24,9 @@ namespace TextRpgMaker.Workers
             StartFromNewGame();
         }
         
+        /// <summary>
+        /// Choose character etc
+        /// </summary>
         private static void StartFromNewGame()
         {
             AppState.IO.Write("Choose one of the following characters:");
@@ -51,10 +57,14 @@ namespace TextRpgMaker.Workers
             throw new NotImplementedException("TODO load game");
         }
 
+        /// <summary>
+        /// Load the specified project and run validations
+        /// </summary>
         public static void LoadProject(string path)
         {
             Logger.Information("LOADER: Starting to load {p}", path);
 
+            // run the TextRpgCreator Yaml Preprocessor on .typ files to generate .typ.yaml files
             try
             {
                 new YamlPreprocessor(path).ProcessAll();
@@ -66,6 +76,7 @@ namespace TextRpgMaker.Workers
                 return;
             }
 
+            // parse the .yaml files
             ProjectModel p;
             try
             {
@@ -78,6 +89,7 @@ namespace TextRpgMaker.Workers
                 return;
             }
 
+            // run validations on the project
             try
             {
                 ProjectValidator.RunAllValidations(p);
@@ -91,6 +103,7 @@ namespace TextRpgMaker.Workers
                 return;
             }
 
+            // set it as the current project
             Logger.Information("LOADER: load finished without exceptions");
             AppState.Project = p;
         }

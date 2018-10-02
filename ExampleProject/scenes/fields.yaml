@@ -1,0 +1,9 @@
+- id: fields
+  name: Fields
+  characters: 
+  - beggar
+  connections:
+  - town
+  items:
+  - id: money
+    count: 2

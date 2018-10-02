@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.ProjectModels
 {
@@ -9,6 +10,14 @@ namespace TextRpgMaker.ProjectModels
     /// </summary>
     public class ProjectModel
     {
+        /// <summary>
+        /// empty constructor for deserialization
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        public ProjectModel()
+        {
+        }
+        
         public ProjectModel(string dir, List<BasicElement> tles)
         {
             this.ProjectDir = dir;
@@ -18,39 +27,50 @@ namespace TextRpgMaker.ProjectModels
         public string ProjectDir { get; }
 
         // cannot be a dictionary because there could be duplicate ids
-        public List<BasicElement> TopLevelElements { get; }
+        [YamlMember(Alias = "top-level-elements")]
+        public List<BasicElement> TopLevelElements { get; set; }
 
-        public ProjectInfo Info
-            => this.TopLevelElements.OfType<ProjectInfo>().First();
+        [YamlIgnore]
+        public ProjectInfo Info => this.TopLevelElements.OfType<ProjectInfo>().First();
 
         // shortcut, cant change structure of ProjectInfo because it has to be the same structure as the yaml file
-        public ProjectInfo.StartInfoContainer StartInfo
-            => this.Info.StartInfo;
+        [YamlIgnore]
+        public ProjectInfo.StartInfoContainer StartInfo => this.Info.StartInfo;
 
-        public List<Character> Characters
-            => this.TopLevelElements.OfType<Character>().ToList();
+        [YamlIgnore]
+        public List<Character> Characters => this.TopLevelElements.OfType<Character>().ToList();
 
-        public List<Armor> ArmorTypes
-            => this.TopLevelElements.OfType<Armor>().ToList();
+        [YamlIgnore]
+        public List<Armor> ArmorTypes => this.TopLevelElements.OfType<Armor>().ToList();
 
-        public List<Weapon> WeaponTypes
-            => this.TopLevelElements.OfType<Weapon>().ToList();
+        [YamlIgnore]
+        public List<Weapon> WeaponTypes => this.TopLevelElements.OfType<Weapon>().ToList();
 
-        public List<Consumable> ConsumableTypes
-            => this.TopLevelElements.OfType<Consumable>().ToList();
+        [YamlIgnore]
+        public List<Consumable> ConsumableTypes => this.TopLevelElements.OfType<Consumable>().ToList();
 
-        public List<Item> AmmoTypes
-            => this.TopLevelElements.OfType<Item>().ToList();
+        [YamlIgnore]
+        public List<Item> GenericItemTypes => this.TopLevelElements.OfType<Item>().ToList();
 
-        public List<Scene> Scenes
-            => this.TopLevelElements.OfType<Scene>().ToList();
+        [YamlIgnore]
+        public List<Scene> Scenes => this.TopLevelElements.OfType<Scene>().ToList();
 
-        public List<Dialog> Dialogs
-            => this.TopLevelElements.OfType<Dialog>().ToList();
+        [YamlIgnore]
+        public List<Dialog> Dialogs => this.TopLevelElements.OfType<Dialog>().ToList();
 
+        /// <summary>
+        /// Get element by id
+        /// </summary>
+        /// <param name="id">The ID to look for</param>
+        /// <typeparam name="T">The type of the element. Use BasicElement to ignore.</typeparam>
         public T ById<T>(string id) where T : BasicElement
         {
             return this.TopLevelElements.OfType<T>().First(e => e.Id == id);
         }
+
+        /// <summary>
+        /// Alias for ById[`BasicElement]
+        /// </summary>
+        public BasicElement ById(string id) => this.ById<BasicElement>(id);
     }
 }

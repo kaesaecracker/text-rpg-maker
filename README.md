@@ -32,3 +32,6 @@ When loading a project, the preprocessor first generates a .yaml for every .typ.
     - required and reward items
     - moving to a different scene
 - specifying items etc in the files
+
+## Icon
+Icon from https://icons8.com - free commercially usable icons

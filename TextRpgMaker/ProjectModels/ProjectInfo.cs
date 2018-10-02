@@ -4,6 +4,9 @@ using YamlDotNet.Serialization;
 
 namespace TextRpgMaker.ProjectModels
 {
+    /// <summary>
+    /// The class representing the project-info.yaml
+    /// </summary>
     [LoadFromProjectFile("project-info.yaml", true)]
     public class ProjectInfo : BasicElement
     {

@@ -7,4 +7,6 @@
   name: Town Guard
   talk-dialog: guard-talk
 
-  
+- id: beggar
+  name: Beggar
+  talk-dialog: beggar-talk
