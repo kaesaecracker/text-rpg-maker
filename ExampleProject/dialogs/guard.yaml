@@ -2,7 +2,13 @@
   text: The area ahead is dangerous. If you want to leave the town you need a sword.
   choices:
   - text: Okay
-  - text: I have a weapon. Why does it have to be a sword?
+  - text: I have a dagger. Can I leave?
+    required-items:
+    - id: dagger
+    goto-dialog: guard-metajoke
+  - text: I have a bow. Can I leave?
+    required-items:
+    - id: bow-basic
     goto-dialog: guard-metajoke
   - text: Show sword
     required-items:
@@ -13,11 +19,15 @@
     change-characters:
     - id: guard
       set-talk-dialog: guard-okay
+    goto-dialog: guard-show-weapon
 
 - id: guard-metajoke
   text: It has to be a wooden sword to be specific. That's just how the story was written.
     You have to get the sword from the mayor, then you can go outside of the town to rescue the princess.
-  goto: guard-talk
+  goto-dialog: guard-talk
   
 - id: guard-okay
   text: You have already shown me your "weapon". Don't keep bothering me anymore.
+
+- id: guard-show-weapon
+  text: Okay, I'll open the gate.

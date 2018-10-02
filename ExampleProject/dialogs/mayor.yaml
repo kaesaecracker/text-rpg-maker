@@ -1,12 +1,14 @@
 - id: mayor-speech
   text: My daughter was kidnapped, bla bla bla. Get her back!
-  goto: mayor-rescuechoice
+  goto-dialog: mayor-rescuechoice
 
 - id: mayor-rescuechoice
   text: Do you want to rescue her?
   choices:
   - text: Sure
     goto-dialog: mayor-accepted
+  - text: I will if you give me the bottle you keep sipping from.
+    goto-dialog: mayor-sellbooze
   - text: No way! I am going back to sleep.
   
 - id: mayor-accepted
@@ -15,12 +17,69 @@
   - text: Take sword
     reward-items:
     - id: sword-wood
-    change-scenes:
-    - id: town
-      add-connection-to: fields
     change-characters:
     - id: mayor
       set-talk-dialog: mayor-gorescue
     
 - id: mayor-gorescue
   text: Don't wait any longer, rescue my daughter!
+  choices:
+  - text: I have found her... Kind of. She's dead.
+    required-items:
+    - id: ring
+    goto-dialog: mayor-dead
+
+- id: mayor-sellbooze
+  text: Well, my wife wants me to stop drinking anyways. Give me some money and we have a deal.
+  choices:
+  - text: I do not have any money.
+    goto-dialog: mayor-abortsell
+  - text: Deal!
+    cost-items:
+    - id: money
+      count: 3
+    reward-items:
+    - id: booze
+    change-characters:
+    - id: mayor
+      set-talk-dialog: mayor-rescuechoice-sold
+    goto-dialog: mayor-sellsuccess
+
+- id: mayor-abortsell
+  text: Too bad.
+  goto-dialog: mayor-mayor-rescuechoice
+
+- id: mayor-sellsuccess
+  text: Here you go.
+  goto-dialog: mayor-rescuechoice-sold
+
+- id: mayor-rescuechoice-sold
+  text: Deal is a deal. Please find my daughter now!
+  choices:
+  - text: Sure, I'm a man (or woman) of honor.
+    goto-dialog: mayor-accepted
+  - text: Nah, maybe later.
+  
+- id: mayor-dead
+  text: That's.... I mean... My daughter is... I-I have to... (starts crying)
+  choices:
+  - text: I understand your pain. Take her ring.
+    cost-items:
+    - id: ring
+    goto-dialog: mayor-leave-good
+  - text: Well... I guess I have a golden ring at least. That thing will bring some money.
+    goto-dialog: mayor-leave-bad
+
+- id: mayor-leave-good
+  text: You are an hones person, I can trust you. You'll be the new mayor for as long as I am not able to. I'll go inside now. Good luck
+  choices:
+  - text: Thank you, I guess
+    change-scenes:
+    - id: fields
+      remove-character: mayor
+    goto-dialog: end
+
+- id: mayor-leave-bad
+  text: You are a bad person and you should feel bad.
+  goto-dialog: end-bad
+

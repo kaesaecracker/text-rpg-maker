@@ -1,0 +1,19 @@
+- id: beggar-talk
+  text: Hello there wanderer.
+  choices:
+  - text: I am looking for the princess. Do you know where to find her?
+    goto-dialog: beggar-storyfinale
+
+- id: beggar-storyfinale
+  text: Well, the ambitious goal of the TextRpgCreator project was a nice little story where you fight agains the henchmen of the evil slime kind. Here in the fields you would have killed some small green slimes and get some proper loot, after which you would have been able to kill the golden slime that drops money and the slime king that has the key to recue the princess. But because there is no fighting system yet the story had to change. The girl is dead, son. Here, her ring to proof it to the mayor.
+  choices:
+  - text: Take ring
+    reward-items: 
+    - id: ring
+    change-characters:
+    - id: beggar
+      set-talk-dialog: beggar-end
+    goto-dialog: beggar-end
+
+- id: beggar-end
+  text: I am not keen on bringing bad news. Go ahead and talk to the mayor.
